@@ -1,0 +1,237 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">服务器列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="添加游戏服务器" href="{:url('create')}">开 服</a>
+                        <a class="layui-btn" title="游戏合服-NEW" href="{:url('combine_cross')}">合 服 NEW</a>
+                        <a class="layui-btn open-win" title="自动开服配置" href="{:url('auto_open_config')}">自动开服配置</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('batch_edit_server')}">一键维护</a>
+                        <a class="layui-btn layui-btn-normal zz-btn-delete-all" href="{:url('batch_edit_server_full')}">一键爆满</a>
+                        <a class="layui-btn layui-btn-warm zz-btn-delete-all" title="一键新服" href="{:url('batch_edit_server_new')}">一键新服</a>
+                        <a class="layui-btn" title="跨服设置" href="{:url('batch_set_cross_server')}">跨服设置</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" title="一键取消跨服" href="{:url('batch_cancel_cross_server')}">一键取消跨服</a>
+                        <a class="layui-btn open-win" title="实名开关设置" href="{:url('authentication')}">实名开关设置</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="servername" placeholder="请输入服务器名称" value="{$servername}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table" id="dataTable" lay-filter="dataTable">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>ID</th>
+                            <th>区服</th>
+                            <th style="width: 100px;">状态</th>
+                            <th>开服时间</th>
+                            <th>合服时间</th>
+                            <th>数据库名</th>
+                            <!--                            <th>读库IP</th>-->
+                            <!--                            <th>读库端口</th>-->
+                            <!--                            <th>读库账号</th>-->
+                            <!--                            <th>读库密码</th>-->
+                            <th>写库IP</th>
+                            <th>写库端口</th>
+                            <th>写库账号</th>
+                            <th>写库密码</th>
+                            <th>真实区服</th>
+                            <th>合服次数</th>
+                            <th width="200px;">跨服ID</th>
+                            <th width="180px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="chk_id" class="zz-table-chk-item" value="{$vo.id}"
+                                       lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <!--                            <td>{:get_area_server_name($vo.id)}</td>-->
+                            <td>
+                                <form action="{:url('updateServerName')}" method="post"
+                                      class="layui-form zz-form-datalist"
+                                      lay-filter="zz-form-{$vo.id}">
+                                    <input type="hidden" value="{$vo.id}" name="id">
+                                    <input type="text" name="servername" data-source="{$vo.servername}"
+                                           lay-verify="required"
+                                           autocomplete="off" value="{$vo.servername}"
+                                           class="layui-input zz-table-input">
+                                </form>
+                            </td>
+                            <td>
+                                <select id="status" name="status" lay-filter="status">
+                                    <option value="1" {$vo.status==1?'selected':''}>爆满</option>
+                                    <option value="2" {$vo.status==2?'selected':''}>新服</option>
+                                    <option value="3" {$vo.status==3?'selected':''}>维护</option>
+                                </select>
+                            </td>
+                            <td>{:date('Y-m-d H:i:s',$vo.open_time)}</td>
+                            <td>
+                                {neq name="vo.combine_time" value="0"}
+                                {:date('Y-m-d H:i:s',$vo.combine_time)}
+                                {else/}
+                                <span style="color: blue;">暂未合服</span>
+                                {/neq}
+                            </td>
+                            <td>
+                                {if $vo.use_status==0}
+                                <span style="color: red">{$vo.db_database_name}</span>
+                                {else/}
+                                {$vo.db_database_name}
+                                {/if}
+                            </td>
+                            <!--<td>{$vo.db_ip_r}</td>-->
+                            <!--<td>{$vo.db_port_r}</td>-->
+                            <!--<td>{$vo.db_username_r}</td>-->
+                            <!--<td>{$vo.db_password_r}</td>-->
+                            <td>{$vo.db_ip_w}</td>
+                            <td>{$vo.db_port_w}</td>
+                            <td>{$vo.db_username_w}</td>
+                            <td>{$vo.db_password_w}</td>
+                            <!--<td>{:get_area_server_name($vo.real_server_id)}</td>-->
+                            <td>{$vo.real_server_id}</td>
+                            <td>{$vo.combine_count}</td>
+                            <td>
+                                <select id="kuafu_id" name="kuafu_id" lay-filter="kuafu_id">
+                                    <option value="0">请选择跨服服务器</option>
+                                    {volist name="kuafu_list" id="k_vo"}
+                                    <option value="{$k_vo.id}" {$vo.kuafu_id==$k_vo.id?'selected':''}>{$k_vo.servername}</option>
+                                    {/volist}
+                                </select>
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑服务器">编辑</a>
+                                <a href="{:url('server_shut_down?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">关服</a>
+                                {if $vo.kuafu_id!=0}
+                                <a href="{:url('cancel_cross_server?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-warm layui-btn-xs confirm ajax-post">取消跨服</a>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<script src="__JS__/jquery.form.js"></script>
+
+<script>
+    layui.use(['element', 'form', 'table'], function () {
+        var form = layui.form, table = layui.table;
+        form.render();
+        //修改服务器状态
+        form.on('select(status)', function (data) {
+            var status = data.value;
+            //当前元素
+            var data = $(data.elem);
+            //遍历父级tr，取第一个，然后查找第二个td，取值
+            var id = data.parents('tr').first().find('td').eq(1).text();
+
+            $.ajax({
+                type: 'post',
+                url: '../server/change_status',
+                data: {id: id, status: status},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.msg(data.msg ? data.msg : '操作成功', {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    } else {
+                        layer.msg(data.msg ? data.msg : '操作失败', {
+                            icon: 2,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+
+                        });
+                    }
+                }
+            });
+        });
+        //编辑跨服ID
+        form.on('select(kuafu_id)', function (data) {
+            var cross_id = data.value;//选中的跨服ID
+            //当前元素
+            var data = $(data.elem);
+            //遍历父级tr，取第一个，然后查找第二个td，取值
+            var id = data.parents('tr').first().find('td').eq(1).text();
+
+            $.ajax({
+                type: 'post',
+                url: '../server/set_cross_server',
+                data: {id: id, cross_id: cross_id},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.msg(data.msg ? data.msg : '操作成功', {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    } else {
+                        layer.msg(data.msg ? data.msg : '操作失败', {
+                            icon: 2,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+
+                        });
+                    }
+                }
+            });
+        });
+
+        // form.on('submit(formDemo)', function (data) {
+        //     var arr = new Array();
+        //     $("input:checkbox[name='chk_id']:checked").each(function (i) {
+        //         arr[i] = $(this).val();
+        //     });
+        //     var ids = arr.join(',');
+        //     console.log(ids);
+        //
+        //     $.post("batch_edit_server", {data:ids}, function (res) {
+        //         if (res.code == 1) {
+        //             layer.msg(res.msg, {time: 1800, icon: 1}, function () {
+        //                 location.href = res.url;
+        //             });
+        //         } else {
+        //             layer.msg(res.msg, {time: 1800, icon: 2});
+        //         }
+        //     }, 'json');
+        //
+        //     return false;
+        // });
+
+
+    });
+</script>
+{/block}

@@ -1,0 +1,57 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">玩家ID：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="UserID" readonly
+                                   value="{$info['UserID']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">封号时间：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="StartBanTime" id="StartBanTime"
+                                   onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入封号时间,如（2020-12-10 15:30:20）'" readonly="readonly"
+                                   placeholder="请输入封号时间" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">封号原因：</label>
+                        <div class="layui-input-block">
+                            <textarea name="BanReason"  onfocus="this.placeholder=''"
+                                      onblur="this.placeholder='请输入封号原因'"
+                                      placeholder="请输入封号原因" class="layui-textarea">{$info['BanReason']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //常规用法
+        laydate.render({
+            elem: '#StartBanTime', type: 'datetime'
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,75 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">后台菜单 {neq name="pid" value="0"}[<a href="{:url('?pid='.$topMenu['pid'])}">当前菜单：{$topMenu['title']}</a>]{/neq}
+            </div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn open-win" title="新增后台菜单" href="{:url('create?pid='.$pid)}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                </div>
+
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>ID</th>
+                            <th>名称</th>
+                            <th>上级菜单</th>
+                            <th>URL</th>
+                            <th width="60px">排序</th>
+                            <th>是否隐藏</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td><a class="layui-table-link" href="{:url('index?pid='.$vo['id'])}">{$vo.title}</a></td>
+                            <td>{$topMenu['title']}</td>
+                            <td>{$vo.url}</td>
+                            <td>
+                                <form action="{:url('sort')}" method="post" class="layui-form zz-form-datalist"
+                                      lay-filter="zz-form-{$vo.id}">
+                                    <input type="hidden" value="{$vo.id}" name="id">
+                                    <input type="text" name="sort" data-source="{$vo.sort}" lay-verify="required|number"
+                                           autocomplete="off" value="{$vo.sort}" class="layui-input zz-table-input">
+                                </form>
+                            </td>
+                            <td class="layui-table-cell">
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('hide?id='.$vo['id'])}" name="hide" value="{$vo.hide}"
+                                       {$vo.hide==0?'checked':''} lay-skin="switch" lay-text="显示|隐藏">
+                            </td>
+                            <td>
+                                <a href="{:url('create?pid='.$vo['id'])}"
+                                   class="layui-btn layui-btn-primary layui-btn-xs open-win" title="添加后台子菜单">添加子菜单</a>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal open-win" title="编辑后台菜单">编辑</a>
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+
+                        </tbody>
+                    </table>
+                    {$page|raw}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

@@ -1,0 +1,105 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">应用渠道分成比例列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="新增应用渠道分成比例" href="{:url('create')}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">渠道名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="search" placeholder="请输入渠道标识/名称" value="{$search}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>渠道ID</th>
+                            <th>渠道名称</th>
+                            <th>渠道分成</th>
+                            <th>官方分成</th>
+                            <th>服务器费用支付方</th>
+                            <th>服务器费用金额</th>
+                            <th>通道费用支付方</th>
+                            <th>通道费用</th>
+                            <th>是否有代金券</th>
+                            <th>代金券金额</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.channel_id}</td>
+                            <td>{$vo.channel_name}</td>
+                            <td>{:sprintf("%1\$.2f",$vo['share_ratio'])} %</td>
+                            <td>{:sprintf("%1\$.2f",$vo['official_share_ratio'])} %</td>
+                            <td>
+                                {switch name="vo.payer"}
+                                {case 1}官方{/case}
+                                {case 2}渠道方{/case}
+                                {case 3}共同承担{/case}
+                                {/switch}
+                            </td>
+                            <td>{$vo.server_amount}</td>
+                            <td>
+                                {switch name="vo.payment_channel"}
+                                {case 1}官方{/case}
+                                {case 2}渠道方{/case}
+                                {case 3}共同承担{/case}
+                                {/switch}
+                            </td>
+                            <td>{:sprintf("%1\$.2f",$vo['payment_channel_amount'])} %</td>
+                            <td>
+                                {switch name="vo.cash_coupon"}
+                                {case 0}无代金券{/case}
+                                {case 1}有代金券{/case}
+                                {/switch}
+                            </td>
+                            <td>{$vo.cash_coupon_amount}</td>
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('set_share_status?id='.$vo['id'])}" name="status"
+                                       value="{$vo.status}" {$vo.status==1?'checked':''} lay-skin="switch"
+                                       lay-text="启用|禁用">
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑">编辑</a>
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

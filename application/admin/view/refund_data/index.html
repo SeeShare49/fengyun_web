@@ -1,0 +1,125 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">退款订单列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">订单编号:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="order_id" placeholder="请输入订单编号" value="{$order_id}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">平台交易号:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="trade_no" placeholder="请输入ApplePay交易号" value="{$trade_no}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">查询日期:</label>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" class="layui-input" id="start_date" name="start_date"
+                                       value="{$start_date}" readonly="readonly" placeholder="yyyy-MM-dd">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" class="layui-input" id="end_date" name="end_date" value="{$end_date}"
+                                       readonly="readonly" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>用户ID</th>
+                            <th>用户昵称</th>
+                            <th>订单编号</th>
+                            <th>订单金额</th>
+                            <th>元宝数量</th>
+                            <th>平台交易号</th>
+                            <th>处理状态</th>
+                            <th>创建时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.actor_id}</td>
+                            <td>{:get_player_name($vo.actor_id,$vo.server_id)}</td>
+                            <td>{$vo.order_id}</td>
+                            <td>{:sprintf("%1\$.2f", $vo['money'])} 元</td>
+                            <td>{$vo.amount}</td>
+                            <td>{$vo.trade_no}</td>
+                            <td>
+                                {if $vo.status==0}
+                                <span style="color: red">未处理</span>
+                                {else/}
+                                <span style="color: green">已处理</span>
+                                {/if}
+                            </td>
+                            <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+    layui.use(['laydate', "jquery"], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , $ = layui.jquery
+            , laydate = layui.laydate;
+        var nowTime = new Date().valueOf();
+
+        //日期
+        var start = laydate.render({
+            elem: '#start_date',
+            //min:nowTime,
+            type: 'datetime',
+            max: nowTime,
+            done: function (value, date) {
+                endMax = end.config.max;
+                end.config.min = date;
+                end.config.min.month = date.month - 1;
+            }
+        });
+        var end = laydate.render({
+            elem: '#end_date',
+            min: nowTime,
+            max: nowTime,
+            type: 'datetime',
+            done: function (value, date) {
+                if ($.trim(value) == '') {
+                    var curDate = new Date();
+                    date = {'date': curDate.getDate(), 'month': curDate.getMonth() + 1, 'year': curDate.getFullYear()};
+                }
+                start.config.max = date;
+                start.config.max.month = date.month - 1;
+            }
+        });
+    });
+</script>
+{/block}

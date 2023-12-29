@@ -1,0 +1,115 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">玩家在线时长分布汇总</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="查看图表" href="{:url('level_charts')}?server_id={$server_id}">查看图表</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器：</label>
+                            <div class="layui-input-block">
+                                <select name="server_id" id="server_id" lay-filter="server">
+                                    <option value="0"  {$server_id==0?'selected':''}>请选择合服服务器</option>
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.servername}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器：</label>
+                            <div class="layui-input-block">
+                                <select name="server_id_c" id="server_id_c">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>区服</th>
+                            <th>1-10分钟</th>
+                            <th>11-30分钟</th>
+                            <th>31-60分钟</th>
+                            <th>61-120分钟</th>
+                            <th>120分钟以上</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{:get_area_server_name($vo.server_id)}</td>
+                            <td>{$vo.online10}</td>
+                            <td>{$vo.online30}</td>
+                            <td>{$vo.online60}</td>
+                            <td>{$vo.online120}</td>
+                            <td>{$vo.online}</td>
+                        </tr>
+                        {/volist}
+                        <tr>
+                            <td style="font-weight: bold;color: red">总计</td>
+                            <td style="font-weight: bold;color: green">{$total_online_10}</td>
+                            <td style="font-weight: bold;color: green">{$total_online_30}</td>
+                            <td style="font-weight: bold;color: green">{$total_online_60}</td>
+                            <td style="font-weight: bold;color: green">{$total_online_120}</td>
+                            <td style="font-weight: bold;color: green">{$total_online}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+
+<script type="text/javascript">
+    layui.use(['layer', 'jquery', 'form'], function () {
+        var layer = layui.layer,
+            $ = layui.jquery,
+            form = layui.form;
+
+        form.on('select(server)', function (data) {
+            var message = $("select[name=server_id]").val();
+            if(message!=0){
+                $.ajax({
+                    type:'post',
+                    url:'getServerListBySelectId',
+                    data:{id:message},
+                    dataType:'json',
+                    success:function (data){
+                        if(data.length>0)
+                        {
+                            var htmlStr = '<option value="0" selected="selected">请选择被合服服务器</option>';
+                            for (var i=0;i<data.length;i++)
+                            {
+                                htmlStr+="<option value='"+data[i]['id']+"' >"+data[i]['servername']+"</option>";
+                            }
+                            $("#server_id_c").html(htmlStr);
+                            form.render();
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{/block}

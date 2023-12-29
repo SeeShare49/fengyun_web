@@ -1,0 +1,93 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道ID：</label>
+                        <div class="layui-input-block">
+                            <select name="channel_id">
+                                <option value="0">请选择应用渠道</option>
+                                {volist name="channel_list" id="vo"}
+                                <option value="{$vo.id}" {$channel_id==$vo.id?'selected':''}>{$vo.channel_name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道分成：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="share_ratio" lay-verify="required" placeholder="输入渠道分成比例,如40"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")' value="0" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付方(服)：</label>
+                        <div class="layui-input-block">
+                           <select id="payer">
+                               <option value="-1">请选择费用支付方</option>
+                               <option value="1">官方</option>
+                               <option value="2">渠道方</option>
+                               <option value="3">共同承担</option>
+                           </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">费用(服)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="server_amount" lay-verify="required" placeholder="输入服务器费用,如2040"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")' value="0" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付方(通)：</label>
+                        <div class="layui-input-block">
+                            <select id="payment_channel">
+                                <option value="-1">请选择通道费支付方</option>
+                                <option value="1">官方</option>
+                                <option value="2">渠道方</option>
+                                <option value="3">共同承担</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">通道费用：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="payment_channel_amount" lay-verify="required" placeholder="输入服务器费用,如2040"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")' value="0" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">代金券：</label>
+                        <div class="layui-input-block">
+                            <select id="cash_coupon">
+                                <option value="-1">请选择是否代金券</option>
+                                <option value="0">无代金券</option>
+                                <option value="1">有代金券</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">金额(代)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="cash_coupon_amount" lay-verify="required" placeholder="输入代金券金额,如2040"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")' value="0" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

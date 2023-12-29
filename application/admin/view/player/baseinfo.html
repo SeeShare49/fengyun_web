@@ -1,0 +1,80 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li><a href="{:url('index')}">玩家列表</a></li>
+                        <li class="layui-this">基本信息</li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=equip">装备</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=package">背包物品</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=store">仓库</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=clothes">时装</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=gem">宝石</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=skill">技能</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=economy"> 经济统计</a></li>
+                    </ul>
+
+                    <form action="{:url('')}" method="post" class="layui-form">
+                        <div class="layui-form-item">
+
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">玩家ID：</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{$info['actor_id']}" class="layui-input" disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">账号：</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{$info['account_id']}" class="layui-input"
+                                       disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">角色名称：</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{$info['nickname']}" class="layui-input"
+                                       disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">等级：</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{$info['level']}" class="layui-input"
+                                       disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">职业：</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{if $info['job']==100}战士{elseif $info['job']==101}法师{else}道士{/if}" class="layui-input"
+                                       disabled="disabled">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">性别：</label>
+                            <div class="layui-input-block">
+                                <input type="text" value="{if $info['gender']==200}男{elseif $info['gender']==201}女{else}未知{/if}" class="layui-input"
+                                       disabled="disabled">
+
+                            </div>
+                        </div>
+
+
+                        <div class="layui-form-item layui-layout-admin">
+                            <div class="layui-input-block">
+                                <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">返回</button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="id" value="{$actor_id}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

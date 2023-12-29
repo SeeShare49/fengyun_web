@@ -1,0 +1,70 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">界面ID：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="surface_id" placeholder="请输入界面ID" value="{$info['surface_id']}"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">界面类别：</label>
+                        <div class="layui-input-block">
+                            <select name="surface_type">
+                                <option value="100" {$info['surface_type']==100?'selected':''}>活动</option>
+                                <option value="101" {$info['surface_type']==101?'selected':''}>充值</option>
+                                <option value="1000" {$info['surface_type']==1000?'selected':''}>其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">界面级别：</label>
+                        <div class="layui-input-block">
+                            <select name="level">
+                                <option value="1" {$info['level']==1?'selected':''}>一级界面</option>
+                                <option value="2" {$info['level']==2?'selected':''}>二级界面</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">英文标识：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="symbol_eng" value="{$info['symbol_eng']}" placeholder="请输入游戏界面英文标识"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">中文标识：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="symbol_chs" value="{$info['symbol_chs']}" placeholder="请输入游戏界面中文标识"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" checked value="1" title="启用" {$info['status']==1?'checked':''}>
+                            <input type="radio" name="status" value="-1" title="停用" {$info['status']==-1?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

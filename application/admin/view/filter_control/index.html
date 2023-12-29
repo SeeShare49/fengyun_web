@@ -1,0 +1,56 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">监控过滤关键字|关键词</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">过滤内容:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="filter_str" placeholder="过滤关键字或关键词" value="{$filter_str}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 50px;">编号</th>
+                            <th style="width: 80px;">用途描述</th>
+                            <th>关键字|关键词</th>
+                            <th style="width: 50px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.filter_desc}</td>
+                            <td>
+                                {:str_replace($filter_str,"<font color=#ff4500><b>$filter_str</b></font>",$vo.filter_str)}
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑">编辑</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

@@ -1,0 +1,100 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">福利礼包信息列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="新增福利礼包信息" href="{:url('create')}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('delete')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">礼包名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" placeholder="请输入礼包标题" value="{$title}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>福利类型</th>
+                            <th>礼包名称</th>
+                            <th>礼包物品</th>
+                            <th>物品描述</th>
+                            <th width="80px;">活动周期</th>
+                            <th>领取规则</th>
+                            <th>领取截止时间</th>
+                            <th width="80px;">是否一次性</th>
+                            <th width="80px;">状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>
+                                {eq name="vo.welfare_type" value='1'}
+                                福利礼包
+                                {else/}
+                                活动礼包
+                                {/eq}
+                            </td>
+                            <td>{$vo.title}</td>
+                            <td>{$vo.content|raw}</td>
+                            <td>{$vo.items_desc|raw}</td>
+                            <td>
+                                {neq name="vo.cycle" value=0}
+                                {$vo.cycle} 天
+                                {/neq}
+                            </td>
+                            <td>{$vo.get_rule|raw}</td>
+                            <td>
+                                {neq name="vo.limit_time" value=0}
+                                {:date('Y-m-d',$vo.limit_time)}
+                                {/neq}
+                            </td>
+                            <td>
+                                {eq name="vo.is_disposable" value=0}否{else/}是{/eq}
+                            </td>
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('set_status?id='.$vo['id'])}" name="status"
+                                       value="{$vo.status}" {$vo.status==1?'checked':''} lay-skin="switch"
+                                       lay-text="显示|隐藏">
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑">编辑</a>
+                                <a href="{:url('delete?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

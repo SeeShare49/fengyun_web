@@ -1,0 +1,98 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">合服记录列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('clear')}">清空</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器:</label>
+                            <div class="layui-input-inline" style="min-width: 300px">
+                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">合服日期:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="combine_date" name="combine_date"
+                                       value="{$combine_date}" readonly placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>主服务器</th>
+                            <th>被合服务器</th>
+                            <th>合服时间</th>
+                            <th>描述</th>
+                            <th>操作人</th>
+                            <th>移除已合服数据库</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>{:get_area_server_name($vo['main_server'])}</td>
+                            <td>{:get_area_server_name($vo['secondary_server'])}</td>
+                            <td>{:date('Y-m-d H:i:s',$vo.combine_time)}</td>
+                            <td>{$vo.remark}</td>
+                            <td>{:get_admin_user_name($vo['admin_id'])}</td>
+                            <td>
+                                {if show_drop_database_button($vo['secondary_server'])==true}
+                                <a href="{:url('server/drop_database')}?id={$vo.secondary_server}&database_name=cq_game{$vo.secondary_server}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post" title="移除被合服的数据库">移除数据库</a>
+                                {/if}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //常规用法
+        laydate.render({
+            elem: '#combine_date'
+        });
+
+    });
+</script>
+{/block}

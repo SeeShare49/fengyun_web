@@ -1,0 +1,153 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">玩家等级汇总</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="查看图表" href="{:url('level_charts')}?server_id={$server_id}">查看图表</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器：</label>
+                            <div class="layui-input-block">
+                                <select name="server_id" id="server_id" lay-filter="server">
+                                    <option value="0"  {$server_id==0?'selected':''}>请选择合服服务器</option>
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.servername}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>区服</th>
+                            <th>60级以下</th>
+                            <th>61-70级</th>
+                            <th>71-80级</th>
+                            <th>81级</th>
+                            <th>82级</th>
+                            <th>83级</th>
+                            <th>84级</th>
+                            <th>85级</th>
+                            <th>86级</th>
+                            <th>87级</th>
+                            <th>88级</th>
+                            <th>89级</th>
+                            <th>90级</th>
+                            <th>91-100级</th>
+                            <th>101-110级</th>
+                            <th>111-120级</th>
+                            <th>121-150级</th>
+                            <th>151-170级</th>
+                            <th>170级以上</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{:get_area_server_name($vo.server_id)}</td>
+                            <td>{$vo.level_1}</td>
+                            <td>{$vo.level_2}</td>
+                            <td>{$vo.level_3}</td>
+                            <td>{$vo.level_81}</td>
+                            <td>{$vo.level_82}</td>
+                            <td>{$vo.level_83}</td>
+                            <td>{$vo.level_84}</td>
+                            <td>{$vo.level_85}</td>
+                            <td>{$vo.level_86}</td>
+                            <td>{$vo.level_87}</td>
+                            <td>{$vo.level_88}</td>
+                            <td>{$vo.level_89}</td>
+                            <td>{$vo.level_90}</td>
+                            <td>{$vo.level_5}</td>
+                            <td>{$vo.level_6}</td>
+                            <td>{$vo.level_7}</td>
+                            <td>{$vo.level_8}</td>
+                            <td>{$vo.level_9}</td>
+                            <td>{$vo.level_10}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                        <tr>
+                            <td style="font-weight: bold;color: red">总计</td>
+                            <td style="font-weight: bold;color: green">{$total_level_1}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_2}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_3}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_81}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_82}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_83}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_84}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_85}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_86}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_87}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_88}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_89}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_90}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_5}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_6}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_7}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_8}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_9}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_10}</td>
+                        </tr>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+
+<script type="text/javascript">
+    layui.use(['layer', 'jquery', 'form'], function () {
+        var layer = layui.layer,
+            $ = layui.jquery,
+            form = layui.form;
+
+        form.on('select(server)', function (data) {
+            var message = $("select[name=server_id]").val();
+            // console.log($('#server_id').find("option:selected").text());// 获取select选中文本
+            if(message!=0){
+                $.ajax({
+                    type:'post',
+                    url:'getServerListBySelectId',
+                    data:{id:message},
+                    dataType:'json',
+                    success:function (data){
+                        if(data.length>0)
+                        {
+                            console.log(JSON.stringify(data));
+                            var htmlStr = '<option value="0" selected="selected">请选择被合服服务器</option>';
+                            for (var i=0;i<data.length;i++)
+                            {
+                                htmlStr+="<option value='"+data[i]['id']+"' >"+data[i]['servername']+"</option>";
+                            }
+                            $("#server_id_c").html(htmlStr);
+                            form.render();
+                        }else{
+                            alert('暂无数据!');
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{/block}

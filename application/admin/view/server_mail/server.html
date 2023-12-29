@@ -1,0 +1,56 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">区服ID：</label>
+                        <div class="layui-input-block">
+                            <select name="server_id" xm-select="select5" xm-select-search="">
+                                {volist name="server_list" id="vo"}
+                                <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮件标题：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required" onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入邮件标题'" placeholder="请输入邮件标题" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮件内容：</label>
+                        <div class="layui-input-block">
+                            <textarea name="content" onfocus="this.placeholder=''" onblur="this.placeholder='请输入邮件内容'"
+                                      placeholder="请输入邮件内容" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">道具内容：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="prop_info" onfocus="this.placeholder=''" onblur="this.placeholder='请输入道具内容,格式:(道具ID|数量;道具ID|数量;)'"
+                                   placeholder="请输入道具内容,格式:(道具ID|数量;道具ID|数量;)" class="layui-input"></input>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+{/block}

@@ -1,0 +1,108 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">寻宝排行</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">区服查询:</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <select name="server_id" xm-select="select4" xm-select-search="" xm-select-max="1">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">账号ID:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="account_id" value="{$account_id}"
+                                       onkeyup="this.value=this.value.replace(/\D/gi,'')" placeholder="请输入账号ID">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色ID:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="actor_id" value="{$actor_id}"
+                                       onkeyup="this.value=this.value.replace(/\D/gi,'')" placeholder="请输入角色ID">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="nickname" value="{$nickname}"
+                                       placeholder="请输入角色名称">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">排名数量:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="user_count" value="{$user_count}"
+                                       onkeyup="this.value=this.value.replace(/\D/gi,'')" placeholder="请填写排名数量"
+                                       oninput="if(value>200)value=200">
+                            </div>
+                        </div>
+
+
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>区服</th>
+                            <th>账号ID</th>
+                            <th>角色ID</th>
+                            <th>角色名</th>
+                            <th>合服次数</th>
+                            <th>寻宝次数</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>第{$i}名</td>
+                            <td>{:get_area_server_name($server_id)}</td>
+                            <td>{$vo.account_id}</td>
+                            <td>{$vo.actor_id}</td>
+                            <td>{$vo.nickname}</td>
+                            <td>
+                                {neq name="vo.limit_id" value="0"}
+                                <span style="color: green">{$vo.limit_id} 合</span>
+                                {else/}
+                                <span style="color: green">未合服</span>
+                                {/neq}
+                            </td>
+                            <td><span style="color: red;font-weight: bold;">{$vo.limit_value} 次</span></td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+
+{/block}

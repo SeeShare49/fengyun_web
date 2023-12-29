@@ -1,0 +1,122 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">礼包数据列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="新增礼包数据" href="{:url('create')}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">礼包名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="search" placeholder="请输入礼包名称" value="{$search}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">礼包码类型:</label>
+                            <div class="layui-input-inline">
+                                <select name="common">
+                                    <option value="-1" {$common==-1?'selected':''}>全部</option>
+                                    <option value="100" {$common==100?'selected':''}>通用</option>
+                                    <option value="1" {$common==1?'selected':''}>非通用</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>渠道号</th>
+                            <th>礼包名称</th>
+                            <th>物品列表</th>
+                            <th>物品列表名称</th>
+                            <th>是否通用礼包</th>
+                            <th>礼包数量</th>
+                            <th>卡号长度</th>
+                            <th>礼包码</th>
+                            <th>生效时间</th>
+                            <th>失效时间</th>
+                            <th style="width: 250px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>{:get_channel_name($vo.channel_no)}</td>
+                            <td>
+                                <a style="color: yellowgreen" href="{:url('/channel_gift_code')}?gift_type={$vo.id}"
+                                   title="{$vo.gift_name}">{$vo.gift_name}</a>
+                            </td>
+                            <td>{$vo.gift_list}</td>
+                            <td>{:get_prop_list_name($vo.gift_list)}</td>
+                            <td>
+                                {eq name="vo.is_common" value="0"}
+                                <span style="color: green;font-weight: bold">通用礼包</span>
+                                {else/}
+                                <span style="color: mediumpurple;font-weight: bold">非通用礼包</span>
+                                {/eq}
+                            </td>
+                            <td>
+                                {neq name="vo.gift_amount" value="0"}
+                                {$vo.gift_amount}
+                                {/neq}
+                            </td>
+                            <td>{$vo.card_length}</td>
+                            <td>{$vo.gift_code}</td>
+                            <td>
+                                {neq name="vo.valid_time" value="0"}
+                                {:date('Y-m-d H:i:s',$vo.valid_time)}
+                                {/neq}
+                            </td>
+                            <td>
+                                {neq name="vo.invalid_time" value="0"}
+                                {:date('Y-m-d H:i:s',$vo.invalid_time)}
+                                {/neq}
+                            </td>
+                            <td>
+                                {eq name="vo.is_common" value="1"}
+                                <a href="{:url('channel_gift_code/generate?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-normal layui-btn-xs confirm ajax-post">生成礼包码</a>
+<!--                                <a href="{:url('export?id='.$vo['id'])}"-->
+<!--                                   class="layui-btn layui-btn-normal layui-btn-xs confirm ajax-post">导出数据</a>-->
+                                <a class="layui-btn layui-btn-normal layui-btn-xs" title="导出礼包码数据"  href="{:url('export?id='.$vo['id'])}">导出</a>
+<!--                                <a href="{$vo.csv_down_url}"-->
+<!--                                   class="layui-btn layui-btn-normal layui-btn-xs">导出数据</a>-->
+                                {/eq}
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal open-win" title="编辑">编辑</a>
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

@@ -1,0 +1,71 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form id="fileForm" action="{:url('upload')}" method="post" class="layui-form"
+                      enctype="multipart/form-data">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">上传文件：</label>
+                        <div class="layui-input-block">
+                            <input type="file" name="propfile" id="propfile" class="layui-input"/>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" id="btn-upload-csv">上传Csv文件
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script src="__JS__/jquery.form.js"></script>
+<script type="text/javascript">
+    var loadIndex;
+
+    $('#btn-upload-csv').click(function () {
+        var file = $('#propfile');
+        if ($.trim(file.val()) == '') {
+            alert('请选择上传的文件');
+            return false;
+        }
+    });
+
+    $(function () {
+        $('#btn-upload-csv').click(
+            function () {
+                loadIndex = parent.layer.open({
+                    type: 1,
+                    title: '',
+                    area: '440px',
+                    skin: 'layui-layer-demo', //样式类名
+                    closeBtn: 0, //不显示关闭按钮
+                    anim: 2,
+                    content: '<div id="zz-div-backdata" class="zz-div-backdata"><i class="layui-icon layui-icon-loading layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i><div class="content">正在上传文件，请稍等...</div></div>'
+                });
+            }
+        );
+
+
+        $("#fileForm").ajaxForm(function (data) {
+                if (data.code == 1) {
+                    parent.layer.msg(data.msg ? data.msg : '操作成功', {icon: 1, time: data.wait * 1000});
+                    parent.layer.closeAll();
+                    window.location.href = 'index';
+                } else {
+                    parent.layer.close(loadIndex);
+                    parent.layer.msg(data.msg ? data.msg : '操作失败', {icon: 2, time: data.wait * 3000});
+                }
+            }
+        );
+    });
+</script>
+{/block}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <title>支付订单</title>
+    <link rel="stylesheet" href="/static/pay/css/style.css" type="text/css"/>
+    <script type="text/javascript" src="/static/pay/js/jquery.min.js"></script>
+</head>
+
+<body onload="closeit();">
+
+<header style="color:#fff">
+    <a href="javascript:history.go(-1);">
+        <span>支付成功</span></a>
+</header>
+<div class="contaniner fixed-cont">
+    <div class="pay_img"><img src="/static/pay/images/pay.jpg"></div>
+</div>
+
+<div class="footer">
+    <a href="#" id="close" title="支付完成,点击关闭浏览器" onclick="window.close();">
+        <span>支付完成,点击关闭</span>
+    </a>
+</div>
+<script>window.close();</script>
+<script>
+    $('#close').click(function () {
+        alert("关闭失败,请手动关闭浏览器...");
+    });
+</script>
+
+<script type="text/javascript">
+    function showHideCode() {
+        $("#showdiv").toggle();
+    }
+</script>
+　
+<script language="JavaScript">
+    function closeit() {
+        setTimeout("self.close()", 3000) //毫秒
+    }
+</script>
+</body>
+</html>
+

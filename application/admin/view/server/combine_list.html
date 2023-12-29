@@ -1,0 +1,113 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">已合服服务器列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="servername" placeholder="请输入服务器名称" value="{$servername}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>区服</th>
+                            <th style="width: 100px;">状态</th>
+                            <th>开服时间</th>
+                            <th>合服时间</th>
+                            <th>数据库名</th>
+                            <th>写库IP</th>
+                            <th>写库端口</th>
+                            <th>写库账号</th>
+                            <th>写库密码</th>
+                            <th>真实区服</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.servername}</td>
+                            <td>
+                                {switch vo.status}
+                                {case 1}爆满{/case}
+                                {case 2}新服{/case}
+                                {case 3}维护{/case}
+                                {/switch}
+                            </td>
+                            <td>{:date('Y-m-d H:i:s',$vo.open_time)}</td>
+                            <td>{:date('Y-m-d H:i:s',$vo.combine_time)}</td>
+                            <td>{$vo.db_database_name}</td>
+                            <td>{$vo.db_ip_w}</td>
+                            <td>{$vo.db_port_w}</td>
+                            <td>{$vo.db_username_w}</td>
+                            <td>{$vo.db_password_w}</td>
+                            <td>{$vo.real_server_id}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<script src="__JS__/jquery.form.js"></script>
+<script>
+    layui.use(['element', 'form'], function () {
+        var form = layui.form;
+        form.render();
+        form.on('select(status)', function (data) {
+            var status  =data.value;
+            console.log("status:");
+            console.log(status);
+            //当前元素
+            var data = $(data.elem);
+            //遍历父级tr，取第一个，然后查找第二个td，取值
+            var id = data.parents('tr').first().find('td').eq(1).text();
+console.log("server id:");
+console.log(id);
+            $.ajax({
+                type: 'post',
+                url: '../server/change_status',
+                data: {id: id, status: status},
+                dataType: 'json',
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.msg(data.msg ? data.msg : '操作成功', {
+                            icon: 1,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        });
+                    } else {
+                        layer.msg(data.msg ? data.msg : '操作失败', {
+                            icon: 2,
+                            time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+
+                        });
+                    }
+                }
+            });
+        });
+    });
+</script>
+{/block}

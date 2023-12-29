@@ -1,0 +1,111 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form" style="height: 400px;">
+<!--                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">-->
+<!--                        <legend>方式一:填写合服范围</legend>-->
+<!--                    </fieldset>-->
+<!--                    <div class="layui-form-item">-->
+<!--                        <div class="layui-inline">-->
+<!--                            <label class="layui-form-label">范围筛选：</label>-->
+<!--                            <div class="layui-input-inline">-->
+<!--                                <input type="text" name="start_id" class="layui-input" id="start_id" onkeyup='this.value=this.value.replace(/\D/gi,"")'-->
+<!--                                       onfocus="this.placeholder=''"-->
+<!--                                       onblur="placeholder='请填写起始筛选服务器ID'" placeholder="请填写起始筛选服务器ID">-->
+<!--                            </div>-->
+<!--                            <div class="layui-form-mid">-</div>-->
+<!--                            <div class="layui-input-inline">-->
+<!--                                <input type="text" name="end_id" class="layui-input" id="end_id" onkeyup='this.value=this.value.replace(/\D/gi,"")'-->
+<!--                                       onfocus="this.placeholder=''"-->
+<!--                                       onblur="placeholder='请填写结束筛选服务器ID'" placeholder="请填写结束筛选服务器ID">-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+                        <legend>选择合服ID与被合服ID(被合服ID可多选)</legend>
+                    </fieldset>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务器ID：</label>
+                        <div class="layui-input-block">
+<!--                            <select name="server_id" id="server_id" lay-filter="server" xm-select="select4" xml-select-max="1" xm-select-search="" >-->
+                            <select name="server_id" id="server_id" lay-filter="server" lay-search="">
+                                <option value="0">请选择合服服务器</option>
+                                {volist name="server_list" id="vo"}
+                                <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.servername}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务器ID：</label>
+                        <div class="layui-input-block">
+                            <select name="server_id_c" id="server_id_c" xm-select="select5" xm-select-search="">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <p style="color: red;font-size: 16px;">
+                            特殊提示：如选择了合服的范围即符合满足条件的所有服务器；也可选择合并服务器ID与被合服的服务器ID进行合服操作；二者取其一！！！</p>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+ <script type="text/javascript">
+     layui.use(['layer', 'jquery', 'form'], function () {
+             var layer = layui.layer,
+             $ = layui.jquery,
+                 formSelects = layui.formSelects,
+             form = layui.form;
+
+         form.on('select(server)', function (data) {
+             var message = $("select[name=server_id]").val();
+             console.log("合服服务器ID："+message);
+             // console.log($('#server_id').find("option:selected").text());// 获取select选中文本
+             if(message!=0){
+                $.ajax({
+                    type:'post',
+                    url:'getServerListBySelectId',
+                    data:{id:message},
+                    dataType:'json',
+                    success:function (data){
+                        if(data.length>0)
+                        {
+                            var htmlStr ='';// '<option value="0" selected="selected">请选择被合服服务器</option>';
+
+                            for (var i=0;i<data.length;i++)
+                            {
+                                htmlStr+="<option value='"+data[i]['id']+"'>"+data[i]['servername']+"</option>";
+                            }
+                            $("#server_id_c").html(htmlStr);
+
+                            formSelects.render();
+                        }else{
+                            alert('暂无数据!');
+                        }
+                    }
+                });
+             }
+         });
+     });
+ </script>
+{/block}

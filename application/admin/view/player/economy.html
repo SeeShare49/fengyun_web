@@ -1,0 +1,53 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">玩家管理</div>
+            <div class="layui-card-body">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li><a href="{:url('index')}">玩家列表</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=baseinfo">基本信息</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=equip">装备</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=package">背包物品</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=store">仓库</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=clothes">时装</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=gem">宝石</a></li>
+                        <li><a href="{:url('show')}?id={$actor_id}&type=skill">技能</a></li>
+                        <li class="layui-this">经济统计</li>
+                    </ul>
+
+                    <div class="layui-form">
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th>角色ID</th>
+                                <th>角色名称</th>
+                                <th>元宝</th>
+                                <th>金币</th>
+                                <th>银票</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="info" id="vo"}
+                            <tr>
+                                <td>{$vo.actor_id}</td>
+                                <td>{$vo.nickname}</td>
+                                <td><span style="color: red;font-weight: bold;">{$vo.yuanbao}</span></td>
+                                <td><span style="color: green;font-weight: bold;">{$vo.gold}</span></td>
+                                <td><span style="color: blueviolet;font-weight: bold;">{$vo.diamonds}</span></td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                        {$page|raw}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

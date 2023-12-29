@@ -1,0 +1,134 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公告标题：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required"
+                                   value="{$info['title']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公告类型：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_picture" value="0" title="文字公告" {$info['is_picture']==0?'checked':''}>
+                            <input type="radio" name="is_picture" value="1" title="图片公告" {$info['is_picture']==1?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公告图片：</label>
+                        <div class="layui-input-block">
+                            <div class="zz-upload-pic">
+                                <button class="layui-btn zzBtnUpload" type="button">
+                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                </button>
+                                <input class="zz-upload-value" name="image_url" type="hidden"
+                                       value="{$info['image_url']}">
+                                <div class="zz-upload-pic-show layui-row"></div>
+                            </div>
+                            <script src="__JS__/upload.js"></script>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">图片宽度</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="image_width" placeholder="请输入图片宽度"  value="{$info['image_width']}"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">图片高度</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="image_height" placeholder="请输入图片高度"  value="{$info['image_height']}"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">启用时间：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="start_time" id="start_time"
+                                       onfocus="this.placeholder=''"
+                                       onblur="placeholder='请选择开启时间'" placeholder="请选择开启时间"
+                                       value="{:date('Y-m-d',$info['start_time'])}">
+                            </div>
+                            <div class="layui-form-mid">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="end_time" id="end_time"
+                                       onfocus="this.placeholder=''"
+                                       onblur="placeholder='请选择截止日期'" placeholder="请选择截止日期" value="{:date('Y-m-d',$info['end_time'])}">
+                            </div>
+                        </div>
+                    </div>
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">跳转链接：</label>-->
+<!--                        <div class="layui-input-block">-->
+<!--                            <input type="text" name="link_url"-->
+<!--                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入游戏公告跳转链接'"-->
+<!--                                   placeholder="请输入游戏公告跳转链接"-->
+<!--                                   class="layui-input" value="{$info['link_url']}">-->
+<!--                        </div>-->
+<!--                    </div>-->
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公告内容：</label>
+                        <div class="layui-input-block">
+<!--                            <script style="height:400px" id="editor" name="content" type="text/plain">-->
+<!--                            {$info['content']}-->
+
+<!--                            </script>-->
+                            <textarea name="content" placeholder="" class="layui-textarea" style="height: 200px;">{$info['content']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否置顶：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_top" value="0" title="非置顶游戏公告" {$info['is_top']==0?'checked':''}>
+                            <input type="radio" name="is_top" value="1" title="置顶游戏公告" {$info['is_top']==1?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script src="__LIB__/ueditor/ueditor.config.js"></script>
+<script src="__LIB__/ueditor/ueditor.all.min.js"></script>
+<script src="__LIB__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script>
+    var ue = UE.getEditor('editor', {
+        serverUrl: "{:url('Ueditor/index')}",
+    });
+</script>
+<script src="__JS__/jquery.form.js"></script>
+<script>
+    layui.use(['element', 'form', 'laydate'], function () {
+        var laydate = layui.laydate
+            , form = layui.form;
+
+        //常规用法
+        laydate.render({
+            elem: '#start_time'
+        });
+        laydate.render({
+            elem: '#end_time'
+        });
+    });
+</script>
+{/block}

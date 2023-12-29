@@ -1,0 +1,96 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务器</label>
+                        <div class="layui-input-block">
+                            <select name="server_id" xm-select="select4">
+                                <option value="-1">全服</option>
+                                {volist name="server_list" id="vo"}
+                                <option value="{$vo.id}" {in name="$vo.id" value="$info['server_id']" }selected {/in}>{$vo.servername}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公告内容：</label>
+                        <div class="layui-input-block">
+                            <textarea name="notice_content" placeholder="" class="layui-textarea">{$info['notice_content']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">播放间隔：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="play_interval" lay-verify="required"
+                                   value="{$info['play_interval']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">发送方式：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="send_type" checked value="1" title="定时发送" {$info['send_type']==1?'checked':''}>
+                            <input type="radio" name="send_type" value="2" title="即时发送" {$info['send_type']==2?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">起始时间：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" name="send_start_time" id="send_start_time"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请选择公告发送起始日期时间'" placeholder="请选择公告发送起始日期时间"
+                                   value="{:date('Y-m-d H:i:s',$info['send_start_time'])}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">结束时间：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" name="send_end_time" id="send_end_time"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请选择公告发送结束日期时间'" placeholder="请选择公告发送结束日期时间"
+                                   value="{:date('Y-m-d H:i:s',$info['send_end_time'])}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<script src="__JS__/jquery.form.js"></script>
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/ui/SyntaxHighlighter-3.0.83/shCore.js"></script>
+<script src="__JS__/ui/SyntaxHighlighter-3.0.83/shBrushJScript.js"></script>
+<script src="__UI__/js-pinyin.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['element', 'form', 'laydate'], function () {
+        var laydate = layui.laydate
+            , form = layui.form;
+
+        //常规用法
+        laydate.render({
+            elem: '#send_start_time'
+            , type: 'datetime'
+        });
+        laydate.render({
+            elem: '#send_end_time'
+            , type: 'datetime'
+        });
+    });
+</script>
+{/block}

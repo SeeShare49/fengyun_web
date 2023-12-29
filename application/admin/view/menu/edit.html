@@ -1,0 +1,64 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post"  class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">菜单名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="title" lay-verify="required" value="{$info['title']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">链接地址：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="url" value="{$info['url']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    {eq name="info.pid" value="0"}
+                    <script>
+                        var checkIcon='{$info.icon}';
+                    </script>
+                    {include file="menu/icon"/}
+                    {/eq}
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="sort" lay-verify="required"  value="{$info['sort']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否隐藏：</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="hide" title="隐藏" value="1" {$info['hide']==1?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否可见：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_dev" value="0" title="全部可见"  {$info['is_dev']==0?'checked':''}>
+                            <input type="radio" name="is_dev" value="1" title="仅开发者模式下可见" {$info['is_dev']==1?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">备注说明：</label>
+                        <div class="layui-input-block">
+                            <textarea name="tip" placeholder="" class="layui-textarea">{$info['tip']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交</button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="pid" value="{$info['pid']}">
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

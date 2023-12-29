@@ -1,0 +1,114 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-card">
+    <div class="layui-card-header">
+        {$authGroup['title']}
+    </div>
+    <div class="layui-card-body">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li><a href="{:url('access?id='.$id)}">访问授权</a></li>
+                <li class="layui-this">成员授权</li>
+            </ul>
+            <div class="layui-tab-content layui-row">
+                <blockquote class="site-text layui-elem-quote">
+                    在搜索输入框中输入后台管理员用户名，点击授权。<br>
+                    一个管理员账号，只能被分配到一个管理组。
+                </blockquote>
+                <div class="layui-tab-item layui-show">
+                    <form action="{:url('')}" method="post"  class="layui-form" >
+                        <div class="layui-row zz-rule-slt">
+                            <input type="text" class="layui-input" name="username" placeholder="请输入管理员用户名">
+                            <input type="hidden" name="id" value="{$id}">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">绑定</button>
+                        </div>
+                    </form>
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                UID
+                            </th>
+                            <th>用户名</th>
+                            <th>昵称</th>
+                            <th>最后登录时间</th>
+                            <th>最后登录IP</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.username}</td>
+                            <td>{$vo.nickname}</td>
+                            <td>
+                                {eq name="vo.last_login_time" value="0"}
+                                暂未登录
+                                {else/}
+                                {:date('Y-m-d H:i:s',$vo.last_login_time)}
+                                {/eq}
+                            </td>
+                            <td>
+                                {if $vo.last_login_ip}
+                                {$vo.last_login_ip}
+                                {else/}
+                                暂未登录
+                                {/if}</td>
+                            <td>
+                                {switch vo.status}
+                                {case -1}已删除{/case}
+                                {case 1}正常{/case}
+                                {case 0}禁用{/case}
+                                {/switch}
+                            </td>
+                            <td><a href="{:url('user_cancel_auth?id='.$vo['id'])}" class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">取消授权</a></td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .zz-rule-slt .layui-input{
+        width: 40%;
+        float:left;
+        margin-right: 10px;
+    }
+</style>
+{/block}
+
+{block name="script"}
+<script>
+    var loadIndex;
+    var rules="{$authGroup['rules']}";
+    layui.use(['jquery'], function(){
+        var $=layui.$;
+        $(function(){
+            if(rules!=''){
+                rules=rules.split(',');
+                for(var x in rules){
+                    $('#rule'+rules[x]).prop('checked',true);
+                    $('#rule'+rules[x]).next().addClass('layui-form-checked');
+                }
+            }
+            //数据列表，复选框全选/取消全选事件zz-auth-list
+            $(".zz-auth-list").on("click",'.layui-form-checkbox', function(event){
+                if($(this).hasClass('layui-form-checked')){
+                    $(this).parent().next().find('input').prop('checked',true);
+                    $(this).parent().next().find('input').next().addClass('layui-form-checked');
+                }
+                else{
+                    $(this).parent().next().find('input').prop('checked',false);
+                    $(this).parent().next().find('input').next().removeClass('layui-form-checked');
+                }
+            });
+        });
+
+    });
+</script>
+{/block}

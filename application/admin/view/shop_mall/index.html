@@ -1,0 +1,186 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">商城道具购买列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">玩家昵称:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="playerName" placeholder="玩家昵称" value="{$playerName}"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">角色ID:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="userId" placeholder="角色ID" value="{$user_id}"
+                                           onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">道具ID:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="prop_value" placeholder="道具ID" value="{$prop_value}"
+                                           onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">查询日期:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="start_date" name="start_date"
+                                           value="{$start_date}" readonly="readonly" placeholder="yyyy-MM-dd">
+                                </div>
+                                <div class="layui-form-mid">-</div>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="end_date" name="end_date"
+                                           value="{$end_date}"
+                                           readonly="readonly" placeholder="yyyy-MM-dd">
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <label class="layui-form-label">服务器:</label>
+                                <div class="layui-input-inline" style="min-width: 250px;">
+                                    <select name="server_id" xm-select="select5" xm-select-search="">
+                                        {volist name="server_list" id="vo"}
+                                        <option value="{$vo.id}">{$vo.servername}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">商店类型:</label>
+                                <div class="layui-input-inline" style="min-width: 250px;">
+                                    <select name="shop_type_id" xm-select="select4" xm-select-max="1"
+                                            xm-select-search="">
+                                        <option value="1" {$shop_type_id==1?'selected':''}>热销商城</option>
+                                        <option value="2" {$shop_type_id==2?'selected':''}>元宝商城</option>
+                                        <option value="3" {$shop_type_id==3?'selected':''}>技能商城</option>
+                                        <option value="4" {$shop_type_id==4?'selected':''}>银票商城</option>
+                                        <option value="5" {$shop_type_id==5?'selected':''}>限购商城</option>
+                                        <option value="6" {$shop_type_id==6?'selected':''}>开服礼包特惠</option>
+                                        <option value="7" {$shop_type_id==7?'selected':''}>开服限购礼包</option>
+                                        <option value="8" {$shop_type_id==8?'selected':''}>开服分身重生礼包</option>
+                                        <option value="9" {$shop_type_id==9?'selected':''}>开服圣装礼包</option>
+                                        <option value="10" {$shop_type_id==10?'selected':''}>开服金币礼包</option>
+                                        <option value="11" {$shop_type_id==11?'selected':''}>开服神翼礼包</option>
+                                        <option value="12" {$shop_type_id==12?'selected':''}>开服寻宝礼包</option>
+                                        <option value="13" {$shop_type_id==13?'selected':''}>开服重生礼包</option>
+                                        <option value="14" {$shop_type_id==14?'selected':''}>刺客时装</option>
+                                        <option value="15" {$shop_type_id==15?'selected':''}>合服特惠礼包</option>
+                                        <option value="16" {$shop_type_id==16?'selected':''}>合服商城</option>
+                                        <option value="18" {$shop_type_id==18?'selected':''}>节日时装</option>
+                                        <option value="19" {$shop_type_id==19?'selected':''}>寻宝助力礼包</option>
+                                        <option value="20" {$shop_type_id==20?'selected':''}>一折礼包</option>
+                                        <option value="21" {$shop_type_id==22?'selected':''}>跨服商城</option>
+                                        <option value="22" {$shop_type_id==22?'selected':''}>限时黑市</option>
+                                        <option value="23" {$shop_type_id==23?'selected':''}>节日寻宝助力礼包</option>
+                                        <option value="17" {$shop_type_id==17?'selected':''}>节日特惠礼包-1</option>
+                                        <option value="24" {$shop_type_id==24?'selected':''}>节日特惠礼包-2</option>
+                                        <option value="25" {$shop_type_id==25?'selected':''}>节日特惠礼包-3</option>
+                                        <option value="26" {$shop_type_id==26?'selected':''}>节日特惠礼包-4</option>
+                                        <option value="27" {$shop_type_id==27?'selected':''}>节日特惠礼包-5</option>
+                                        <option value="28" {$shop_type_id==28?'selected':''}>节日特惠礼包-6</option>
+                                        <option value="29" {$shop_type_id==29?'selected':''}>节日特惠礼包-7</option>
+                                        <option value="30" {$shop_type_id==30?'selected':''}>节日特惠礼包-8</option>
+                                        <option value="31" {$shop_type_id==31?'selected':''}>节日时装-2</option>
+                                        <option value="31" {$shop_type_id==32?'selected':''}>节日时装-3</option>
+                                        <option value="51" {$shop_type_id==51?'selected':''}>跨服商城</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-inline">
+                                <button class="layui-btn" lay-submit>
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>区服</th>
+                            {if ($playerName!=""||$playerName!=null)||($user_id!=""||$user_id!=null)}
+                            <th>用户ID</th>
+                            <th>用户昵称</th>
+                            {/if}
+                            <th>商店类型</th>
+                            <th>购买数量</th>
+                            <th>货币类型</th>
+                            <th>消耗数量</th>
+                            <th>道具信息</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.logtime}</td>
+                            <td>{:get_area_server_name($vo.serverId)}</td>
+                            {if ($playerName!=""||$playerName!=null)||($user_id!=""||$user_id!=null)}
+                            <td>{$vo.userId}</td>
+                            <td>{$vo.playerName}</td>
+                            {/if}
+                            {if $vo.is_numerical==0}
+                            <td>{:get_shop_type($vo.shopType)}</td>
+                            <td>{$vo.propNum}</td>
+                            <td>{:get_currency_type($vo.currencyType)}</td>
+                            <td>{$vo.currencyNum} &nbsp;{:get_currency_type($vo.currencyType)}</td>
+                            {else/}
+                            <td></td>
+                            <td>{$vo.remark}</td>
+                            <td></td>
+                            <td></td>
+                            {/if}
+                            <td>
+                                道具ID:<span style="color: blue">【{$vo.value}】</span>&nbsp;&nbsp;|&nbsp;&nbsp;
+                                道具名称: <span style="color: blue">【{:get_prop_name($vo.value)}】</span>&nbsp;&nbsp;
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.config({
+        base: '__LIB__/layuiadmin/'
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['laydate', 'form'], function () {
+        var laydate = layui.laydate, form = layui.form;
+
+        //常规用法
+        laydate.render({
+            elem: '#start_date'
+            , min: -30
+            , max: 0
+        });
+
+        laydate.render({
+            elem: '#end_date'
+            , min: -30
+            , max: 0
+        });
+    });
+</script>
+{/block}

@@ -1,0 +1,126 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">付费留存</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">区服ID查询:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="start_server_id" name="start_server_id"
+                                       value="{$start_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                       placeholder="请输入起始区服ID">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="end_server_id" name="end_server_id"
+                                       value="{$end_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                       placeholder="请输入截止区服ID">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单/多服查询:</label>
+                            <div class="layui-input-block" style="width: 350px;">
+                                <select name="server_id" xm-select="select4" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    {notempty name="server_id"}
+                                    {volist name='server_id' id='s_vo'}
+                                    {if $vo.id==$s_vo}
+                                    <option value="{$vo.id}" {$s_vo==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/if}
+                                    {/volist}
+                                    {else/}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/notempty}
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期查询:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="start_time" name="start_time"
+                                       value="{$start_time}"
+                                       placeholder="yyyy-MM-dd">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="end_time" name="end_time" value="{$end_time}"
+                                       placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th style="min-width: 120px;">区服</th>
+                            <th style="min-width: 90px;">开服日期</th>
+                            <th style="min-width: 100px;">首日充值人数</th>
+                            <?php
+                                for ($i=1; $i<=$recharge_count; $i++)
+                                {
+                                    echo "<th style='min-width:60px;'>第" . $i."天</th>" . PHP_EOL;
+                                }
+                            ?>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{:get_area_server_name($vo.server_id)}</td>
+                            <td>{$vo.date}</td>
+                            <td>{:get_first_recharge_count($vo.server_id,$vo.date)} 人</td>
+                            {volist name="vo.recharge" id='r'}
+                            <td>
+<!--                                {if ($r==0) or get_first_recharge_count($vo.server_id,$vo.date)==0}-->
+<!--                                0-->
+<!--                                {else/}-->
+<!--                                {:round($r/(get_first_recharge_count($vo.server_id,$vo.date))*100,2)}%-->
+<!--                                {/if}-->
+                                {:pay_retained($r,$vo.server_id,$vo.date)}
+                            </td>
+                            {/volist}
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //常规用法
+        laydate.render({
+            elem: '#start_time', type: 'datetime'
+        });
+        laydate.render({
+            elem: '#end_time', type: 'datetime'
+        });
+    });
+</script>
+{/block}

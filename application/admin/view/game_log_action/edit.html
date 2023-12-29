@@ -1,0 +1,56 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post"  class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">行为标识：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="action_name" lay-verify="required" value="{$info['action_name']}" placeholder="输入行为标识 英文字母" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">类型ID：</label>
+                        <div class="layui-input-block">
+                            <select name="action_type_id">
+                                <option value="0">请选择日志类型</option>
+                                {volist name="action_type_list" id="vo"}
+                                <option value="{$vo.id}" {$info['action_type_id']==$vo.id?'selected':''}>{$vo.action_type_desc}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">行为值：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="action_value" lay-verify="required|number" value="{$info['action_value']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">行为描述：</label>
+                        <div class="layui-input-block">
+                            <textarea name="action_desc" placeholder="" class="layui-textarea">{$info['action_desc']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" value="1" title="显示" {$info['status']==1?'checked':''}>
+                            <input type="radio" name="status" value="0" title="隐藏" {$info['status']==0?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交</button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

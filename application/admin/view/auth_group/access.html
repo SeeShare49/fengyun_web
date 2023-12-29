@@ -1,0 +1,108 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-card">
+    <div class="layui-card-header">
+        {$authGroup['title']}
+    </div>
+    <div class="layui-card-body">
+        <div class="layui-tab">
+            <ul class="layui-tab-title">
+                <li class="layui-this">访问授权</li>
+                <li><a href="{:url('auth?id='.$id)}">成员授权</a></li>
+            </ul>
+            <div class="layui-tab-content layui-row">
+                <div class="layui-tab-item layui-show">
+                    <form action="{:url('')}" method="post"  class="layui-form" >
+                        {volist name="lists" id="item"}
+                        <div class="layui-card zz-auth-list zz-menu zz-menu-level-1">
+                            <div class="layui-card-header">
+                                <input type="checkbox" name="rule[]" value="{$item.id}" id="rule{$item.id}" lay-skin="primary" title="{$item.title}">
+                            </div>
+                            {if isset($item['child'])}
+                            <div class="layui-card-body">
+                                {volist name="item.child" id="item1"}
+                                <div class="layui-row zz-menu zz-menu-level-2">
+                                    <div class="layui-row">
+                                        <input type="checkbox" name="rule[]" lay-skin="primary" value="{$item1.id}" id="rule{$item1.id}" title="{$item1.title}">
+                                    </div>
+                                    {if isset($item1['child'])}
+                                    <div class="layui-row zz-menu-level-3">
+                                        {volist name="item1.child" id="item2"}
+                                        <input type="checkbox" name="rule[]" lay-skin="primary" value="{$item2.id}" id="rule{$item2.id}" title="{$item2.title}">
+                                        {/volist}
+                                    </div>
+                                    {/if}
+                                </div>
+                                <hr>
+                                {/volist}
+                            </div>
+                            {/if}
+                        </div>
+                        {/volist}
+                        <div class="layui-form-item layui-layout-admin">
+                            <input type="hidden" name="id" value="{$id}">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交</button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .layui-tab .layui-card{
+        border:1px solid #f2f2f2;
+        box-shadow:none;
+    }
+
+    .layui-card-header{
+        background: #f2f2f2;
+        font-weight: 700;
+    }
+    .layui-tab-title{
+        margin-bottom: 10px;
+    }
+    .layui-row{
+        padding: 6px 0;
+    }
+    .zz-menu-level-3{
+        padding-left: 20px;
+    }
+</style>
+{/block}
+
+{block name="script"}
+<script>
+    var loadIndex;
+    var rules="{$authGroup['rules']}";
+    layui.use(['jquery'], function(){
+        var $=layui.$;
+        $(function(){
+            if(rules!=''){
+                rules=rules.split(',');
+                for(var x in rules){
+                    $('#rule'+rules[x]).prop('checked',true);
+                    $('#rule'+rules[x]).next().addClass('layui-form-checked');
+                }
+            }
+            //数据列表，复选框全选/取消全选事件
+            $(".zz-auth-list").on("click",'.layui-form-checkbox', function(event){
+                if($(this).hasClass('layui-form-checked')){
+                    //上级元素
+                    $(this).parents('.zz-menu-level-1').children(':eq(0)').find('input').prop('checked',true).next().addClass('layui-form-checked');
+                    $(this).parents('.zz-menu-level-2').children(':eq(0)').find('input').prop('checked',true).next().addClass('layui-form-checked');
+                    //子孙元素
+                    $(this).parent().next().find('input').prop('checked',true).next().addClass('layui-form-checked');
+                }
+                else{
+                    //子孙元素
+                    $(this).parent().next().find('input').prop('checked',false).next().removeClass('layui-form-checked');
+                }
+            });
+
+        });
+
+    });
+</script>
+{/block}

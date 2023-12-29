@@ -1,0 +1,90 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">激活码</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn open-win" title="新增激活码" href="{:url('create')}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('delete')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">激活码类型:</label>
+                            <div class="layui-input-inline">
+                                <select name="type">
+                                    <option value="0" {$type==0?'selected':''}>请选择类型</option>
+                                    <option value="1" {$type==1?'selected':''}>注册礼包</option>
+                                    <option value="2" {$type==2?'selected':''}>公众号礼包</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">激活码:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="code" placeholder="请输入激活码" value="{$code}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>激活码</th>
+                            <th>类型</th>
+                            <th>状态</th>
+                            <th>添加时间</th>
+                            <th>更新时间</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.code}</td>
+                            <td>{eq name="vo.type" value="1"}下载注册礼包{else/}微信公众号礼包{/eq}</td>
+                            <td>
+                                {eq name="vo.status" value="0"}
+                                <span style="color: blue">未使用</span>
+                                {else/}
+                                <span style="color: red">已使用</span>
+                                {/eq}
+                            </td>
+                            <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                            <td>
+                                {neq name="$vo.update_time" value="0"}
+                                {:date('Y-m-d H:i:s',$vo['update_time'])}
+                                {/neq}
+                            </td>
+                            <td>
+                                <!--<a href="{:url('action_detail?id='.$vo['id'])}" class="layui-btn layui-btn-xs layui-btn-normal open-win" title="详细">详细</a>-->
+                                <a href="{:url('delete?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

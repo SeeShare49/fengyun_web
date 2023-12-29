@@ -1,0 +1,155 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">游戏用戶列表</div>
+            <div class="layui-card-body">
+                <div class="layui-tab">
+                    <div class="layui-row zz-row-operate" style="margin-top: 20px;">
+                        <div class="zz-operate-btn-group">
+                            <a class="layui-btn" title="渠道迁移" href="{:url('channel_transfer')}">渠道迁移</a>
+                            <a class="layui-btn open-win" title="账号绑定" href="{:url('bind_account')}">账号绑定</a>
+                            <a class="layui-btn" title="角色转移" href="{:url('role_transfer')}">角色转移</a>
+                            <a class="layui-btn open-win" title="生成内部账号" href="{:url('generate_account')}">生成内部账号</a>
+                            <a class="layui-btn open-win" title="靓号设置" href="{:url('best_account')}">靓号设置</a>
+                            <a class="layui-btn open-win" title="修改密码" href="{:url('update_password')}">修改密码</a>
+                            <a class="layui-btn" title="导出用户注册IP" href="export">IP分布导出</a>
+                            <a class="layui-btn layui-btn-danger zz-btn-delete-all"
+                               href="{:url('batch_unseal')}">批量解封</a>
+                        </div>
+                        <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right"  style="margin-top: 20px ">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">设备码:</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="UserName" placeholder="请输入设备码" value="{$UserName}"
+                                               class="layui-input">
+                                    </div>
+                                    <label class="layui-form-label">手机号码:</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="Phone_UserName" placeholder="请输入用户绑定手机号码"
+                                               value="{$phone}"
+                                               onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                               class="layui-input">
+                                    </div>
+                                    <label class="layui-form-label">用户ID:</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="UserID" placeholder="请输入用户ID" value="{$user_id}"
+                                               onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                               class="layui-input">
+                                    </div>
+                                    <label class="layui-form-label">GM:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="gm">
+                                            <option value="-1" {$gm==-1?'selected':''}>所有账号</option>
+                                            <option value="1" {$gm==1?'selected':''}>GM账号</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <button class="layui-btn" lay-submit>
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <div class="layui-form">
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <th class=" layui-table-col-special" width="18px">
+                                    <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                                </th>
+                                <th>用户ID</th>
+                                <th>手机号码</th>
+                                <th>设备码</th>
+                                <th>真实姓名</th>
+                                <th>新/老用户</th>
+                                <th>GM号设置</th>
+                                <th>注册时间</th>
+                                <th>注册IP</th>
+                                <th>最后登录IP</th>
+                                <th>限制IP</th>
+                                <th>封号时间</th>
+                                <th style="width: 300px;">封号原因</th>
+                                <th style="width: 120px;">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="lists" id="vo"}
+                            <tr>
+                                <td>
+                                    {eq name="vo.BanFlag" value="1"}
+                                    <input type="checkbox" class="zz-table-chk-item" value="{$vo.UserID}"
+                                           lay-skin="primary">
+                                    {/eq}
+                                </td>
+                                <td>{$vo.UserID}</td>
+                                <td>{$vo.Phone_UserName}</td>
+                                <td>
+                                    <a style="color: yellowgreen" href="{:url('relation_info')}?user_id={$vo.UserID}"
+                                       title="查看账户相关信息">{$vo.UserName}</a>
+                                </td>
+                                <td>{:get_user_real_name($vo.UserID)}</td>
+                                <td>
+                                    {eq name="vo.Play_Level" value="0"}
+                                    <span style="color: blue">新玩家</span>
+                                    {else/}
+                                    <span style="color: red">老玩家</span>
+                                    {/eq}
+                                </td>
+                                <td>
+                                    <input type="checkbox" lay-filter="zz-switch-display"
+                                           data-href="{:url('set_permit?userid='.$vo['UserID'])}" name="gm"
+                                           value="{$vo.gm}"
+                                           {$vo.gm==1?'checked':''} lay-skin="switch" lay-text="GM号|非GM号">
+                                </td>
+                                <td>{$vo['RegisterTime']}</td>
+                                <td>{$vo['register_ip']}</td>
+                                <td></td>
+                                <td>
+                                    <form action="{:url('ip_limit')}" method="post" class="layui-form zz-form-datalist"
+                                          lay-filter="zz-form-{$vo.UserID}">
+                                        <input type="hidden" value="{$vo.UserID}" name="UserID">
+                                        <input type="text" name="ip_limit" data-source="{$vo.ip_limit}"
+                                               lay-verify="required"
+                                               autocomplete="off" value="{$vo.ip_limit}" class="layui-input">
+                                    </form>
+                                </td>
+                                <td>
+                                    {eq name="vo.StartBanTime" value="null"}
+                                    {else/}
+                                    {$vo['StartBanTime']}
+                                    {/eq}
+                                </td>
+                                <td>{$vo.BanReason}</td>
+                                <td>
+                                    <a href="{:url('reset_password?id='.$vo['UserID'])}"
+                                       class="layui-btn layui-btn-normal layui-btn-xs">重置密码</a>
+                                    {if ($vo.BanFlag) ==1 }
+                                    <a href="{:url('unseal?id='.$vo['UserID'])}"
+                                       class="layui-btn layui-btn-normal layui-btn-xs confirm ajax-post">解封</a>
+                                    {else /}
+                                    <a href="{:url('seal?id='.$vo['UserID'])}"
+                                       class="layui-btn layui-btn-danger layui-btn-xs">封号</a>
+                                    {/if}
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                        {$page|raw}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

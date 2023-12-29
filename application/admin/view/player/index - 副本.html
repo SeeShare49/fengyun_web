@@ -1,0 +1,240 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">玩家管理</div>
+            <div class="layui-card-body">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">玩家列表</li>
+                        <li><a href="{:url('show?type=baseinfo')}">基本信息</a></li>
+                        <li><a href="{:url('show?type=equip')}">装备</a></li>
+                        <li><a href="{:url('show?type=skill')}">技能</a></li>
+                        <li><a href="{:url('show?type=package')}"> 背包物品</a></li>
+                        <li><a href="{:url('show?type=economy')}"> 经济统计</a></li>
+                    </ul>
+                    <div class="layui-row zz-row-operate" style="margin-top: 20px;">
+                        <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">用户昵称:</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="nickname" placeholder="请输入昵称" value="{$nickname}"
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">账户ID:</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="account_id" placeholder="请输入账户ID" value="{$account_id}"
+                                               onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                               class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">角色ID:</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="actor_id" placeholder="请输入角色ID" value="{$actor_id}"
+                                               onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                               class="layui-input">
+                                    </div>
+                                </div>
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">是否在线:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="online">
+                                            <option value="-1" {$is_online==-1?'selected':''}>全部</option>
+                                            <option value="1" {$is_online==1?'selected':''}>在线</option>
+                                            <option value="100" {$is_online==100?'selected':''}>不在线</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">离线时长:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="off_line">
+                                            <option value="-1" {$off_line==-1?'selected':''}>离线时长</option>
+                                            <option value="12" {$off_line==12?'selected':''}>离线12小时</option>
+                                            <option value="24" {$off_line==24?'selected':''}>离线24小时</option>
+                                            <option value="36" {$off_line==24?'selected':''}>离线36小时</option>
+                                            <option value="48" {$off_line==24?'selected':''}>离线48小时</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">服务器:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="server_id" xm-select="select5" xm-select-max="1"
+                                                xm-select-search="">
+                                            {volist name="server_list" id="vo"}
+                                            <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区
+                                                - {$vo.servername}
+                                            </option>
+                                            {/volist}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">来源渠道:</label>
+                                    <div class="layui-input-inline">
+                                        <select name="channel_id" xm-select="select4" xm-select-max="1"
+                                                xm-select-search="">
+                                            {volist name="channel_list" id="vo"}
+                                            <option value="{$vo.id}" {$channel_id==$vo.id?'selected':''}>
+                                                {$vo.channel_name}
+                                            </option>
+                                            {/volist}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">等级查询:</label>
+                                    <div class="layui-input-inline" >
+                                        <input type="text" class="layui-input" id="start_level" name="start_level"
+                                               value="{$start_level}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                               placeholder="起始等级">
+                                    </div>
+                                    <div class="layui-form-mid">-</div>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="end_level" name="end_level"
+                                               value="{$end_level}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                               placeholder="截止等级">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn" lay-submit>
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+
+                    <div class="layui-form">
+                        <table class="layui-table">
+                            <thead>
+                            <tr>
+                                <!--                                <th class=" layui-table-col-special" width="18px">-->
+                                <!--                                    <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">-->
+                                <!--                                </th>-->
+                                <th>角色ID</th>
+                                <th>角色名</th>
+                                <th>账户ID</th>
+                                <th>等级</th>
+                                <th>贵族等级</th>
+                                <th>职业</th>
+                                <th>性别</th>
+                                <th>账号注册时间</th>
+                                <th>角色注册时间</th>
+                                <th>注册IP</th>
+                                <th>最后登录IP</th>
+                                <th>来源渠道</th>
+                                <th>付费金额</th>
+                                <th>离线时间</th>
+                                <th>已离线时长</th>
+                                <th>是否在线</th>
+                                <th>角色状态</th>
+                                <th width="90px;">禁言设置</th>
+                                <th width="180px;">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {volist name="lists" id="vo" empty="$empty"}
+                            <tr>
+                                <td>{$vo.actor_id}</td>
+                                <td><a style="color: blue" href="{:url('show')}?id={$vo.actor_id}&type=baseinfo">{$vo.nickname}</a>
+                                </td>
+                                <td>{$vo.account_id}</td>
+                                <td>{$vo.level} 级</td>
+                                <td>
+                                    {if get_special_level($vo.actor_id,$server_id)!=null}
+                                    <span style="color: goldenrod">{:get_special_level($vo.actor_id,$server_id)} 级</span>
+                                    {else/}
+                                    0 级
+                                    {/if}
+                                </td>
+                                <td>{if $vo.job==100}战士{elseif $vo.job==101}法师{else/}道士{/if}</td>
+                                <td>{if $vo.gender==200}男{elseif $vo.gender==201}女{else/}未知{/if}</td>
+                                <td>{:get_user_register_time($vo.account_id)}</td>
+                                <td>{:date('Y-m-d H:i:s',$vo.create_time)}</td>
+                                <td>{$vo.register_ip}</td>
+                                <td>{$vo.last_login_ip}</td>
+                                <td>{:get_channel_name($vo.ChannelID)}</td>
+                                <td><span
+                                        style="color:lightseagreen">{:get_total_recharge_by_user_id($vo.actor_id)} 元</span>
+                                </td>
+                                <td>
+                                    {notempty name="vo.last_logout_time" }
+                                    {:date('Y-m-d H:i:s',$vo.last_logout_time)}
+                                    {/notempty}
+                                </td>
+                                <td>
+                                    {empty name="vo.last_logout_time" }
+                                    0 小时
+                                    {elseif $vo.online==0/}
+                                    0 小时
+                                    {else/}
+                                    {:round(intval(time()-$vo.last_logout_time)/3600)} 小时
+                                    {/empty}
+                                </td>
+                                <td>
+                                    {eq name="vo.online" value="0"}
+                                    <span style="color: blue">不在线</span>
+                                    {else/}
+                                    <span style="color: red">在线</span>
+                                    {/eq}
+                                </td>
+                                <td>
+                                    {eq name="vo.deleted" value="0"}
+                                    <span style="color: green">正常</span>
+                                    {else/}
+                                    <span style="color: red">已删除</span>
+                                    {/eq}
+                                </td>
+                                <td>
+                                    <input type="checkbox" lay-filter="zz-switch-display"
+                                           data-href="{:url('set_forbidden_chat?nickname='.$vo['nickname'])}"
+                                           name="forbid_chat" value="{$vo.forbid_chat}"
+                                           {$vo.forbid_chat==0?'checked':''} lay-skin="switch" lay-text="禁言|解禁">
+                                </td>
+                                <td>
+                                    {if ($vo.deleted) == 1 }
+                                    <a href="{:url('recover_role?id='.$vo['actor_id'])}"
+                                       class="layui-btn layui-btn-normal layui-btn-xs confirm ajax-post">角色恢复</a>
+                                    {else /}
+                                    <a href="{:url('player/del_role?id='.$vo['actor_id'])}"
+                                       class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">角色删除</a>
+                                    {/if}
+                                    {if get_user_ban_status($vo.account_id) ==0}
+                                    <a href="{:url('user_info/seal?id='.$vo['account_id'])}"
+                                       class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">封号</a>
+                                    {/if}
+                                    <a href="{:url('deduct_ingot')}?server_id={$server_id}&user_id={$vo['account_id']}&actor_id={$vo['actor_id']}&nickname={$vo['nickname']}"
+                                       class="layui-btn layui-btn-xs layui-btn-normal" title="扣除元宝">扣除元宝</a>
+                                </td>
+                            </tr>
+                            {/volist}
+                            </tbody>
+                        </table>
+                        {$page|raw}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+{/block}

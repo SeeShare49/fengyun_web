@@ -1,0 +1,46 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">更新加载CSV数据列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="CSV数据表加载" href="{:url('create')}">CSV数据表加载</a>
+                    </div>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>服务器ID</th>
+                            <th>更新时间</th>
+                            <th>操作人</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>
+                                {if $vo.server_ids==-1}
+                                <span style="font-weight: bold;color: #7f0055">全服</span>
+                                {else/}
+                                {$vo.server_ids}
+                                {/if}
+                            </td>
+                            <td>{:date('Y-m-d H:i:s',$vo.create_time)}</td>
+                            <td>{$vo.operator}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

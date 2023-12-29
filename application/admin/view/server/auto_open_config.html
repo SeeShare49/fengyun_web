@@ -1,0 +1,73 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form" style="height: 400px;">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开启|关闭：</label>
+                        <div class="layui-input-block">
+<!--                            <input type="checkbox" name="value" value="{$is_open}" {$is_open==1?'checked':''} lay-skin="switch" lay-text="开启|关闭">-->
+                            <input type="checkbox" name="value" title="开启" value="1" {$is_open==1?'checked':''}>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">人数条件：</label>
+                        <div class="layui-input-block">
+                            <input name="condition" lay-verify="required|number" onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入自动开服人数条件'"
+                                   onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                   placeholder="请输入自动开服人数条件" class="layui-input" value="{$auto_condition}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+    layui.use(['layer', 'jquery', 'form'], function () {
+        var layer = layui.layer,
+            $ = layui.jquery,
+            form = layui.form;
+
+        form.on('select(server)', function (data) {
+            var message = $("select[name=server_id]").val();
+            console.log("合服服务器ID：" + message);
+            // console.log($('#server_id').find("option:selected").text());// 获取select选中文本
+            if (message != 0) {
+                $.ajax({
+                    type: 'post',
+                    url: 'getServerListBySelectId',
+                    data: {id: message},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.length > 0) {
+                            console.log(JSON.stringify(data));
+                            var htmlStr = '<option value="0" selected="selected">请选择被合服服务器</option>';
+                            for (var i = 0; i < data.length; i++) {
+                                htmlStr += "<option value='" + data[i]['id'] + "' >" + data[i]['servername'] + "</option>";
+                            }
+                            $("#server_id_c").html(htmlStr);
+                            form.render();
+                        } else {
+                            alert('暂无数据!');
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+{/block}

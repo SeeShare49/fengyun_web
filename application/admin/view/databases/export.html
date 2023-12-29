@@ -1,0 +1,148 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">数据库管理</div>
+            <div class="layui-card-body">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">备份数据库</li>
+                        <li><a href="{:url('?type=import')}">还原数据库</a></li>
+                    </ul>
+                    <div class="layui-tab-content layui-row">
+                        <div class="layui-tab-item layui-show">
+                            <div class="layui-row zz-row-operate">
+                                <div class="zz-operate-btn-group">
+                                    <a id="export" class="layui-btn zz-btn-back no-refresh" href="javascript:;">立即备份</a>
+                                    <a class="layui-btn zz-btn-select-all zz-btn-optimize no-refresh"
+                                       href="{:url('optimize')}">优化表</a>
+                                    <a class="layui-btn zz-btn-select-all zz-btn-repair no-refresh"
+                                       href="{:url('repair')}">修复表</a>
+                                </div>
+                            </div>
+
+                            <div class="layui-form">
+                                <table class="layui-table">
+                                    <thead>
+                                    <tr>
+                                        <th class=" layui-table-col-special" width="18px">
+                                            <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                                        </th>
+                                        <th>表名</th>
+                                        <th width="120">数据量</th>
+                                        <th width="120">数据大小</th>
+                                        <th width="160">创建时间</th>
+                                        <th width="120">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {volist name="list" id="table"}
+                                    <tr>
+                                        <td><input type="checkbox" class="zz-table-chk-item" value="{$table['name']}"
+                                                   lay-skin="primary"></td>
+                                        <td>{$table.name}</td>
+                                        <td>{$table.rows}</td>
+                                        <td>{$table.data_length|format_bytes}</td>
+                                        <td>{$table.create_time}</td>
+                                        <td class="action">
+                                            <a class="ajax-post layui-btn layui-btn-xs no-refresh"
+                                               href="{:url('optimize?ids='.$table['name'])}">优化表</a>&nbsp;
+                                            <a class="ajax-post layui-btn layui-btn-xs no-refresh"
+                                               href="{:url('repair?ids='.$table['name'])}">修复表</a>
+                                        </td>
+                                    </tr>
+                                    {/volist}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<script>
+    var loadIndex;
+    layui.use(['jquery'], function () {
+        var $ = layui.$;
+        var actionUrl = "{:url('export')}";
+        $(function () {
+            var $export = $("#export");
+            $('.zz-btn-back').click(function () {
+                var that = this;
+                //判断是否选中要删除的对象
+                var delDom = $(".layui-table .zz-table-chk-item:checked");
+
+                if (delDom.length == 0) {
+                    layer.msg('请选择要操作的数据');
+                    return false;
+                }
+                var delItem = new Array();
+                delDom.each(function (e) {
+                    delItem.push(this.value);
+                })
+
+                loadIndex = parent.layer.open({
+                    type: 1,
+                    title: '',
+                    area: '440px',
+                    skin: 'layui-layer-demo', //样式类名
+                    closeBtn: 0, //不显示关闭按钮
+                    anim: 2,
+                    content: '<div id="zz-div-backdata" class="zz-div-backdata"><i class="layui-icon layui-icon-loading layui-icon layui-anim layui-anim-rotate layui-anim-loop"></i><div class="content">正在备份数据库，请稍等...</div></div>'
+                });
+
+                $.post(
+                    actionUrl,
+                    {ids: delItem},
+                    function (data) {
+                        if (data.code == 1) {
+                            updateBackDataInfo("开始备份，请不要关闭本页面！");
+                            backup(data.data.tab);
+                            window.onbeforeunload = function () {
+                                return "正在备份数据库，请不要关闭！"
+                            }
+                        } else {
+                            parent.layer.close(loadIndex);
+                            parent.layer.msg(data.msg ? data.msg : '操作失败', {icon: 2, time: data.wait * 1000});
+                        }
+                    },
+                    "json"
+                );
+                return false;
+            });
+        });
+
+        function updateBackDataInfo(info) {
+            $('#zz-div-backdata>.content', parent.document).text(info);
+        }
+
+        function backup(tab) {
+            console.log("backup tab....");
+            $.get(actionUrl, tab, function (data) {
+                if (data.code) {
+                    updateBackDataInfo(data.msg);
+                    if (!data.data) {
+                        parent.layer.close(loadIndex);
+                        parent.layer.msg(data.msg ? data.msg : '操作成功', {icon: 1, time: data.wait * 1000});
+                        window.onbeforeunload = function () {
+                            return null
+                        }
+                        return;
+                    }
+                    backup(data.data.tab);
+                } else {
+                    parent.layer.close(loadIndex);
+                    parent.layer.msg(data.msg ? data.msg : '操作失败', {icon: 2, time: data.wait * 1000});
+                }
+            }, "json");
+        }
+
+    });
+</script>
+{/block}

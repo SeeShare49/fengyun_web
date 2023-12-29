@@ -1,0 +1,64 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">权限管理</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn open-win" title="新增" href="{:url('create')}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>用户组</th>
+                            <th>描述</th>
+                            <th>授权</th>
+                            <th>允许访问IP</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.title}</td>
+                            <td>{:mb_strimwidth($vo['description'],0,60,"...","utf-8")}</td>
+                            <td>
+                                <a href="{:url('access?id='.$vo['id'])}" style="color: blue;">访问授权</a>
+                                <a href="{:url('auth?id='.$vo['id'])}" style="color: blue;">成员授权</a>
+                            </td>
+                            <td>{$vo.allow_ip}</td>
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('set_status?id='.$vo['id'])}" name="status" value="{$vo.status}"
+                                       {$vo.status==1?'checked':''} lay-skin="switch" lay-text="启用|禁用">
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal open-win" title="编辑">编辑</a>
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

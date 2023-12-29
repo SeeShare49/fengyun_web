@@ -1,0 +1,137 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">邮件列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="发送个人邮件" href="{:url('person')}">发送个人邮件</a>
+                        <a class="layui-btn" title="发送单多服邮件" href="{:url('server_mail/server')}">发送单多服邮件</a>
+                        <a class="layui-btn" title="发送全服邮件" href="{:url('all_server_mail/all_server')}">发送全服邮件</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('delete')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">请选择区服:</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">邮件标题:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" placeholder="请输入邮件标题" value="{$title}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色ID:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="actor_id" placeholder="请输入角色ID" value="{$actor_id}"
+                                       onkeyup='this.value=this.value.replace(/\D/gi,"")' class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="user_name" placeholder="请输入角色名称" value="{$user_name}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th style="width: 50px;">邮件ID</th>
+                            <th style="width: 30px;">区服</th>
+                            <th>玩家ID</th>
+                            <th style="min-width: 100px;">玩家昵称</th>
+                            <th style="width: 180px;">邮件标题</th>
+                            <th>邮件内容</th>
+                            <th style="max-width: 400px;">道具信息</th>
+                            <th style="width: 130px;">创建时间</th>
+                            <th style="width: 130px;">发送时间</th>
+                            <th style="min-width: 60px;">审核人</th>
+                            <th style="min-width: 85px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}"
+                                       lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>
+                                {eq name="vo.server_id" value="0"}
+                                全服
+                                {else/}
+                                {$vo.server_id}
+                                {/eq}
+                            </td>
+                            <td>{$vo.actor_id}</td>
+                            <td>{$vo.nick_name}</td>
+                            <td>{$vo.title}</td>
+                            <td>
+<!--                                {if strlen($vo.content)>200}-->
+<!--                                {:mb_substr(strip_tags($vo.content),0,85,'utf-8')}...-->
+<!--                                {else/}-->
+<!--                                {$vo.content}-->
+<!--                                {/if}-->
+                                {:htmlspecialchars($vo.content)}
+                            </td>
+                            <td>
+                                {notempty name="vo.prop_info"}
+                                {$vo.prop_info} <br><span style="color: blue;">【{$vo.prop_alias_info}】</span>
+                                {/notempty}
+                            </td>
+                            <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                            <td>
+                                {neq name="vo.send_time" value="0"}
+                                {:date('Y-m-d H:i:s',$vo['send_time'])}
+                                {/neq}
+                            </td>
+                            <td>{$vo.operator}</td>
+                            <td>
+                                <a href="{:url('delete?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post" title="删除">删除</a>
+                                {eq name="vo.status" value="0"}
+                                <a href="{:url('review?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal ajax-post" title="审核">审核</a>
+                                {/eq}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+
+{/block}

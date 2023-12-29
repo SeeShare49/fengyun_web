@@ -1,0 +1,103 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">玩家重生等级汇总</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器：</label>
+                            <div class="layui-input-block" style="width: 300px;">
+                                <select name="server_id" xm-select="select4" xml-select-max="1" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -{$vo.servername}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>区服</th>
+                            <th>0级重生</th>
+                            <th>1级重生</th>
+                            <th>2级重生</th>
+                            <th>3级重生</th>
+                            <th>4级重生</th>
+                            <th>5级重生</th>
+                            <th>6级重生</th>
+                            <th>7级重生</th>
+                            <th>8级重生</th>
+                            <th>9级重生</th>
+                            <th>10级重生</th>
+                            <th>11级重生</th>
+                            <th>12级重生</th>
+                            <th>13级重生</th>
+                            <th>14级重生</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{:get_area_server_name($vo.server_id)}</td>
+                            <td>{$vo.level_0}</td>
+                            <td>{$vo.level_1}</td>
+                            <td>{$vo.level_2}</td>
+                            <td>{$vo.level_3}</td>
+                            <td>{$vo.level_4}</td>
+                            <td>{$vo.level_5}</td>
+                            <td>{$vo.level_6}</td>
+                            <td>{$vo.level_7}</td>
+                            <td>{$vo.level_8}</td>
+                            <td>{$vo.level_9}</td>
+                            <td>{$vo.level_10}</td>
+                            <td>{$vo.level_11}</td>
+                            <td>{$vo.level_12}</td>
+                            <td>{$vo.level_13}</td>
+                            <td>{$vo.level_14}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                        <tr>
+                            <td style="font-weight: bold;color: red">总计</td>
+                            <td style="font-weight: bold;color: green">{$total_level_0}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_1}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_2}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_3}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_4}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_5}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_6}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_7}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_8}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_9}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_10}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_11}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_12}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_13}</td>
+                            <td style="font-weight: bold;color: green">{$total_level_14}</td>
+                        </tr>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+{/block}

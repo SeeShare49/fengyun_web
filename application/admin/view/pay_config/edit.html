@@ -1,0 +1,150 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公司名称：</label>
+                        <div class="layui-input-block">
+                            <input name="company_name" onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入支付公司名称'"
+                                   placeholder="请输入支付公司名称" class="layui-input" value="{$info['company_name']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">ICON：</label>
+                        <div class="layui-input-block">
+                            <div class="zz-upload-pic">
+                                <button class="layui-btn zzBtnUpload" type="button">
+                                    <i class="layui-icon">&#xe67c;</i>上传图片
+                                </button>
+                                <input class="zz-upload-value" name="image_url" type="hidden"
+                                       value="{$info['image_url']}">
+                                <div class="zz-upload-pic-show layui-row"></div>
+                            </div>
+                            <script src="__JS__/upload.js"></script>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">AppID：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="app_id" lay-verify="required"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入AppID'"
+                                   placeholder="请输入AppID"
+                                   class="layui-input" value="{$info['app_id']}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">AppKey：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="app_key"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入AppKey'"
+                                   placeholder="请输入AppKey"
+                                   class="layui-input" value="{$info['app_key']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">AppSecret：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="app_secret"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入AppSecret'"
+                                   placeholder="请输入AppSecret"
+                                   class="layui-input" value="{$info['app_secret']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户号：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="mch_id" lay-verify="required"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入商户号/商户ID'"
+                                   placeholder="请输入商户号/商户ID"
+                                   class="layui-input" value="{$info['mch_id']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">商户名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="merchant_name" lay-verify="required"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入商户名称'"
+                                   placeholder="请输入商户名称"
+                                   class="layui-input" value="{$info['merchant_name']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付URL：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="request_url" lay-verify="required"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入请求支付URL'"
+                                   placeholder="请输入请求支付URL"
+                                   class="layui-input" value="{$info['request_url']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">回调URL：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="notify_url" lay-verify="required"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入请求支付回调URL'"
+                                   placeholder="请输入请求支付回调URL"
+                                   class="layui-input" value="{$info['notify_url']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">支付产品：</label>
+                        <div class="layui-input-block">
+                            <select name="pay_type">
+                                <option value="0" {$action_type_id==$info.pay_type?'selected':''}>请选择支付产品类型</option>
+                                <option value="1" {$action_type_id==$info.pay_type?'selected':''}>微信JSAPI支付</option>
+                                <option value="2" {$action_type_id==$info.pay_type?'selected':''}>微信APP支付</option>
+                                <option value="3" {$action_type_id==$info.pay_type?'selected':''}>微信H5支付</option>
+                                <option value="4" {$action_type_id==$info.pay_type?'selected':''}>微信Native支付</option>
+                                <option value="5" {$action_type_id==$info.pay_type?'selected':''}>微信小程序支付</option>
+                                <option value="6" {$action_type_id==$info.pay_type?'selected':''}>微信付款码支付</option>
+                                <option value="7" {$action_type_id==$info.pay_type?'selected':''}>支付宝官方支付</option>
+                                <option value="8" {$action_type_id==$info.pay_type?'selected':''}>其他</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">私钥：</label>
+                        <div class="layui-input-block">
+                                      <textarea name="private_key" onfocus="this.placeholder=''"
+                                                onblur="this.placeholder='请输入私钥内容'"
+                                                placeholder="请输入私钥内容"
+                                                class="layui-textarea">{$info['private_key']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">公钥：</label>
+                        <div class="layui-input-block">
+                                      <textarea name="public_key" onfocus="this.placeholder=''"
+                                                onblur="this.placeholder='请输入公钥内容'"
+                                                placeholder="请输入公钥内容"
+                                                class="layui-textarea">{$info['public_key']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" value="1" title="显示" {$info['status']==1?'checked':''}>
+                            <input type="radio" name="status" value="0" title="隐藏" {$info['status']==0?'checked':''}>
+                        </div>
+                    </div>
+
+
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

@@ -1,0 +1,45 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post"  class="layui-form">
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮件标题：</label>
+                        <div class="layui-input-block">
+                            <input type="text" value="{$info['title']}" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">执行者：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="username" lay-verify="required" value="管理员" disabled="disabled" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">执行时间：</label>
+                        <div class="layui-input-block">
+                            <input type="text"lay-verify="required" value="{:date('Y-m-d H:i:s',$info.create_time)}" disabled="disabled" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮件内容：</label>
+                        <div class="layui-input-block">
+                            <textarea name="content" placeholder="" class="layui-textarea" disabled="disabled">邮件数据ID：{$info['record_id']}{if $info['content']} ，{$info['content']}{/if}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">返回</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

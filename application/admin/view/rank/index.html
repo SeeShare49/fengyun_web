@@ -1,0 +1,187 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">玩家充值排行</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">区服ID查询:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="start_server_id" name="start_server_id" value="{$start_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")' placeholder="请输入起始区服ID">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="end_server_id" name="end_server_id" value="{$end_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")' placeholder="请输入截止区服ID">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">渠道:</label>
+                            <div class="layui-input-inline" style="width:180px;">
+                                <select name="channel_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                    {volist name="channel_list" id="vo"}
+                                    <option value="{$vo.id}" {$channel_id==$vo.id?'selected':''}>{$vo.channel_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">排名数量:</label>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <input type="text" class="layui-input" name="user_count" value="{$user_count}" onkeyup="this.value=this.value.replace(/\D/gi,'')" placeholder="请填写排名数量" oninput="if(value>200)value=200">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">充值金额:</label>
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <input type="text" class="layui-input" name="money" value="{$money}" onkeyup="this.value=this.value.replace(/\D/gi,'')" placeholder="请填写排名最低充值金额">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">查询时间:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="start_time" name="start_time" value="{$start_time}" placeholder="yyyy-MM-dd H:i:s">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="end_time" name="end_time" value="{$end_time}" placeholder="yyyy-MM-dd H:i:s">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单/多服查询:</label>
+                            <div class="layui-input-block" style="width: 400px;">
+                                <select name="server_id" xm-select="select4" xm-select-search="" >
+<!--                                    <option value="-1">全服</option>-->
+                                    {volist name="server_list" id="vo"}
+                                    {notempty name="server_id"}
+                                    {volist name='server_id' id='s_vo'}
+                                    {if $vo.id==$s_vo}
+                                    <option value="{$vo.id}" {$s_vo==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                    {/if}
+                                    {/volist}
+                                    {else/}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                    {/notempty}
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>排行</th>
+                            <th>区服</th>
+                            <th>渠道</th>
+                            <th>账号</th>
+                            <th>角色名</th>
+                            <th>游戏等级</th>
+                            <th>贵族等级</th>
+                            <th>充值金额</th>
+                            <th>充值笔数</th>
+                            <th>最近充值时间</th>
+                            <th>首次充值时间</th>
+                            <th>最近登录时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>第{$i}名</td>
+                            <td>{$vo.area_id} 区 - {$vo.servername}</td>
+                            <td> {:get_channel_name($vo.channel_id)}</td>
+                            <td>{:get_user_account($vo.user_id,$vo.real_server_id)}</td>
+                            <td>{:get_player_name($vo.user_id,$vo.real_server_id)}</td>
+                            <td>
+                                {if get_player_level($vo.user_id,$vo.real_server_id)!=null}
+                                {:get_player_level($vo.user_id,$vo.real_server_id)} 级
+                                {/if}
+                            </td>
+                            <td>
+                                {if get_special_level($vo.user_id,$vo.real_server_id)!=null}
+                                {:get_special_level($vo.user_id,$vo.real_server_id)} 级
+                                {else/}
+                                0 级
+                                {/if}
+                            </td>
+                            <td><span style="color: blue;">{:sprintf("%1\$.2f", $vo['total_money'])} 元</span> </td>
+                            <td>{$vo.recharge_count}</td>
+                            <td>{:get_last_recharge_time($vo.user_id)}</td>
+                            <td>{:get_first_recharge_time($vo.user_id)}</td>
+                            <td>
+                                {if get_player_last_login_time($vo.user_id,$vo.real_server_id)!=0}
+                                {:date('Y-m-d H:i:s',get_player_last_login_time($vo.user_id,$vo.real_server_id))}
+                                {/if}
+                            </td>
+                        </tr>
+                        {/volist}
+                        <tr>
+                            <td style="font-weight: bold;">总计</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="color: blue;">￥ {:sprintf("%1\$.2f",$total_money)} 元</td>
+                            <td style="color: blue;">{$recharge_count}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+<!--                    {$page|raw}-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+
+        //常规用法
+        laydate.render({
+            elem: '#start_time'
+            ,type: 'datetime'
+            ,min: '2021-01-01'
+            ,max: maxDate()
+            ,theme: 'molv'
+        });
+
+        laydate.render({
+            elem: '#end_time'
+            ,type: 'datetime'
+            ,min: '2021-01-01'
+            ,max: maxDate()
+            ,theme: 'molv'
+        });
+
+        function maxDate() {
+            var now = new Date();
+            return now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + (now.getDate()+1);
+        }
+
+    });
+</script>
+{/block}

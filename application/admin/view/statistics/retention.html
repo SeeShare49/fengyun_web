@@ -1,0 +1,76 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">留存率</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器查询:</label>
+                            <div class="layui-input-block" style="width: 350px;">
+<!--                                <select name="server_id" xm-select="select4" xm-select-search="" xm-select-max="1"> -->
+                                    <select name="server_id" xm-select="select4"  xm-select-radio="">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>注册人数</th>
+                            <th>两日注册人数</th>
+                            <th>创角色人数</th>
+                            <th>付费人数</th>
+                            <th>金额</th>
+                            <th>转化率</th>
+                            <th>ARPU</th>
+                            <th>ARPPU</th>
+                            <th>DAU</th>
+                            <th>付费率</th>
+                            <th>留存率</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.log_date}</td>
+                            <td>{$vo.register_user}</td>
+                            <td>{$vo.two_days_register_user}</td>
+                            <td>{$vo.create_role_user}</td>
+                            <td>{$vo.recharge_user}</td>
+                            <td>￥ {$vo.recharge_total} 元</td>
+                            <td>{:round($vo.trans_rate,2)}%</td>
+                            <td>{$vo.ARPU}</td>
+                            <td>{$vo.ARPPU}</td>
+                            <td>{$vo.user_count}</td>
+                            <td>{:round($vo.pay_rate,2)*100}%</td>
+                            <td>{:round($vo.keep_rate,2)*100}%</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+{/block}

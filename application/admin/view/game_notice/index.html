@@ -1,0 +1,104 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">公告信息列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="新增游戏公告信息" href="{:url('create')}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">公告标题:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="title" placeholder="请输入游戏公告标题" value="{$title}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>公告标题</th>
+                            <th>公告类型</th>
+                            <th>公告图片</th>
+                            <!--<th>公告链接</th>-->
+                            <th width="35%">公告内容</th>
+                            <th>是否置顶</th>
+                            <th>起始时间</th>
+                            <th>截止时间</th>
+                            <th>状态</th>
+                            <th width="100">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary"></td>
+                            <td>{$vo.id}</td>
+                            <td>{:mb_substr($vo.title,0,30,'utf-8')}</td>
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       name="is_picture"
+                                       value="{$vo.is_picture}" {$vo.is_picture==0?'checked':''} lay-skin="switch"
+                                       lay-text="文字公告|图片公告">
+                            </td>
+                            <td>{:mb_substr($vo.image_url,0,50,'utf-8')}</td>
+                            <td>{:mb_substr($vo.content,0,100,'utf-8')}...</td>
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('set_notice_top?id='.$vo['id'])}" name="is_top"
+                                       value="{$vo.is_top}" {$vo.is_top==1?'checked':''} lay-skin="switch"
+                                       lay-text="置顶|非置顶">
+                            </td>
+                            <td>
+                                {eq name="vo.start_time" value="0"}
+                                暂未设置
+                                {else/}
+                                {:date('Y-m-d',$vo.start_time)}
+                                {/eq}
+                            </td>
+                            <td>
+                                {eq name="vo.end_time" value="0"}
+                                暂未设置
+                                {else/}
+                                {:date('Y-m-d',$vo.end_time)}
+                                {/eq}
+                            </td>
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('set_notice_status?id='.$vo['id'])}" name="status"
+                                       value="{$vo.status}" {$vo.status==1?'checked':''} lay-skin="switch"
+                                       lay-text="启用|停用">
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal " title="编辑">编辑</a>
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

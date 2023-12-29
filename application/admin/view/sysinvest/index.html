@@ -1,0 +1,115 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">系统充值记录</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="系统充值" href="{:url('create')}">系统充值</a>
+                        <a class="layui-btn open-win" title="批量用户扶持CSV数据导入" href="{:url('batch_upload')}">批量扶持</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">请选择区服:</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">用户昵称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="player_name" placeholder="请输入用户昵称" value="{$player_name}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="add_date" name="add_date" value="{$add_date}"
+                                       readonly placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>区服</th>
+                            <th>玩家姓名</th>
+                            <th>元宝数量</th>
+                            <th>金币数量</th>
+                            <th>银票数量</th>
+                            <th>管理员</th>
+                            <th width="180">添加时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo['id']}</td>
+                            <td>{:get_area_server_name($vo.server_id)}</td>
+                            <td>
+                                <a href="{:url('index')}?player_name={$vo['player_name']}" title="查看系统充值总金额">
+                                    <span style="font-weight: bold;color: #7f0055">{$vo['player_name']}</span>
+                                </a>
+                            </td>
+                            <td>{$vo['ingot']}</td>
+                            <td>{$vo['gold']}</td>
+                            <td>{$vo['silver']}</td>
+                            <td>{:get_admin_user_name($vo['admin_id'])}</td>
+                            <td>{:date('Y-m-d H:i:s',$vo['create_time'])}</td>
+                        </tr>
+                        {/volist}
+                        <tr>
+                            <td colspan="3"></td>
+                            <td><span style="font-weight: bold;color: red">总计累计系统充值</span></td>
+                            <td><span style="color: blue;font-weight: bold;">{$total_ingot} 元宝</span></td>
+                            <td><span style="color: salmon;font-weight: bold;">{$total_gold} 金币</span></td>
+                            <td><span style="color: peru;font-weight: bold;">{$total_silver} 银票</span></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('laydate', function () {
+        var laydate = layui.laydate;
+
+        //常规用法
+        laydate.render({
+            elem: '#add_date'
+        });
+
+    });
+</script>
+{/block}

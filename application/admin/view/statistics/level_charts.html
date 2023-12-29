@@ -1,0 +1,205 @@
+{extend name="public/base" /}
+{block name="body"}
+
+
+<div class="layui-row">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">数据概览</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="查看列表" href="{:url('userlevel')}?server_id={$server_id}">查看列表</a>
+                        <a class="layui-btn" title="玩家等级分布汇总" href="{:url('summary_level')}">等级分布汇总</a>
+                        <a class="layui-btn" title="玩家在线时长分布汇总" href="{:url('summary_duration')}">在线时长分布汇总</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器:</label>
+                            <div class="layui-input-inline" style="min-width: 400px;">
+                                <select id="server" name="server_id" xm-select="select5" xm-select-max="1"
+                                        xm-select-search="">
+                                    {volist name="serverlist" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{:get_area_server_name($vo.id)}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="layui-col-md6">
+                    <div id="main" style="height:800px;padding-top: 50px;"></div>
+                </div>
+                <div class="layui-col-md6">
+                    <div id="online_user_level" style="height:800px;padding-top: 50px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
+{/block}
+{block name="script"}
+
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script src="__JS__/jquery.form.js"></script>
+<script>
+
+    layui.config({
+        base: '__LIB__/layuiadmin/'
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'echarts', "carousel", "element"], function () {
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        var server_id = $('#server option:selected').val();
+        $.ajax({
+            type: 'post',
+            url: '/admin.php/Statistics/get_level_distribution',
+            data: {server_id: server_id},
+            dataType: 'json',
+            success: function (data) {
+                if (data) {
+                    // 指定图表的配置项和数据
+                    var option = {
+                        title: {
+                            text: '玩家游戏等级分布',
+                            subtext: '',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        legend: {
+                            y: '10%',
+                            top: '8%',
+                            right: '0%',
+                            orient: 'horizontal',
+                            left: 'top',
+                            data: ['60级以下', '61-70级', '71-80级', '81-90级', '91-100级', '101-110级', '111-120级', '121-150级', '151-170级', '170级以上']
+                        },
+                        series: [
+                            {
+                                name: '等级分布',
+                                type: 'pie',
+                                radius: '70%',
+                                center: ['50%', '60%'],
+                                // data: [
+                                //     { value: 335, name: '60级以下' },
+                                //     { value: 310, name: '61-90级' },
+                                //     { value: 234, name: '91-120级' },
+                                //     { value: 135, name: '121-150级' },
+                                //     { value: 1548, name: '151-170级' },
+                                //     { value: 1548, name: '170级以上' }
+                                // ],
+                                data: (function () {
+                                    var res = [];
+                                    for (var i = 0; i < data.data.length; i++) {
+                                        if (data.data[i].value > 0) {
+                                            res.push({
+                                                name: data.data[i].name,
+                                                value: data.data[i].value
+                                            })
+                                        }
+                                    }
+                                    return res;
+                                })(),
+
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                    // 使用刚指定的配置项和数据显示图表。
+                    myChart.setOption(option);
+                }
+            }
+        });
+
+
+        // 基于准备好的dom，初始化echarts实例
+        var myOnlineUserLevelChart = echarts.init(document.getElementById('online_user_level'));
+
+
+        $.ajax({
+            type: 'get',
+            url: '/admin.php/Statistics/get_online_duration_leve_distribution?server_id=' + server_id,
+            //data: {server_id: server_id},
+            dataType: 'json',
+            success: function (data) {
+                if (data) {
+                    // 指定图表的配置项和数据
+                    var option_duration = {
+                        title: {
+                            text: '玩家在线时长游戏等级分布',
+                            subtext: '',
+                            left: 'center'
+                        },
+                        tooltip: {
+                            trigger: 'item',
+                            formatter: '{a} <br/>{b} : {c} ({d}%)'
+                        },
+                        legend: {
+                            y: '10%',
+                            top: '8%',
+                            right: '0%',
+                            orient: 'horizontal',
+                            left: 'top',
+                            data: ['1-10分钟', '11-30分钟', '31-60分钟', '61-120分钟', '120分钟以上']
+                        },
+                        series: [
+                            {
+                                name: '等级分布',
+                                type: 'pie',
+                                radius: '70%',
+                                center: ['50%', '60%'],
+                                data: (function () {
+                                    var res = [];
+                                    for (var i = 0; i < data.data.length; i++) {
+
+                                        if (data.data[i].value > 0) {
+                                            res.push({
+                                                name: data.data[i].name,
+                                                value: data.data[i].value
+                                            })
+                                        }
+                                    }
+                                    return res;
+                                })(),
+
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                    // 使用刚指定的配置项和数据显示图表。
+                    myOnlineUserLevelChart.setOption(option_duration);
+                }
+            }
+        });
+
+    });
+</script>
+{/block}

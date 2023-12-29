@@ -1,0 +1,46 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">编号：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="id" lay-verify="required" readonly="readonly"
+                                   value="{$info['id']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">描述：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="filter_desc" lay-verify="required"
+                                   value="{$info['filter_desc']}" placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">过滤字|词：</label>
+                        <div class="layui-input-block">
+                            <textarea name="filter_str" placeholder="" class="layui-textarea">{$info['filter_str']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        <p style="color: red;font-size: 16px;">
+                            特殊提示：如出现多个关键字或关键词请用竖线("|")分隔！！！</p>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

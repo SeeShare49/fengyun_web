@@ -1,0 +1,164 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">综合统计</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="date" name="date" value="{$date}" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">区服ID查询:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="start_server_id" name="start_server_id" value="{$start_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")' placeholder="请输入起始区服ID">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="end_server_id" name="end_server_id" value="{$end_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")' placeholder="请输入截止区服ID">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单/多服查询:</label>
+                            <div class="layui-input-block" style="width: 350px;">
+                                <select name="server_id" xm-select="select4" xm-select-search="" >
+                                    <option value="-1">全服</option>
+                                    {volist name="server_list" id="vo"}
+                                    {notempty name="server_id"}
+                                    {volist name='server_id' id='s_vo'}
+                                    {if $vo.id==$s_vo}
+                                    <option value="{$vo.id}" {$s_vo==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                    {/if}
+                                    {/volist}
+                                    {else/}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                    {/notempty}
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>具体开服时间</th>
+                            <th>区服</th>
+                            <th>登录账号数</th>
+                            <th>创建角色数</th>
+                            <th>充值人数</th>
+                            <th>充值金额</th>
+                            <th>日活跃</th>
+                            <th>日充值笔数</th>
+                            <th>活跃ARPU</th>
+                            <th>付费ARPU</th>
+                            <th>付费率</th>
+                            <th>当前在线用户数</th>
+                            <th>最大在线用户数</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {foreach $lists as $key=>$vo}
+                        <tr>
+                            <td>{$vo.logtime}</td>
+                            <td>{$vo.opentime}</td>
+                            <td>{$vo.server_name}</td>
+                            <td>{$vo.login_count}</td>
+                            <td>{$vo.role_count} 人</td>
+                            <td>{$vo.recharge_count} 人</td>
+                            <td>{$vo.recharge_amount} 元</td>
+                            <td>{$vo.daily_activity} 人次</td>
+                            <td>{$vo.daily_recharge_count}</td>
+                            <td>{$vo.activity_arpu}</td>
+                            <td>{$vo.pay_arpu}</td>
+                            <td>{$vo.pay_rate}</td>
+                            <td>{$vo.current_online}</td>
+                            <td>{$vo.max_online} 人</td>
+                        </tr>
+                        {/foreach}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td style="font-weight: bold;color: red">总计</td>
+                            <td>{$total_login_count}</td>
+                            <td>{$total_role_count}</td>
+                            <td>{$total_recharge_count}</td>
+                            <td style="color: blue;">￥ {:sprintf("%1\$.2f",$total_recharge_amount/100)} 元</td>
+                            <td>{$total_login_count}</td>
+                            <td>{$total_day_recharge_count}</td>
+                            <td>
+                                {if $total_recharge_count==0}0.00
+                                {elseif $total_login_count>0 /}
+                                {:sprintf("%1\$.2f",$total_recharge_amount/$total_login_count/100)}
+                                {else/}0
+                                {/if}
+                            </td>
+                            <td>
+                                {if $total_recharge_count==0}0.00
+                                {elseif $total_recharge_amount>0  /}
+                                {:sprintf("%1\$.2f", ($total_recharge_amount/$total_recharge_count)/100)}
+                                {else/}0.00
+                                {/if}
+                            </td>
+                            <td>
+                                {if $total_login_count==0}0.00
+                                {else/}
+                                {:sprintf("%1\$.2f",$total_recharge_count/$total_login_count*100)}%
+                                {/if}
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        //常规用法
+        laydate.render({
+            elem: '#date'
+        });
+
+    });
+</script>
+<!--<script>-->
+<!--    layui.use('layer',function (){-->
+<!--        var layer = layui.layer;-->
+<!--        console.log('正在加载中......');-->
+<!--        var loading = layer.msg('正在加载中......',{-->
+<!--            icon:16,-->
+<!--            shade:[0.1,'#000'],-->
+<!--            time:false-->
+<!--        });-->
+
+<!--        setTimeout(function (){-->
+<!--            layer.close(loading);-->
+<!--        },3000);-->
+<!--    });-->
+<!--</script>-->
+{/block}

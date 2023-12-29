@@ -1,0 +1,69 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">道具堆加上限列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <!--<a class="layui-btn open-win" title="Csv数据导入" href="{:url('import')}">道具导入</a>-->
+                        <a class="layui-btn ajax-post layui-btn-danger confirm" href="{:url('clear')}">清空</a>
+                        <a class="layui-btn open-win" title="Csv数据导入" href="{:url('upload')}">本地导入Csv</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">道具编号:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="prop_id" placeholder="请输入道具编号" value="{$prop_id}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">道具名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="name" value="{$name}" placeholder="请输入道具名称"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>道具编号</th>
+                            <th>道具名称</th>
+                            <th>堆加上限</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="zz-table-chk-item" value="{$vo.prop_id}"
+                                       lay-skin="primary">
+                            </td>
+                            <td>{$vo.prop_id}</td>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.limit_num}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

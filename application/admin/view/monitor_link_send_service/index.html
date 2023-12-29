@@ -1,0 +1,107 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">巨量引擎广告投放数据</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">计划名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="search" placeholder="请输入计划名称" value="{$search}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>计划ID</th>
+                            <th>计划名称</th>
+                            <th>广告主ID</th>
+                            <th>广告创意ID</th>
+                            <th>创意名称</th>
+                            <th>广告组ID</th>
+                            <th>广告组名称</th>
+                            <th>创意样式</th>
+                            <th>投放位置</th>
+                            <th>转化ID</th>
+                            <th>点击时间</th>
+                            <th>手机型号</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>{$vo.AID}</td>
+                            <td>{$vo.AID_NAME}</td>
+                            <td>{$vo.ADVERTISER_ID}</td>
+                            <td>{$vo.CID}</td>
+                            <td>{$vo.CID_NAME}</td>
+                            <td>{$vo.CAMPAIGN_ID}</td>
+                            <td>{$vo.CAMPAIGN_NAME}</td>
+                            <td>
+                                {switch vo.CTYPE}
+                                {case 2}小图模式{/case}
+                                {case 3}大图模式{/case}
+                                {case 4}组图模式{/case}
+                                {case 5}视频{/case}
+                                {/switch}
+                            </td>
+                            <td>
+                                {between name="vo.CSITE" value="1,10000"}
+                                今日头条
+                                {/between}
+                                {between name="vo.CSITE" value="80000,110001"}
+                                今日头条
+                                {/between}
+                                {between name="vo.CSITE" value="10001,10099"}
+                                西瓜视频
+                                {/between}
+                                {between name="vo.CSITE" value="40001,40099"}
+                                抖音
+                                {/between}
+
+                                {if $vo.CSITE==800000000}
+                                穿山甲开屏广告
+                                {/if}
+
+                                {if $vo.CSITE==900000000}
+                                穿山甲网盟非开屏广告
+                                {/if}
+                                {if $vo.CSITE==33013}
+                                通投广告位
+                                {/if}
+
+                                {if $vo.CSITE==38016}
+                                搜索
+                                {/if}
+                            </td>
+                            <td>{$vo.CONVERT_ID}</td>
+                            <td>
+                                {neq name="vo.TS" value="0"}
+                                {:date('Y-m-d H:i:s',$vo.TS)}
+                                {/neq}
+                            </td>
+                            <td>{$vo.MODEL}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

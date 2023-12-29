@@ -1,0 +1,91 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">支付配置信息列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="新增支付配置信息" href="{:url('create')}">新 增</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">搜索条件：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="search" placeholder="请输入商户号|AppID|支付公司名称" value="{$search}"
+                                       class="layui-input" style="width:300px;">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th style="min-width: 30px;">编号</th>
+                            <th style="min-width:100px;">支付公司名称</th>
+                            <th>AppID</th>
+                            <th>AppKey</th>
+                            <th>AppSecret</th>
+                            <th>商户号</th>
+                            <th style="min-width: 180px;">商户名称</th>
+                            <th>请求支付URL</th>
+                            <th>异步回调URL</th>
+                            <th style="min-width: 100px;">支付产品类型</th>
+                            <th style="min-width: 60px;">状态</th>
+                            <th style="min-width: 80px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{:$vo.company_name}</td>
+                            <td>{:$vo.app_id}</td>
+                            <td>{:$vo.app_key}</td>
+                            <td>{:$vo.app_secret}</td>
+                            <td>{:$vo.mch_id}</td>
+                            <td>{:$vo.merchant_name}</td>
+                            <td>{:$vo.request_url}</td>
+                            <td>{:$vo.notify_url}</td>
+                            <td>
+                                {switch vo.pay_type}
+                                {case 1}JSAPI支付{/case}
+                                {case 2}APP支付{/case}
+                                {case 3}H5支付{/case}
+                                {case 4}Native支付{/case}
+                                {case 5}小程序支付{/case}
+                                {case 6}付款码支付{/case}
+                                {case 7}其他{/case}
+                                {/switch}
+                            </td>
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('set_pay_config_status?id='.$vo['id'])}" name="status"
+                                       value="{$vo.status}" {$vo.status==1?'checked':''} lay-skin="switch"
+                                       lay-text="启用|停用">
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal " title="编辑">编辑</a>
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

@@ -1,0 +1,76 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">
+                网站设置
+            </div>
+            <div class="layui-card-body">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        {foreach $group as $key=>$vo}
+                        {eq name="id" value="$key"}
+                        <li class="layui-this">{$vo}管理</li>
+                        {else/}
+                        <li><a href="{:url('?id='.$key)}">{$vo}管理 </a></li>
+                        {/eq}
+                        {/foreach}
+                    </ul>
+                    <div class="layui-tab-content layui-row">
+                        <div class="layui-tab-item layui-show">
+                            <form action="{:url('save')}" method="post" class="layui-form">
+                                {volist name="lists" id="config"}
+
+                                <div class="layui-form-item">
+                                    <div class="zz-form-title">
+                                        {$config.title}<span class="check-tips">（{$config.remark}）</span>
+                                    </div>
+                                    {switch config.type}
+                                    {case 0}
+                                    <input type="text" class="layui-input" name="config[{$config.name}]" value="{$config.value}">
+                                    {/case}
+                                    {case 1}
+                                    <input type="text" class="layui-input" name="config[{$config.name}]" value="{$config.value}">
+                                    {/case}
+                                    {case 2}
+                                    <textarea class="layui-textarea" name="config[{$config.name}]">{$config.value}</textarea>
+                                    {/case}
+                                    {case 3}
+                                    <textarea class="layui-textarea" name="config[{$config.name}]">{$config.value}</textarea>
+                                    {/case}
+                                    {case 4}
+
+                                    <select name="config[{$config.name}]">
+                                        {volist name=":parse_config_attr($config['extra'])" id="vo"}
+                                        <option value="{$key}" {eq name="config.value" value="$key"}selected{/eq}>{$vo}</option>
+                                        {/volist}
+                                    </select>
+                                    {/case}
+                                    {case 5}
+                                    <div class="zz-upload-pic">
+                                        <button class="layui-btn zzBtnUploadPic" type="button">
+                                            <i class="layui-icon">&#xe67c;</i>上传图片
+                                        </button>
+                                        <input class="zz-upload-value" name="cover_path" type="hidden" value="{$config.value}">
+                                        <div class="zz-upload-pic-show layui-row"></div>
+                                    </div>
+                                    {/case}
+                                    {/switch}
+
+                                </div>
+                                {/volist}
+                                <div class="layui-form-item layui-layout-admin">
+                                    <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

@@ -1,0 +1,347 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form id="infoForm" action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">区服ID：</label>
+                        <div class="layui-input-block">
+                            <select name="server_id">
+                                <option value="0">请选择服务器</option>
+                                {volist name="server_list" id="vo"}
+                                <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.servername}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="name" id="name" lay-verify="required" onfocus="this.placeholder=''"
+                                   onblur="placeholder='请输入活动名称'" placeholder="请输入活动名称"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动类型：</label>
+                        <div class="layui-input-block">
+                            <select name="activity_type">
+                                <option value="0">请选择活动类型</option>
+                                {volist name="type_list" id="vo"}
+                                <option value="{$vo.id}" {$activity_type==$vo.id?'selected':''}>{$vo.name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">任务类型：</label>
+                        <div class="layui-input-block">
+                            <select name="task_id">
+                                <option value="0">请选择任务类型</option>
+                                {volist name="task_list" id="vo"}
+                                <option value="{$vo.id}" {$task_id==$vo.id?'selected':''}>{$vo.name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">目标类型：</label>
+                        <div class="layui-input-block">
+                            <select name="target_id" id="target_id" lay-filter="target">
+                                <option value="0">请选择目标类型</option>
+                                {volist name="target_list" id="vo"}
+                                <option value="{$vo.id}" {$target_id==$vo.id?'selected':''}>{$vo.name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="target_show" style="display: none;">
+                    </div>
+                    <div class="layui-form-item" id="target_add_show" style="display: none;">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">目标额度：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="quota" id="quota"
+                                       onfocus="this.placeholder=''" onblur="this.placeholder='请输入目标额度'"
+                                       placeholder="请输入目标额度"
+                                       class="layui-input">
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" name="reward" id="reward"
+                                       onfocus="this.placeholder=''" onblur="this.placeholder='请输入目标奖励'"
+                                       placeholder="请输入目标奖励"
+                                       class="layui-input">
+                            </div>
+                            <button type="button" class="layui-btn layui-btn-normal confirm" title="提交奖励目标" onclick="targetSave()">
+                                保存提交
+                            </button>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动周期：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="active_cycle" lay-verify="required|number"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请输入活动周期'" placeholder="请输入活动周期"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">起止日期：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="start_time" name="start_time"
+                                       onfocus="this.placeholder=''"
+                                       onblur="placeholder='请选择起始日期'" placeholder="请选择起始日期">
+                            </div>
+                            <div class="layui-form-mid">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="end_time" name="end_time"
+                                       onfocus="this.placeholder=''"
+                                       onblur="placeholder='请选择截止日期'" placeholder="请选择截止日期">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排序值：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="sort" lay-verify="required|number"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请输入分类排序值'" placeholder="请输入分类排序值"
+                                   class="layui-input" value="0">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" checked value="1" title="显示">
+                            <input type="radio" name="status" value="0" title="隐藏">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动描述：</label>
+                        <div class="layui-input-block">
+                            <textarea name="desc" onfocus="this.placeholder=''"
+                                      onblur="placeholder='请输入活动描述'" placeholder="请输入活动描述"
+                                      class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">
+                                立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script src="__JS__/jquery.form.js"></script>
+<script>
+    layui.use(['element', 'form', 'laydate'], function () {
+        var laydate = layui.laydate
+            , form = layui.form;
+
+        //常规用法
+        laydate.render({
+            elem: '#start_time'
+            ,type: 'datetime'
+        });
+        laydate.render({
+            elem: '#end_time',type: 'datetime'
+        });
+
+
+        form.render();
+        form.on('select(target)', function (data) {
+            $("#target_show").show();
+            $("#target_add_show").hide();
+            $.ajax({
+                type: "GET",                         //提交方式
+                url: '../target/getTargetList',      //接口路径TP是（模块/控制器/方法）
+                data: {id: data.value},              //需要提交的数据多个用,隔开{sid: sid, eid: eid}
+                dataType: "json",                    //数据格式
+                success: function (data) {
+                    var htmlstr = "";
+                    if (data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            var info = data[i];
+                            htmlstr += '<div class="layui-inline"><label class="layui-form-label">目标额度：</label>' +
+                                '<div class="layui-input-inline"><input type="text" id="quota_' + info.id + '" name="quota" autocomplete="off" value=' + info.quota + ' class="layui-input"></div>' +
+                                '<div class="layui-input-inline"><input type="text" id="reward_' + info.id + '" name="reward" autocomplete="off" value=' + info.reward + ' class="layui-input"></div>' +
+                                '<button type="button" class="layui-btn layui-btn-normal layui-btn-sm confirm ajax-post" title="更新目标配置" onclick="targetEdit(' + info.id + ',' + info.target_type_id + ')" >更新</button>' +
+                                '<button type="button" class="layui-btn layui-btn-danger layui-btn-sm confirm ajax-post" onclick="targetRemove(' + info.id + ',' + info.target_type_id + ')" value="' + info.id + '" title="移除目标配置"><i class="layui-icon"></i></button></div>';
+                        }
+                        htmlstr += '<div class="layui-inline"><label class="layui-form-label"></label>' +
+                            '<input type="button"  class="layui-btn layui-btn-normal" title="新增目标" value="新增目标" onclick="showAddTarget()" ></div>';
+                    } else {
+                        htmlstr += '<div class="layui-inline"><div class="layui-inline"><label class="layui-form-label"></label>' +
+                            '<input type="button"  class="layui-btn layui-btn-normal" title="新增目标" value="新增目标" onclick="showAddTarget()" ></div>';
+                    }
+                    $("#target_show").html(htmlstr);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    /**
+     * 添加奖励目标
+     * */
+    function showAddTarget() {
+        $("#target_add_show").show();
+    }
+
+    function targetSave() {
+        var target_id = $('#target_id').val();
+        var name = $('#name').val();
+        var quota = $("#quota").val();
+        var reward = $("#reward").val();
+
+        $.ajax({
+            url:'../target/ajaxSave',
+            type:'POST',
+            async:false,
+            data:{name:name,target_type_id:target_id,quota:quota,reward:reward},
+            success: function (res) {
+                console.log(JSON.stringify(res));
+                if (res.code == 0) {
+                    console.log(JSON.stringify(res['data']));
+                    layer.msg(res.msg ? res.msg : '操作成功', {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        targetRefresh(target_id);
+                        $("#target_show").html(res);
+                        $("#target_add_show").hide();
+                    });
+                } else {
+                    layer.msg(res.msg ? res.msg : '操作失败', {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+
+                    });
+                }
+            },
+            error:function () {
+                console.log('error......');
+            }
+        });
+    }
+
+
+    /**
+     * *奖励目标编辑
+     * */
+    function targetEdit(id, type_id) {
+        var quota = $("#quota_" + id).val();
+        var reward = $("#reward_" + id).val();
+        console.log("quota value:" + quota);
+        console.log("reward value:" + reward);
+        $.ajax({
+            url: '../target/ajaxEdit',
+            type: 'POST',
+            async: false,
+            data: {id: id, type_id: type_id, quota: quota, reward: reward},
+            success: function (res) {
+                console.log(JSON.stringify(res));
+                if (res.code == 0) {
+                    layer.msg(res.msg ? res.msg : '操作成功', {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        targetRefresh(id);
+                        $("#target_show").html(res);
+                    });
+                } else {
+                    layer.msg(res.msg ? res.msg : '操作失败', {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+
+                    });
+                }
+            },
+            error: function () {
+                console.log("error...");
+            }
+        });
+    }
+
+    /**
+     * 奖励目标移除
+     * */
+    function targetRemove(id, type_id) {
+        $.ajax({
+            url: '../target/ajaxDel',
+            type: 'POST',
+            async: false,
+            data: {id: id, type_id: type_id},
+            success: function (res) {
+                console.log(JSON.stringify(res));
+                if (res.code == 0) {
+                    layer.msg(res.msg ? res.msg : '奖励目标移除成功!', {
+                        icon: 1,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+                        targetRefresh(type_id);
+                        $("#target_show").html(res);
+                    });
+                } else {
+                    layer.msg(res.msg ? res.msg : '奖励目标移除失败!', {
+                        icon: 2,
+                        time: 2000 //2秒关闭（如果不配置，默认是3秒）
+                    }, function () {
+
+                    });
+                }
+            },
+            error: function () {
+                console.log("error...");
+            }
+        });
+    }
+
+    /**
+     * 奖励目标刷新
+     * */
+    function targetRefresh(id) {
+        console.log("target refresh id:"+id);
+        $.ajax({
+            type: "GET",                         //提交方式
+            url: '../target/getTargetList',      //接口路径TP是（模块/控制器/方法）
+            data: {id: id},                      //需要提交的数据多个用,隔开{sid: sid, eid: eid}
+            dataType: "json",                    //数据格式
+            success: function (data) {
+                console.log("target refresh data:"+JSON.stringify(data));
+                var htmlstr = "";
+                if (data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        var info = data[i];
+                        console.log('data info:' + JSON.stringify(info));
+                        htmlstr += '<div class="layui-inline"><label class="layui-form-label">目标额度：</label>' +
+                            '<div class="layui-input-inline"><input type="text" name="quota" autocomplete="off" value=' + info.quota + ' class="layui-input"></div>' +
+                            '<div class="layui-input-inline"><input type="text" name="reward" autocomplete="off" value=' + info.reward + ' class="layui-input"></div>' +
+                            '<button type="button" class="layui-btn layui-btn-normal layui-btn-sm confirm ajax-post" title="更新目标配置" onclick="targetEdit(' + info.id + ',' + info.target_type_id + ')" >更新</a>' +
+                            '<button type="button" id="btn_del" class="layui-btn layui-btn-danger layui-btn-sm confirm ajax-post" onclick="targetDel(' + info.id + ',' + info.target_type_id + ')" value="' + info.id + '" title="移除目标配置"><i class="layui-icon"></i></button></div>';
+                    }
+                    htmlstr += '<div class="layui-inline"><label class="layui-form-label"></label>' +
+                        '<input type="button"  class="layui-btn layui-btn-normal" title="新增目标" value="新增目标" onclick="showAddTarget()" ></div>';
+                } else {
+                    htmlstr += '<div class="layui-inline"><div class="layui-inline"><label class="layui-form-label"></label>' +
+                        '<input type="button"  class="layui-btn layui-btn-normal" title="新增目标" value="新增目标" onclick="showAddTarget()" ></div>';
+                }
+                $("#target_show").html(htmlstr);
+            }
+        });
+    }
+</script>
+{/block}

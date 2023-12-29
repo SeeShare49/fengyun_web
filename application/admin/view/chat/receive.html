@@ -1,0 +1,50 @@
+{extend name="public/base" /}
+{block name="body"}
+
+<meta http-equiv="refresh" content="1">
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">聊天监控</div>
+            <div class="layui-card-body">
+
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>区服</th>
+                            <th>聊天场景</th>
+                            <th>聊天内容</th>
+                            <th>消息发送者</th>
+                            <th>消息接收者</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="chat_list" id="vo"}
+                        <tr>
+                            <td>{:get_area_server_name($vo.server_id)}</td>
+                            <td>
+                                {switch vo.type}
+                                {case 0}附近{/case}
+                                {case 1}私聊{/case}
+                                {case 2}队伍{/case}
+                                {case 3}公会{/case}
+                                {case 4}世界{/case}
+                                {case 5}喇叭{/case}
+                                {/switch}
+                            </td>
+<!--                            <td>{:get_self_str($vo.msg)}</td>-->
+                            <td>{$vo.msg}</td>
+                            <td>{$vo.from}</td>
+                            <td>{$vo.to}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

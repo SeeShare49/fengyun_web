@@ -1,0 +1,63 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">行为标识：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="action_name" lay-verify="required" onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入行为标识,英文字母'" placeholder="请输入行为标识,英文字母"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">类型ID：</label>
+                        <div class="layui-input-block">
+                            <select name="action_type_id">
+                                <option value="0">请选择日志类型</option>
+                                {volist name="action_type_list" id="vo"}
+                                <option value="{$vo.id}" {$action_type_id==$vo.id?'selected':''}>{$vo.action_type_desc}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">行为值：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="action_value" lay-verify="required|number" value="{$info['action_value']}"
+                                   onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入行为值'" placeholder="请输入行为值"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">行为描述：</label>
+                        <div class="layui-input-block">
+                            <textarea name="action_desc" class="layui-textarea"
+                                      onfocus="this.placeholder=''"
+                                      onblur="this.placeholder='请输入行为描述'" placeholder="请输入行为描述"></textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" checked value="1" title="显示">
+                            <input type="radio" name="status" value="0" title="隐藏">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

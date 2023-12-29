@@ -1,0 +1,114 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">服务器ID：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="id" lay-verify="required" onfocus="this.placeholder=''"
+                                   onblur="placeholder='请输入区服ID'" placeholder="请输入服务器ID" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">区服名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="servername" lay-verify="required" onfocus="this.placeholder=''"
+                                   onblur="placeholder='请输区服名称'" placeholder="请输区服名称" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">IP(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_ip_r" value="192.168.0.135" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据的服务器IP'" placeholder="请填写读取数据的服务器IP">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Port(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_port_r" value="3306" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据服务器端口'" placeholder="请填写读取数据服务器端口">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录名(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_username_r" value="root" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据数据库登录名称'" placeholder="请填写读取数据数据库登录名称">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_password_r" value="bangshi123" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据数据库登录密码'" placeholder="请填写读取数据数据库登录密码">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">IP(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_ip_w" value="192.168.0.135" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据服务器IP地址'" placeholder="请填写写入数据服务器IP地址">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Port(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_port_w" value="3306" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据服务器端口'" placeholder="请填写写入数据服务器端口">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录名(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_username_w" value="root" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据数据库登录名称'" placeholder="请填写写入数据数据库登录名称">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_password_w" value="bangshi123" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据数据库登录密码'" placeholder="请填写写入数据数据库登录密码">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script src="__JS__/jquery.form.js"></script>
+<script>
+    layui.use(['element', 'form', 'laydate'], function () {
+        var laydate = layui.laydate
+            , form = layui.form;
+
+        //常规用法
+        laydate.render({
+            elem: '#open_time'
+            , type: 'datetime'
+        });
+    });
+</script>
+{/block}

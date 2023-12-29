@@ -1,0 +1,72 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">福利领取列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('delete')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">玩家昵称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="player_name" placeholder="请输入玩家昵称" value="{$player_name}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>玩家昵称</th>
+                            <th>福利编号ID</th>
+                            <th>福利礼包标题</th>
+                            <th>领取时间</th>
+                            <th width="130px;">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.player_name}</td>
+                            <td>{:get_welfare_title($vo.welfare_id)}</td>
+                            <td>{:get_welfare_title($vo.welfare_id)}</td>
+                            <td>
+                                {neq name="vo.create_time" value=0}
+                                {:date('Y-m-d H:i:s',$vo.create_time)}
+                                {/neq}
+                            </td>
+                            <td>
+                                <a href="{:url('/welfare/detail?id='.$vo['welfare_id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="查看礼包详情">查看礼包详情</a>
+                                <a href="{:url('delete?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

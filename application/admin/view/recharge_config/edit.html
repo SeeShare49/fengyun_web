@@ -1,0 +1,80 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">充值金额：</label>
+                        <div class="layui-input-block">
+                            <input name="money" lay-verify="required|number" onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入充值金额'"
+                                   placeholder="请输入充值金额" class="layui-input" value="{$info['money']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">元宝数量：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="amount" lay-verify="required|number"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入元宝数量'"
+                                   placeholder="请输入元宝数量"
+                                   class="layui-input" value="{$info['amount']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">充值类型：</label>
+                        <div class="layui-input-block">
+                            <select name="recharge_type">
+                                <option value="1" selected="selected">元宝</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">赠送数量：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="attach_amount" lay-verify="required|number"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入赠送元宝数量'"
+                                   placeholder="请输入赠送元宝数量"
+                                   class="layui-input" value="{$info['attach_amount']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">附加道具：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="attach_prop"
+                                   onfocus="this.placeholder=''" onblur="this.placeholder='请输入附加道具,格式为:ID|数量;'"
+                                   placeholder="请输入附加道具,格式为:ID|数量;"
+                                   class="layui-input" value="{$info['attach_prop']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">道具说明：</label>
+                        <div class="layui-input-block">
+                                      <textarea name="attach_prop_desc" onfocus="this.placeholder=''"
+                                                onblur="this.placeholder='请输入附加道具说明'"
+                                                placeholder="请输入附加道具说明"
+                                                class="layui-textarea">{$info['attach_prop_desc']}</textarea>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" value="1" title="显示" {$info['status']==1?'checked':''}>
+                            <input type="radio" name="status" value="0" title="隐藏" {$info['status']==0?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

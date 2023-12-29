@@ -1,0 +1,110 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">问题反馈列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">反馈内容:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="content" placeholder="请输入问题反馈内容" value="{$content}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>玩家昵称</th>
+                            <th>设备型号</th>
+                            <th>反馈内容</th>
+                            <th>反馈图片</th>
+                            <th>回复内容</th>
+                            <th>反馈时间</th>
+                            <th>回复时间</th>
+                            <th>状态</th>
+                            <th width="100">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.player_name}</td>
+                            <td>{$vo.device_model}</td>
+                            <td>
+                                {if strlen($vo.content)>100}
+                                {:mb_substr($vo.content,0,100,'utf-8')}...
+                                {else/}
+                                {$vo.content}
+                                {/if}
+                            </td>
+                            <td>
+                                <?php
+                                    $str = "/upload/0.jpg,/upload/1.jpg,/upload/2.jpg";
+                                    $list = (explode(",",$str));
+                                    foreach($list as $value)
+                                   {
+                                     echo'  <a class="ns-img" href=""><img src="'.$value.'"/></a>';
+                                    }
+                                ?>
+                            </td>
+                            <td>
+                                {if strlen($vo.reply_content)>100}
+                                {:mb_substr($vo.reply_content,0,100,'utf-8')}...
+                                {else/}
+                                {$vo.reply_content}
+                                {/if}
+                            </td>
+                            <td>{:date('Y-m-d H:i:s',$vo.create_date)}</td>
+                            <td>
+                                {neq name="$vo.deal_date" value="0"}
+                                {:date('Y-m-d H:i:s',$vo['deal_date'])}
+                                {/neq}
+                            </td>
+
+                            <td>
+                                {if $vo.status==0}
+                                <span style="color:blue">待回复</span>
+                                {else if $vo.status==1/}
+                                <span style="color:green">已回复</span>
+                                {/else}
+                                <span style="color:red">已删除</span>
+                                {/if}
+                            </td>
+                            <td>
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑">编辑</a>
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

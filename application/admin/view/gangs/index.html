@@ -1,0 +1,84 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">帮派管理</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="创建帮派" href="{:url('create')}">创建帮派</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('delete')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器:</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    <option  value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">帮派名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="guildname" placeholder="请输入帮派名称" value="{$guildname}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>帮派编号ID</th>
+                            <th>帮派名称</th>
+                            <th>会长</th>
+                            <th>等级</th>
+                            <th>帮派公告</th>
+                            <th width="320">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="zz-table-chk-item" value="{$vo.sect_id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.sect_id}</td>
+                            <td><a href="{:url('member')}?id={$vo.sect_id}&server_id={$server_id}" style="color: blue;">{$vo.sect_name}</a></td>
+                            <td>{$vo.nickname}</td>
+                            <td>{$vo.level} 级</td>
+                            <td>{$vo.notice}</td>
+                            <td>
+                                <a href="{:url('member')}?id={$vo.sect_id}&server_id={$server_id}" class="layui-btn layui-btn-normal" title="查看帮派成员">帮派成员</a>
+                                <a href="{:url('notice')}?id={$vo.sect_id}&server_id={$server_id}&name={$vo.sect_name}" class="layui-btn  open-win layui-btn-danger" title="修改帮派公告">帮派公告</a>
+                                <a href="{:url('transfer_master')}?id={$vo.sect_id}&server_id={$server_id}&name={$vo.sect_name}" class="layui-btn layui-btn-warm" title="帮派转移">帮派转移</a>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+{/block}

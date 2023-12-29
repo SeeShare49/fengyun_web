@@ -1,0 +1,132 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">游戏界面行为统计</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">日期:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="date" name="date" value="{$date}"
+                                       placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">区服ID查询:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="start_server_id" name="start_server_id"
+                                       value="{$start_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                       placeholder="请输入起始区服ID">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" id="end_server_id" name="end_server_id"
+                                       value="{$end_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                       placeholder="请输入截止区服ID">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">功能类别</label>
+                            <div class="layui-input-inline">
+                                <select name="function_type">
+                                    <option value="-1">全部</option>
+                                    <option value="100">活动</option>
+                                    <option value="101">充值</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单/多服查询:</label>
+                            <div class="layui-input-block" style="width: 350px;">
+                                <select name="server_id" xm-select="select4" xm-select-search="">
+                                    <option value="-1">全服</option>
+                                    {volist name="server_list" id="vo"}
+                                    {notempty name="server_id"}
+                                    {volist name='server_id' id='s_vo'}
+                                    {if $vo.id==$s_vo}
+                                    <option value="{$vo.id}" {$s_vo==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/if}
+                                    {/volist}
+                                    {else/}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/notempty}
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>区服ID</th>
+                            <th>区服名称</th>
+                            <th>功能类别</th>
+                            <th>一级界面</th>
+                            <th>二级界面</th>
+                            <th>记录数</th>
+                            <th>占比</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            </td>
+                            <td>{:date('Y-m-d',strtotime($vo['logtime']))}</td>
+                            <td>{$vo.serverId}</td>
+                            <td>{$vo.serverName}</td>
+                            <td>
+                                {if $vo.actionId==101}
+                                <span style="color: green;font-weight: bold;">充值</span>
+                                {else/}
+                                <span style="color: orangered;font-weight: bold;">活动</span>
+                                {/if}
+                            </td>
+                            <td><span style="color: indigo;font-weight: bold;">{:get_surface_type_name($vo.actionId,$vo.value,1)}</span></td>
+                            <td>
+                                {if $vo.remark!=0}
+                                <span style="color: blueviolet;font-weight: bold;">{:get_surface_type_name($vo.actionId,$vo.remark,2)}</span>
+                                {/if}
+                            </td>
+                            <td>{$vo.records}</td>
+                            <td><span style="color: maroon;font-weight: bold;">{:sprintf("%1\$.2f",$vo.records/$total*100)}%</span></td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['laydate'], function () {
+        var laydate = layui.laydate;
+        //常规用法
+        laydate.render({
+            elem: '#date'
+        });
+
+    });
+</script>
+{/block}

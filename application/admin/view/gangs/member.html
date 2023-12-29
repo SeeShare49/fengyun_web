@@ -1,0 +1,71 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">帮派成员列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+<!--                    <div class="zz-operate-btn-group">-->
+<!--                        <a class="layui-btn open-win" title="新增激活码" href="{:url('create')}">新 增</a>-->
+<!--                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('delete')}">批量删除</a>-->
+<!--                    </div>-->
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <input type="text" name="nickname" placeholder="请输入成员昵称" value="{$nickname}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>帮派ID</th>
+                            <th>玩家ID</th>
+                            <th>昵称</th>
+                            <th>头衔</th>
+                            <th>职业</th>
+                            <th>等级</th>
+                            <th>性别</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo"}
+                        <tr>
+                            <td>
+                                <input type="checkbox" class="zz-table-chk-item" value="{$vo.actor_id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.sect_id}</td>
+                            <td>{$vo.actor_id}</td>
+                            <td>{:get_player_name($vo.actor_id,$server_id)}</td>
+                            <td>
+                                {if $vo.title==100}<span style="color:orangered">会长</span>{else/}成员{/if}
+                            </td>
+                            <td>{$vo.job}</td>
+                            <td>{$vo.level}</td>
+                            <td>
+                                {if $vo.gender==200}男{elseif $vo.gender==201}女{else/}未知{/if}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

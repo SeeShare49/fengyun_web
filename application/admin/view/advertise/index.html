@@ -1,0 +1,68 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">广告投放统计信息列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">广告名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="adv_title" placeholder="请输入广告名称" value="{$adv_title}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th width="80px;" >广告跟踪</th>
+                            <th width="80px;">时间</th>
+                            <th width="80px;">当日下载</th>
+                            <th width="80px;">当日注册</th>
+                            <th width="80px;">当日转化</th>
+                            <th width="80px;">当日活跃</th>
+                            <th width="80px;">当日总充值</th>
+                            <th width="80px;">当日新增充值</th>
+                            <th width="80px;">当日付费总人数</th>
+                            <th width="80px;">当日新增付费人数</th>
+                            <th width="80px;">当日付费率</th>
+                            <th width="80px;">总付费率</th>
+                            <th width="80px;">当日ARPU</th>
+                            <th width="80px;">当日ARRPU</th>
+                            <th width="80px;">1日留存</th>
+                            <th width="80px;">2日留存</th>
+                            <th width="80px;">3日留存</th>
+                            <th width="80px;">4日留存</th>
+                            <th width="80px;">5日留存</th>
+                            <th width="80px;">6日留存</th>
+                            <th width="80px;">7日留存</th>
+                            <th width="80px;">15日留存</th>
+                            <th width="80px;">30日留存</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

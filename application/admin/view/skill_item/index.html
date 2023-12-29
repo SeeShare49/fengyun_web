@@ -1,0 +1,58 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">技能列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">技能ID:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="skill_id" placeholder="请输入技能ID" value="{$skill_id}"
+                                       onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">技能名称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="skill_name" placeholder="请输入玩家昵称" value="{$skill_name}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>技能ID</th>
+                            <th>技能名称</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.skill_id}</td>
+                            <td>{$vo.skill_name}</td>
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}

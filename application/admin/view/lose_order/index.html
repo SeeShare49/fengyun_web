@@ -1,0 +1,76 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">订单补录信息列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="充值订单补录信息" href="{:url('create')}">订单补录</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">订单编号:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="order_id" placeholder="请输入订单编号" value="{$order_id}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">补录类型:</label>
+                            <div class="layui-input-inline">
+                                <select name="recharge_type">
+                                    <option value="-1" {$recharge_type==-1?'selected':''}>请选择</option>
+                                    <option value="1" {$recharge_type==1?'selected':''}>游戏充值</option>
+                                    <option value="2" {$recharge_type==2?'selected':''}>平台直充</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>订单编号</th>
+                            <th>补录类型</th>
+                            <th>补录时间</th>
+                            <th>操作人</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.order_id}</td>
+                            <td>
+                                {eq name="vo.recharge_type" value="1"}
+                                <span style="color: blue">游戏充值</span>
+                                {else/}
+                                <span style="color: red">平台直充</span>
+                                {/eq}
+                            </td>
+                            <td>
+                                {neq name="vo.create_time" value="0"}
+                                {:date('Y-m-d H:i:s',$vo.create_time)}
+                                {/neq}
+                            </td>
+                            <td>{:get_admin_user_name($vo['admin_id'])}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

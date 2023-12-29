@@ -1,0 +1,107 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">编号ID：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="id" lay-verify="required" value="{$info['id']}" class="layui-input" disabled="disabled">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">区服名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="servername" lay-verify="required" value="{$info['servername']}"
+                                   placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">数据库名：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_database_name" readonly="readonly"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写数据库名称'" placeholder="请填写数据库名称" value="{$info['db_database_name']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">IP(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_ip_r"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据的服务器IP'" placeholder="请填写读取数据的服务器IP" value="{$info['db_ip_r']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Port(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_port_r"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据服务器端口'" placeholder="请填写读取数据服务器端口" value="{$info['db_port_r']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录名(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_username_r"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据数据库登录名称'" placeholder="请填写读取数据数据库登录名称" value="{$info['db_username_r']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码(读)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_password_r"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写读取数据数据库登录密码'" placeholder="请填写读取数据数据库登录密码" value="{$info['db_password_r']}">
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">IP(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_ip_w"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据服务器IP地址'" placeholder="请填写写入数据服务器IP地址" value="{$info['db_ip_w']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">Port(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_port_w"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据服务器端口'" placeholder="请填写写入数据服务器端口" value="{$info['db_port_w']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">登录名(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_username_w"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据数据库登录名称'" placeholder="请填写写入数据数据库登录名称" value="{$info['db_username_w']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">密码(写)：</label>
+                        <div class="layui-input-block">
+                            <input type="text" class="layui-input" lay-verify="required" name="db_password_w"
+                                   onfocus="this.placeholder=''"
+                                   onblur="placeholder='请填写写入数据数据库登录密码'" placeholder="请填写写入数据数据库登录密码" value="{$info['db_password_w']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

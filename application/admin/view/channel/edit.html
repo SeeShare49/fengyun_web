@@ -1,0 +1,74 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道名称：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="channel_name" lay-verify="required" value="{$info['channel_name']}"
+                                   placeholder="输入渠道名称" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道包名：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="packet_name" value="{$info['packet_name']}"
+                                   placeholder="输入渠道包名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道标识：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="channel_mark" lay-verify="required" value="{$info['channel_mark']}"
+                                   placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道值：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="channel_value" lay-verify="required" placeholder="输入渠道值"
+                                   value="{$info['channel_value']}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">渠道版本：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="channel_version" lay-verify="required" placeholder="输入渠道版本"
+                                   value="{$info['channel_version']}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">自定义-1：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="channel_desc1" lay-verify="required" placeholder="输入渠道自定义-1"
+                                   value="{$info['channel_desc1']}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">自定义-2：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="channel_desc2" lay-verify="required" placeholder="输入渠道自定义-2"
+                                   value="{$info['channel_desc2']}"
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

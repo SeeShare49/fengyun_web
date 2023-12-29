@@ -1,0 +1,79 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">活动信息列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">服务器:</label>
+                            <div class="layui-input-inline" style="width: 300px;">
+                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色ID:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="actor_id" placeholder="请输入角色ID" value="{$actor_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色昵称:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="actor_name" placeholder="请输入角色昵称" value="{$actor_name}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>排行</th>
+                            <th>角色ID</th>
+                            <th>角色名称</th>
+                            <th>充值元宝</th>
+                            <th>目标时间</th>
+                            <th>职业</th>
+                            <th>性别</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>第{$i}名</td>
+                            <td>{$vo.actor_id}</td>
+                            <td>{$vo.actor_name}</td>
+                            <td>{$vo.total_value}</td>
+                            <td>{:date('Y-m-d H:i:s',$vo['change_time'])}</td>
+                            <td>{if $vo.job==100}战士{elseif $vo.job==101}法师{else/}道士{/if}</td>
+                            <td>{if $vo.gender==200}男{elseif $vo.gender==201}女{else/}未知{/if}</td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+{/block}

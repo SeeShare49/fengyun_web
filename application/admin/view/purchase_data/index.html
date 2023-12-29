@@ -1,0 +1,263 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">道具直充列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">区服:</label>
+                            <div class="layui-input-inline" style="min-width:220px;">
+                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                    {volist name="server_list" id="vo"}
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                        {$vo.servername}
+                                    </option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+<!--                        <div class="layui-inline">-->
+<!--                            <label class="layui-form-label">渠道:</label>-->
+<!--                            <div class="layui-input-inline" style="min-width:240px;">-->
+<!--                                <select name="channel_id" xm-select="select4" xm-select-max="1" xm-select-search="">-->
+<!--                                    {volist name="channel_list" id="vo"}-->
+<!--                                    <option value="{$vo.id}" {$channel_id==$vo.id?'selected':''}>{$vo.channel_name}-->
+<!--                                    </option>-->
+<!--                                    {/volist}-->
+<!--                                </select>-->
+<!--                            </div>-->
+<!--                        </div>-->
+                        <div class="layui-inline">
+                            <label class="layui-form-label">礼包名称:</label>
+                            <div class="layui-input-inline" style="width:200px;">
+                                <select name="recharge_id" xm-select="select4" xm-select-max="1" xm-select-search="">
+                                    <option value="1" {$recharge_id==1?'selected':''}>王者特权</option>
+                                    <option value="2" {$recharge_id==2?'selected':''}>皇者特权</option>
+                                    <option value="3" {$recharge_id==3?'selected':''}>至尊特权</option>
+                                    <option value="4" {$recharge_id==4?'selected':''}>特权团购</option>
+                                    <option value="5" {$recharge_id==5?'selected':''}>分身契约1</option>
+                                    <option value="6" {$recharge_id==6?'selected':''}>分身契约2</option>
+                                    <option value="7" {$recharge_id==7?'selected':''}>分身契约3</option>
+                                    <option value="8" {$recharge_id==8?'selected':''}>投资计划1</option>
+                                    <option value="9" {$recharge_id==9?'selected':''}>投资计划2</option>
+                                    <option value="10" {$recharge_id==10?'selected':''}>投资计划3</option>
+                                    <option value="11" {$recharge_id==11?'selected':''}>投资计划4</option>
+                                    <option value="12" {$recharge_id==12?'selected':''}>投资计划5</option>
+                                    <option value="13" {$recharge_id==13?'selected':''}>投资计划6</option>
+                                    <option value="14" {$recharge_id==14?'selected':''}>投资计划7</option>
+                                    <option value="15" {$recharge_id==15?'selected':''}>装备特惠</option>
+                                    <option value="16" {$recharge_id==16?'selected':''}>神翼特惠</option>
+                                    <option value="17" {$recharge_id==17?'selected':''}>宝石特惠</option>
+                                    <option value="18" {$recharge_id==18?'selected':''}>圣装特惠</option>
+                                    <option value="19" {$recharge_id==19?'selected':''}>符文特惠</option>
+                                    <option value="20" {$recharge_id==20?'selected':''}>神兵特惠</option>
+                                    <option value="21" {$recharge_id==21?'selected':''}>神技特惠</option>
+                                    <option value="22" {$recharge_id==22?'selected':''}>神盾特惠</option>
+                                    <option value="23" {$recharge_id==23?'selected':''}>无极特惠</option>
+                                    <option value="24" {$recharge_id==24?'selected':''}>重生特惠</option>
+                                    <option value="25" {$recharge_id==25?'selected':''}>羽毛特惠</option>
+                                    <option value="26" {$recharge_id==26?'selected':''}>高阶重生特惠</option>
+                                    <option value="27" {$recharge_id==27?'selected':''}>强化特惠</option>
+                                    <option value="28" {$recharge_id==28?'selected':''}>圣域特惠</option>
+                                    <option value="29" {$recharge_id==29?'selected':''}>魂装特惠</option>
+                                    <option value="30" {$recharge_id==30?'selected':''}>宝石特惠</option>
+                                    <option value="31" {$recharge_id==31?'selected':''}>圣装特惠</option>
+                                    <option value="32" {$recharge_id==32?'selected':''}>神炉特惠</option>
+                                    <option value="33" {$recharge_id==33?'selected':''}>魂装特惠</option>
+                                    <option value="34" {$recharge_id==34?'selected':''}>宝石特惠</option>
+                                    <option value="35" {$recharge_id==35?'selected':''}>圣装特惠</option>
+                                    <option value="36" {$recharge_id==36?'selected':''}>魂装特惠</option>
+                                    <option value="37" {$recharge_id==37?'selected':''}>法宝特惠</option>
+                                    <option value="38" {$recharge_id==38?'selected':''}>宝石特惠</option>
+                                    <option value="39" {$recharge_id==39?'selected':''}>圣装特惠</option>
+                                    <option value="40" {$recharge_id==40?'selected':''}>神炉特惠</option>
+                                    <option value="41" {$recharge_id==41?'selected':''}>魂装特惠</option>
+                                    <option value="42" {$recharge_id==42?'selected':''}>宝石特惠</option>
+                                    <option value="43" {$recharge_id==43?'selected':''}>圣装特惠</option>
+                                    <option value="44" {$recharge_id==44?'selected':''}>魂装特惠</option>
+                                    <option value="45" {$recharge_id==45?'selected':''}>法宝特惠</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">支付方式:</label>
+                            <div class="layui-input-inline" style="width:130px;">
+                                <select name="pay_type">
+                                    <option value="0" {$pay_type==0?'selected':''}>全部支付方式</option>
+                                    <option value="1" {$pay_type==1?'selected':''}>支付宝</option>
+                                    <option value="2" {$pay_type==2?'selected':''}>微信</option>
+                                    <option value="3" {$pay_type==3?'selected':''}>汇付宝</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">角色ID:</label>
+                            <div class="layui-input-inline" style="width:130px;">
+                                <input type="text" name="user_id" placeholder="角色ID" value="{$user_id}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">订单编号:</label>
+                            <div class="layui-input-inline" style="width: 230px;">
+                                <input type="text" name="order_id" placeholder="订单编号" value="{$order_id}"
+                                       class="layui-input">
+                            </div>
+
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">查询日期:</label>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" class="layui-input" id="start_date" name="start_date"
+                                       value="{$start_date}" readonly="readonly" placeholder="yyyy-MM-dd">
+                            </div>
+                            <div class="layui-input-inline">-</div>
+                            <div class="layui-input-inline" style="width: 150px;">
+                                <input type="text" class="layui-input" id="end_date" name="end_date" value="{$end_date}"
+                                       readonly="readonly" placeholder="yyyy-MM-dd">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline" style="width: 100px;">
+                                <select name="order_status">
+                                    <option value="-1" {$order_status==-1?'selected':''}>全部</option>
+                                    <option value="1" {$order_status==1?'selected':''}>已支付</option>
+                                    <option value="100" {$order_status==100?'selected':''}>未支付</option>
+                                    <option value="2" {$order_status==2?'selected':''}>支付异常</option>
+                                </select>
+                            </div>
+
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                            <a class="layui-btn" title="导出充值记录"
+                               href="export?server_id={$server_id}&start_date={$start_date}&end_date={$end_date}">导出</a>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>区服</th>
+                            <th>角色ID</th>
+                            <th>玩家姓名</th>
+                            <th>礼包名称</th>
+                            <th>支付金额</th>
+                            <th>购买数量</th>
+                            <th>订单编号</th>
+                            <th>付费IP</th>
+                            <th>订单状态</th>
+                            <th>渠道</th>
+                            <th>支付方式</th>
+                            <th>订单时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo['id']}</td>
+                            <td>{:get_area_server_name($vo.server_id)}</td>
+                            <td>{$vo.user_id}</td>
+                            <td>{:get_player_name($vo.user_id,$vo.server_id)}</td>
+                            <td style="color: purple;font-weight: bold;">{$vo['purchase_name']}</td>
+                            <td style="color: darkred;font-weight: bold;">{:sprintf("%1\$.2f",$vo['money'])} 元</td>
+                            <td>{$vo['amount']}</td>
+                            <td>{$vo['order_id']}</td>
+                            <td>{$vo['pay_ip']}</td>
+                            <td>
+                                {switch vo.order_status}
+                                {case 0}<span style="color: blue">未支付</span>{/case}
+                                {case 1}<span style="color: green">已支付</span>{/case}
+                                {case 2}<span style="color: red">支付异常</span>{/case}
+                                {/switch}
+                            </td>
+                            <td style="color: green;font-weight: bold;">
+                                {:get_channel_name($vo['channel_id'])}
+                            </td>
+                            <td>
+                                {switch name="vo.pay_type"}
+                                {case 1}支付宝{/case}
+                                {case 2}微信{/case}
+                                {case 3}汇付宝{/case}
+                                {/switch}
+                            </td>
+                            <td>{$vo['add_time']}</td>
+                        </tr>
+                        {/volist}
+                        <tr>
+                            <td style="font-weight: bold;color: red">总计(已支付金额)</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td style="font-weight: bold;color: red;">￥ {:sprintf("%1\$.2f",$total_money)} 元</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+
+<script>
+    layui.use(['laydate', "jquery"], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , $ = layui.jquery
+            , laydate = layui.laydate;
+        var nowTime = new Date().valueOf();
+
+        //日期
+        var start = laydate.render({
+            elem: '#start_date',
+            //min:nowTime,
+            type: 'datetime',
+            max: nowTime,
+            done: function (value, date) {
+                endMax = end.config.max;
+                end.config.min = date;
+                end.config.min.month = date.month - 1;
+            }
+        });
+        var end = laydate.render({
+            elem: '#end_date',
+            min: nowTime,
+            max: nowTime,
+            type: 'datetime',
+            done: function (value, date) {
+                if ($.trim(value) == '') {
+                    var curDate = new Date();
+                    date = {'date': curDate.getDate(), 'month': curDate.getMonth() + 1, 'year': curDate.getFullYear()};
+                }
+                start.config.max = date;
+                start.config.max.month = date.month - 1;
+            }
+        });
+    });
+</script>
+{/block}

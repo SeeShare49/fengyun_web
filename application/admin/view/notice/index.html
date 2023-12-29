@@ -1,0 +1,143 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">公告信息列表</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn" title="新增公告信息" href="{:url('create')}">新增系统公告</a>
+                        <a class="layui-btn" title="新增跨服公告" href="{:url('kuafu_notice/create')}">新增跨服公告</a>
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('del')}">批量删除</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">公告内容:</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="notice_content" placeholder="请输入公告内容" value="{$notice_content}"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">公告类型:</label>
+                            <div class="layui-input-inline">
+                                <select name="notice_type">
+                                    <option value="-1" {$notice_type==-1?'selected':''}>全部</option>
+                                    <option value="1" {$notice_type==1?'selected':''}>系统公告</option>
+                                    <option value="2" {$notice_type==2?'selected':''}>跨服公告</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">发送类型:</label>
+                            <div class="layui-input-inline">
+                                <select name="send_type">
+                                    <option value="-1" {$send_type==-1?'selected':''}>全部</option>
+                                    <option value="1" {$send_type==1?'selected':''}>定时发送</option>
+                                    <option value="2" {$send_type==2?'selected':''}>即时发送</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn" lay-submit>
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th class=" layui-table-col-special" width="18px">
+                                <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
+                            </th>
+                            <th>编号</th>
+                            <th>服务器ID</th>
+                            <th>播放间隔</th>
+                            <th>公告类型</th>
+                            <th>公告内容</th>
+                            <th>发送方式</th>
+                            <th>起始时间段</th>
+                            <th>结束时间段</th>
+                            <th>状态</th>
+                            <th style="min-width: 100px">操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td><input type="checkbox" class="zz-table-chk-item" value="{$vo.id}" lay-skin="primary">
+                            </td>
+                            <td>{$vo.id}</td>
+                            <td>{$vo.server_id}</td>
+                            <td>【{$vo.play_interval}】分钟</td>
+                            <td>
+                                {if $vo.notice_type==1}
+                                <span style="color:green;font-weight: bold;">系统公告</span>
+                                {else/}
+                                <span style="color:purple;font-weight: bold;">跨服公告</span>
+                                {/if}
+                            </td>
+                            <td>
+                                {if strlen($vo.notice_content)>80}
+                                {:mb_substr($vo.notice_content,0,80,'utf-8')}...
+                                {else/}
+                                {$vo.notice_content}
+                                {/if}
+                            </td>
+                            <td>
+                                {if $vo.send_type==1}
+                                <span style="color:blue;font-weight: bold;">定时发送</span>
+                                {else/}
+                                <span style="color:blue;font-weight: bold;">即时发送</span>
+                                {/if}
+                            </td>
+                            <td>
+                                {eq name="vo.send_start_time" value="0"}
+                                无限制
+                                {else/}
+                                {:date('Y-m-d H:i:s',$vo.send_start_time)}
+                                {/eq}
+                            </td>
+                            <td>
+                                {eq name="vo.send_end_time" value="0"}
+                                无限制
+                                {else/}
+                                {:date('Y-m-d H:i:s',$vo.send_end_time)}
+                                {/eq}
+                            </td>
+
+                            <td>
+                                <input type="checkbox" lay-filter="zz-switch-display"
+                                       data-href="{:url('set_notice_status?id='.$vo['id'])}" name="status"
+                                       value="{$vo.status}" {$vo.status==1?'checked':''} lay-skin="switch"
+                                       lay-text="启用|停用">
+                            </td>
+                            <td>
+                                {if $vo.notice_type==1}
+                                <a href="{:url('edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑">编辑</a>
+                                {else/}
+                                <a href="{:url('kuafu_notice/edit?id='.$vo['id'])}"
+                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑">编辑</a>
+                                {/if}
+                                <a href="{:url('del?ids='.$vo['id'])}"
+                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">删除</a>
+                                {eq name="vo.send_type" value="1"}
+                                <a href="{:url('timing_send_notice')}"
+                                   class="layui-btn layui-btn-xs " title="公告发送">发送（备用）</a>
+                                {/eq}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

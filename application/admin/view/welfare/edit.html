@@ -1,0 +1,408 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post" class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">福利类型</label>
+                        <div class="layui-input-block">
+                            <select name="welfare_type">
+                                <option value="-1">请选择福利类型</option>
+                                <option value="1" {$info['welfare_type']==$info.welfare_type?'selected':''}>福利礼包</option>
+                                <option value="2" {$info['welfare_type']==$info.welfare_type?'selected':''}>活动礼包</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">礼包标题：</label>
+                        <div class="layui-input-block">
+                            <input class="layui-input" lay-verify="required" name="title"
+                                   type="text" value="{$info['title']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">ICON：</label>
+                        <div class="layui-input-block">
+                            <div class="zz-upload-pic">
+                                <button class="layui-btn zzBtnUpload" type="button">
+                                    <i class="layui-icon">&#xe67c;</i>上传礼包ICON图片
+                                </button>
+                                <input class="zz-upload-value" name="image_url" type="hidden"
+                                       value="{$info['image_url']}">
+                                <div class="zz-upload-pic-show layui-row"></div>
+                            </div>
+                            <script src="__JS__/upload.js"></script>
+                        </div>
+                    </div>
+
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>礼包物品信息</legend>
+                    </fieldset>
+
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">道具一：</label>
+                            <div class="layui-input-inline">
+                                <select name="item_id_0" lay-search="" lay-filter="prop">
+                                    <option value="0" {$item_id_0==0?'selected':''}>请选择道具ID</option>
+                                    {volist name="__PROP__" id="vo"}
+                                    <option value="{$vo.type_id}" {$item_id_0==$vo.type_id?'selected':''}>{$vo.type_id}-{$vo.type_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <label class="layui-form-label">数量一：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="item_count_0" id="item_count_0" value="{$item_count_0}"
+                                       onfocus="this.placeholder=''" onblur="this.placeholder='请输入道具数量'"
+                                       placeholder="请输入道具数量"
+                                       class="layui-input" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="prop_add_show_1"  >
+                        <div class="layui-inline">
+                            <label class="layui-form-label">道具二：</label>
+                            <div class="layui-input-inline">
+                                <select name="item_id_1" lay-search="" lay-filter="prop_1">
+                                    <option value="0" {$item_id_1==0?'selected':''}>请选择道具ID</option>
+                                    {volist name="__PROP__" id="vo"}
+                                    <option value="{$vo.type_id}" {$item_id_1==$vo.type_id?'selected':''}>{$vo.type_id}-{$vo.type_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <label class="layui-form-label">数量二：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="item_count_1" id="item_count_1" value="{$item_count_1}"
+                                       onfocus="this.placeholder=''" onblur="this.placeholder='请输入道具数量'"
+                                       placeholder="请输入道具数量"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="prop_add_show_2" >
+                        <div class="layui-inline">
+                            <label class="layui-form-label">道具三：</label>
+                            <div class="layui-input-inline">
+                                <select name="item_id_2" lay-search="" lay-filter="prop_2">
+                                    <option value="0" {$item_id_2==0?'selected':''}>请选择道具ID</option>
+                                    {volist name="__PROP__" id="vo"}
+                                    <option value="{$vo.type_id}" {$item_id_2==$vo.type_id?'selected':''}>{$vo.type_id}-{$vo.type_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <label class="layui-form-label">数量三：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="item_count_2" id="item_count_2" value="{$item_count_2}"
+                                       onfocus="this.placeholder=''" onblur="this.placeholder='请输入道具数量'"
+                                       placeholder="请输入道具数量"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="prop_add_show_3" >
+                        <div class="layui-inline">
+                            <label class="layui-form-label">道具四：</label>
+                            <div class="layui-input-inline">
+                                <select name="item_id_3" lay-search="" lay-filter="prop_3">
+                                    <option value="0" {$item_id_3==0?'selected':''}>请选择道具ID</option>
+                                    {volist name="__PROP__" id="vo"}
+                                    <option value="{$vo.type_id}" {$item_id_3==$vo.type_id?'selected':''}>{$vo.type_id}-{$vo.type_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <label class="layui-form-label">数量四：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="item_count_3" id="item_count_3" value="{$item_count_3}"
+                                       onfocus="this.placeholder=''" onblur="this.placeholder='请输入道具数量'"
+                                       placeholder="请输入道具数量"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="prop_add_show_4" >
+                        <div class="layui-inline">
+                            <label class="layui-form-label">道具五：</label>
+                            <div class="layui-input-inline">
+                                <select name="item_id_4" lay-search="" lay-filter="prop_4">
+                                    <option value="0" {$item_id_4==0?'selected':''}>请选择道具ID</option>
+                                    {volist name="__PROP__" id="vo"}
+                                    <option value="{$vo.type_id}" {$item_id_4==$vo.type_id?'selected':''}>{$vo.type_id}-{$vo.type_name}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                            <label class="layui-form-label">数量五：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="item_count_4" id="item_count_4" value="{$item_count_4}"
+                                       onfocus="this.placeholder=''" onblur="this.placeholder='请输入道具数量'"
+                                       placeholder="请输入道具数量"
+                                       class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">原礼包：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="content" onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='礼包物品内容'" placeholder="礼包物品内容"
+                                   disabled="disabled" class="layui-input" value="{$info['content']}">
+                        </div>
+                    </div>
+
+                    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                        <legend>福利设置|领取规则</legend>
+                    </fieldset>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否显示：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" value="1" title="显示" {$info['status']==1?'checked':''}>
+                            <input type="radio" name="status" value="-1" title="隐藏" {$info['status']==-1?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">活动周期：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" lay-verify="require|number" name="cycle"
+                                   onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请输入活动周期'" placeholder="请输入活动周期" value="{$info['cycle']}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否一次：</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="is_disposable" checked value="0" title="非一次性福利" {$info['is_disposable']==0?'checked':''}>
+                            <input type="radio" name="is_disposable" value="1" title="一次性福利" {$info['is_disposable']==1?'checked':''}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">领取截止：</label>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="limit_time" name="limit_time"
+                                   onfocus="this.placeholder=''"
+                                   onblur="this.placeholder='请选择领取截止日期'" placeholder="请选择领取截止日期"
+                                   value="{:date('Y-m-d',$info['limit_time'])}">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">领取规则：</label>
+                        <div class="layui-input-block">
+                            <script style="height:400px" id="editor" name="get_rule" type="text/plain">
+										{$info['get_rule']|raw}
+
+
+
+                            </script>
+                            <!--                            <textarea name="content" placeholder="" class="layui-textarea">{$info['content']}</textarea>-->
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="id" value="{$id}">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__LIB__/ueditor/ueditor.config.js"></script>
+<script src="__LIB__/ueditor/ueditor.all.min.js"></script>
+<script src="__LIB__/ueditor/lang/zh-cn/zh-cn.js"></script>
+<script src="__JS__/jquery.form.js"></script>
+<script>
+    var ue = UE.getEditor('editor', {
+        serverUrl: "{:url('Ueditor/index')}",
+    });
+</script>
+
+<script>
+    layui.use(['element', 'form','laydate'], function () {
+        var laydate = layui.laydate;
+        var element = layui.element;
+        var form = layui.form;
+        var layer = layui.layer;
+
+        //常规用法
+        laydate.render({
+            elem: '#limit_time'
+        });
+
+        form.render();
+        form.on('select(prop)', function (data) {
+            var prop_sel = $("select[name=item_id_0]");
+            var message = prop_sel.val();
+
+            if (message != 0) {
+                $("#item_count_0").on("input", function (e) {
+                    if (e.delegateTarget.value == '' || e.delegateTarget.value == 0) {
+                        alert("道具数量为空,提交个球~~~");
+                    } else {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/admin/prop_stack/get_limit_num',
+                            data: {id: message},
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == 1) {
+                                    console.log(e.delegateTarget.value);
+                                    if (e.delegateTarget.value > data.data) {
+                                        $('#item_count_0').val(data.data);
+                                    } else {
+                                        $('#item_count_0').val(e.delegateTarget.value);
+                                    }
+                                }
+
+                                $("#prop_add_show_1").show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        form.render();
+        form.on('select(prop_1)', function (data) {
+            var message = $("select[name=item_id_1]").val();
+            console.log(message);
+            if (message != 0) {
+                $("#item_count_1").on("input", function (e) {
+
+                    if (e.delegateTarget.value == '') {
+                        alert("道具数量为空,提交个球~~~");
+                        console.log("input value is null");
+                    } else {
+                        console.log(e.delegateTarget.value);
+                        $.ajax({
+                            type: 'GET',
+                            url: '/admin/prop_stack/get_limit_num',
+                            data: {id: message},
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == 1) {
+                                    if (e.delegateTarget.value > data.data) {
+                                        $('#item_count_1').val(data.data);
+                                    } else {
+                                        $('#item_count_1').val(e.delegateTarget.value);
+                                    }
+                                }
+
+                                $("#prop_add_show_2").show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        form.render();
+        form.on('select(prop_2)', function (data) {
+            var message = $("select[name=item_id_2]").val();
+            console.log(message);
+            if (message != 0) {
+                $("#item_count_2").on("input", function (e) {
+
+                    if (e.delegateTarget.value == '') {
+                        alert("道具数量为空,提交个球~~~");
+                        console.log("input value is null");
+                    } else {
+                        console.log(e.delegateTarget.value);
+                        $.ajax({
+                            type: 'GET',
+                            url: '/admin/prop_stack/get_limit_num',
+                            data: {id: message},
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == 1) {
+                                    if (e.delegateTarget.value > data.data) {
+                                        $('#item_count_2').val(data.data);
+                                    } else {
+                                        $('#item_count_2').val(e.delegateTarget.value);
+                                    }
+                                }
+
+                                $("#prop_add_show_3").show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        form.render();
+        form.on('select(prop_3)', function (data) {
+            var message = $("select[name=item_id_3]").val();
+            console.log(message);
+            if (message != 0) {
+                $("#item_count_3").on("input", function (e) {
+
+                    if (e.delegateTarget.value == '') {
+                        alert("道具数量为空,提交个球~~~");
+                        console.log("input value is null");
+                    } else {
+                        console.log(e.delegateTarget.value);
+                        $.ajax({
+                            type: 'GET',
+                            url: '/admin/prop_stack/get_limit_num',
+                            data: {id: message},
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == 1) {
+                                    if (e.delegateTarget.value > data.data) {
+                                        $('#item_count_3').val(data.data);
+                                    } else {
+                                        $('#item_count_3').val(e.delegateTarget.value);
+                                    }
+                                }
+                                $("#prop_add_show_4").show();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        form.render();
+        form.on('select(prop_4)', function (data) {
+            var message = $("select[name=item_id_4]").val();
+            console.log(message);
+            if (message != 0) {
+                $("#item_count_4").on("input", function (e) {
+
+                    if (e.delegateTarget.value == '') {
+                        alert("道具数量为空,提交个球~~~");
+                        console.log("input value is null");
+                    } else {
+                        console.log(e.delegateTarget.value);
+                        $.ajax({
+                            type: 'GET',
+                            url: '/admin/prop_stack/get_limit_num',
+                            data: {id: message},
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data.code == 1) {
+                                    if (e.delegateTarget.value > data.data) {
+                                        $('#item_count_4').val(data.data);
+                                    } else {
+                                        $('#item_count_4').val(e.delegateTarget.value);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+{/block}

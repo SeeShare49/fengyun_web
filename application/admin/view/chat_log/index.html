@@ -1,0 +1,174 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-header">历史聊天记录</div>
+            <div class="layui-card-body">
+                <div class="layui-row zz-row-operate">
+                    <div class="zz-operate-btn-group">
+                        <a class="layui-btn layui-btn-danger zz-btn-delete-all" href="{:url('clear')}">清空历史</a>
+                    </div>
+                    <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">区服范围:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="start_server_id" name="start_server_id"
+                                           value="{$start_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                           placeholder="起始区服ID">
+                                </div>
+                                <div class="layui-form-mid">-</div>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="end_server_id" name="end_server_id"
+                                           value="{$end_server_id}" onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                           placeholder="截止区服ID">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">消息类型</label>
+                                <div class="layui-input-inline">
+                                    <select name="chat_type">
+                                        <option value="-1" {$chat_type==-1?'selected':''}>全部消息类型</option>
+                                        <option value="100" {$chat_type==100?'selected':''}>附近</option>
+                                        <option value="1" {$chat_type==1?'selected':''}>私聊</option>
+                                        <option value="2" {$chat_type==2?'selected':''}>队伍</option>
+                                        <option value="3" {$chat_type==3?'selected':''}>公会</option>
+                                        <option value="4" {$chat_type==4?'selected':''}>世界</option>
+                                        <option value="5" {$chat_type==5?'selected':''}>喇叭</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">单/多服查询:</label>
+                                <div class="layui-input-block" style="width: 350px;">
+                                    <!--                                <select name="server_id" xm-select="select4" xm-select-search="" >-->
+                                    <!--                                    <option value="-1">全服</option>-->
+                                    <!--                                    {volist name="server_list" id="vo"}-->
+                                    <!--                                    {notempty name="server_id"}-->
+                                    <!--                                    {volist name='server_id' id='s_vo'}-->
+                                    <!--                                    {if $vo.id==$s_vo}-->
+                                    <!--                                    <option value="{$vo.id}" {$s_vo==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>-->
+                                    <!--                                    {/if}-->
+                                    <!--                                    {/volist}-->
+                                    <!--                                    {else/}-->
+                                    <!--                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>-->
+                                    <!--                                    {/notempty}-->
+                                    <!--                                    {/volist}-->
+                                    <!--                                </select>-->
+                                    <select name="server_id" xm-select="select4" xm-select-search="" xml-select-max="1">
+                                        {volist name="server_list" id="vo"}
+                                        <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
+                                            {$vo.servername}
+                                        </option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">查询日期:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="start_date" name="start_date"
+                                           value="{$start_date}" readonly="readonly" placeholder="yyyy-MM-dd">
+                                </div>
+                                <div class="layui-form-mid">-</div>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="end_date" name="end_date"
+                                           value="{$end_date}" readonly="readonly" placeholder="yyyy-MM-dd">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">用户昵称:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" name="player_name" value="{$player_name}"
+                                           placeholder="请输入用户昵称">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">关键词:</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" name="chat_content" value="{$chat_content}"
+                                           placeholder="请输入聊天内容关键词">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn" lay-submit>
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="layui-form">
+                    <table class="layui-table">
+                        <thead>
+                        <tr>
+                            <th style="min-width: 120px;">区服</th>
+                            <th>玩家ID</th>
+                            <th style="min-width: 60px;">消息类型</th>
+                            <th style="min-width: 100px;">消息发送者</th>
+                            <th style="min-width: 100px;">消息接收者</th>
+                            <th>消息内容</th>
+                            <th style="min-width: 150px;">发送时间</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {volist name="lists" id="vo" empty="$empty"}
+                        <tr>
+                            <td>{$vo.serverName}</td>
+                            <td>{$vo.actor_id}</td>
+                            <td>
+                                {switch vo.chat_type}
+                                {case 0}附近{/case}
+                                {case 1}私聊{/case}
+                                {case 2}队伍{/case}
+                                {case 3}公会{/case}
+                                {case 4}世界{/case}
+                                {case 5}喇叭{/case}
+                                {/switch}
+                            </td>
+                            <td>{$vo.from_name}</td>
+                            <td>{$vo.to_name}</td>
+                            <td>
+                                {:get_self_str($vo.chat_content)}
+                            </td>
+                            <td>
+                                {neq name="vo.logtime" value="0"}
+                                {:date('Y-m-d H:i:s',strtotime($vo.logtime))}
+                                {/neq}
+                            </td>
+                        </tr>
+                        {/volist}
+                        </tbody>
+                    </table>
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<link rel="stylesheet" href="__DIST__/formSelects-v4.css"/>
+<script src="__DIST__/formSelects-v4.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    layui.use(['laydate', 'form'], function () {
+        var laydate = layui.laydate, form = layui.form;
+
+        //常规用法
+        laydate.render({
+            elem: '#start_date'
+            // ,min: -7
+            , min: -30
+            , max: 0
+        });
+
+        laydate.render({
+            elem: '#end_date'
+            , min: -30
+            , max: 0
+        });
+    });
+</script>
+{/block}

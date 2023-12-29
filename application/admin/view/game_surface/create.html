@@ -1,0 +1,78 @@
+{extend name="public/base" /}
+{block name="body"}
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <form action="{:url('')}" method="post"  class="layui-form">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">界面ID：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="surface_id" placeholder="请输入界面ID"  onkeyup='this.value=this.value.replace(/\D/gi,"")'
+                                   class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">界面类别：</label>
+                        <div class="layui-input-block">
+                            <select name="surface_type">
+                                {present name="parent_type"}
+                                <option value="100" {$parent_type==100?'selected':''} disabled="disabled">活动</option>
+                                <option value="101" {$parent_type==101?'selected':''} disabled="disabled">充值</option>
+                                <option value="1000" {$parent_type==1000?'selected':''} disabled="disabled">其他</option>
+                                {else/}
+                                <option value="100">活动</option>
+                                <option value="101">充值</option>
+                                <option value="1000">其他</option>
+                                {/present}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">上级界面：</label>
+                        <div class="layui-input-block">
+                            <select name="parent_id" disabled="disabled">
+                                <option value="0" {$parent_id==0?'selected':''}>顶级界面</option>
+                                {volist name="parent_lists" id="vo"}
+                                <option value="{$vo.surface_id}" {$parent_id==$vo.surface_id?'selected':''}>{$vo.symbol_chs}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">界面级别：</label>
+                        <div class="layui-input-block">
+                            <select name="level">
+                                {if $parent_id==0}
+                                <option value="1" selected="selected" readonly="true">一级界面</option>
+                                {else/}
+                                <option value="2" selected="selected" disabled="disabled">二级界面</option>
+                                {/if}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">英文标识：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="symbol_eng"  placeholder="请输入游戏界面英文标识" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">中文标识：</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="symbol_chs"  placeholder="请输入游戏界面中文标识" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item layui-layout-admin">
+                        <div class="layui-input-block">
+                            <button type="submit" class="layui-btn" lay-submit="" lay-filter="zz-btn-submit">立即提交</button>
+                            <button type="button" class="layui-btn layui-btn-primary zz-btn-cancel">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
