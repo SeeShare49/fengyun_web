@@ -17,8 +17,9 @@ class GameLogActionType extends Base
         }
 
         $lists = TypeModel::where($where)
-            ->order('id asc')
-            ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
+        //->order(['status'=>'desc','action_type_value'=>'asc'])
+        ->orderRaw('status DESC,CAST(action_type_value AS UNSIGNED) ASC')
+        ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
         $this->ifPageNoData($lists);
         $page = $lists->render();
 

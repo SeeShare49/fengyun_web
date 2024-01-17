@@ -20,8 +20,9 @@ class GameLogAction extends Base
             $where[] = ['action_name|action_desc', 'like', "%$search%"];
         }
         $lists = \app\admin\model\GameLogAction::where($where)
-            ->order('id asc')
-            ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
+        //->order(['status'=>'desc','action_value'=>'asc'])
+        ->orderRaw('status DESC,CAST(action_value AS UNSIGNED) ASC')
+        ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
         $this->ifPageNoData($lists);
         $page = $lists->render();
 
@@ -170,5 +171,125 @@ class GameLogAction extends Base
         } else {
             $this->error('非法请求！');
         }
+    }
+    
+    /**
+     * 日志和日志类型文件上传
+     */
+    public function upload()
+    {
+        if (!request()->isPost())
+        {
+            $this->assign(['meta_title' => '日志和日志类型文件上传']);
+            return $this->fetch();
+        }
+        $path = '../public/upload/csv/';
+        if (!file_exists($path))
+        {
+         //默认的 mode 是 0777，意味着最大可能的访问权。
+         mkdir($path, 0777, true);
+        } 
+        //获取上传文件
+        $data = request()->file("propfile");
+        if(!$data)
+        {
+            $this->error('请选择上传文件');
+        }
+        $tmpname = $data->getInfo()['tmp_name'];
+        $filename = $data->getInfo()['name'];
+        $file = $path . '/' . $filename;
+        if (empty($tmpname))
+        {
+            $this->error('请选择上传文件');
+        }
+        if (empty($file))
+        {
+            $this->error('请选择上传文件');
+        }
+        if (!move_uploaded_file($tmpname, $file))
+        {
+            $this->error('文件上传失败！');
+        } 
+        // 正则解析日志和日志类型
+        $handle = fopen($file, 'r');
+        $result = fread($handle, filesize($file));
+        //$result = CsvManage::input_csv($handle);
+        preg_match_all('/\s*\/\/(.+)\s*([A-Z_]+)\s*=\s*([0-9]+);/',$result,$matches);
+        if (!$matches || count($matches) != 4)
+        {
+            $this->error('此文件中没有正常格式数据！注：//说明/rLOG_TYPE = 10;');
+        }
+        //整理日志和日志类型参数数组
+        $log_module_arr = array();
+        $log_action_type_arr = array();
+        $len_result = count($matches[0]);
+        for($i = 0; $i < $len_result; $i++)
+        {
+            if(substr($matches[2][$i], 0, 15)  == 'LOG_ACTION_TYPE')
+            {
+                $log_action_type_arr[$i] = array($matches[3][$i], $matches[2][$i],$matches[1][$i]);
+            }
+            else if(substr($matches[2][$i], 0, 10) == 'LOG_MODULE')
+            {
+                $log_module_arr[$i] = array($matches[3][$i], $matches[2][$i],$matches[1][$i]);
+            }
+        }
+        fclose($handle); // 关闭指针
+        //print_r($log_action_type_arr);
+       // print_r($log_module_arr);
+        //日志参数入库处理
+        if($log_module_arr)
+        {
+            //将所有数据状态改为0
+            $res = \app\admin\model\GameLogAction::where([['status','=',1]])->update(['status'=>0]);
+            if ($res !== false) 
+            {
+                foreach ($log_module_arr as $arr)
+                {
+                    //存在修改
+                    if(\app\admin\model\GameLogAction::where(['action_name'=>$arr[1]])->find())
+                    {
+                        \app\admin\model\GameLogAction::where(['action_name'=>$arr[1]])->update(['status'=>1, 'action_value'=>$arr[0],'action_desc'=>$arr[2]]);
+                    }
+                    //不存在增加
+                    else
+                    {
+                        \app\admin\model\GameLogAction::insert(['status'=>1,'action_name'=>$arr[1], 'action_value'=>$arr[0],'action_desc'=>$arr[2]]);
+                    }
+                }
+            }
+        }
+        
+        //日志类型参数入库处理
+        if($log_action_type_arr)
+        {
+            //将所有数据状态改为0
+            $res = \app\admin\model\GameLogActionType::where([['status','=',1]])->update(['status'=>0]);
+            if ($res !== false) 
+            {
+                foreach ($log_action_type_arr as $arr)
+                {
+                    //存在修改
+                    if(\app\admin\model\GameLogActionType::where(['action_type'=>$arr[1]])->find())
+                    {
+                        \app\admin\model\GameLogActionType::where(['action_type'=>$arr[1]])->update(['status'=>1, 'action_type_value'=>$arr[0],'action_type_desc'=>$arr[2]]);
+                    }
+                    //不存在增加
+                    else
+                    {
+                        \app\admin\model\GameLogActionType::insert(['status'=>1,'action_type'=>$arr[1], 'action_type_value'=>$arr[0],'action_type_desc'=>$arr[2]]);
+                    }
+                }
+            } 
+        }
+        
+        $resData = [
+            'code' => 1,
+            'msg' => ',数据导入成功,LOG_ACTION_TYPE类型总数'.count($log_action_type_arr).',LOG_MODULE类型总数'.count($log_module_arr).'请重新刷新查看！',
+            'data' => '',
+            'url' => '/index',
+            'wait' => 2
+        ];
+        return json($resData);
     }
 }
