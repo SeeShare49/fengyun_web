@@ -73,21 +73,20 @@ class Mail extends Base
         if (request()->isPost()) {
             $data = $_POST;
 
-            if ($data['server_id'] == "0") {
+            if ($data['server_id'] == "0") 
+            {
                 $this->error("请选择对应服务器ID");
             }
 
             $mailValidate = new MailValidate();
-            if (!$mailValidate->check($data)) {
+            if (!$mailValidate->check($data)) 
+            {
                 $this->error($mailValidate->getError());
             }
 
-            $info = dbConfig($data['server_id'])
-                ->table('player')
-                ->where('nickname', '=', trim($data['nick_name']))
-                ->find();
-
-            if (!$info) {
+            $info = dbConfig($data['server_id']) ->table('player')->where('nickname', '=', trim($data['nick_name']))->find();
+            if (!$info)
+            {
                 $this->error("昵称:【{$data['nick_name']}】玩家不存在,请核实用户昵称!");
             }
 
@@ -96,34 +95,42 @@ class Mail extends Base
             $data['create_time'] = $_SERVER['REQUEST_TIME'];// time();
             $data['mail_type'] = 1;
 
-            $is_attach = true;//是否纯文字邮件，无附件（无道具信息）
             $status = 1;
+            $is_attach = true;//是否纯文字邮件，无附件（无道具信息）
             $prop_alias_info = '';//道具列表别名
-            if (isset($data['prop_info']) && !empty($data['prop_info'])) {
+            if (isset($data['prop_info']) && !empty($data['prop_info'])) 
+            {
                 $is_attach = false;
                 $status = 0;//审核状态（未审核）
                 $attach_arr = explode(';', $data['prop_info']);
                 $attach_arr_count = count($attach_arr);
-                for ($i = 0; $i < $attach_arr_count; $i++) {
+                for ($i = 0; $i < $attach_arr_count; $i++) 
+                {
                     $attach_info = explode('|', $attach_arr[$i]);
-                    if (count($attach_info) > 1) {
+                    if (count($attach_info) > 1)
+                    {
                         $prop_alias_info .= PropCsv::where('type_id', '=', $attach_info[0])->value('type_name') . '|' . $attach_info[1] . ';';
                     }
                 }
             }
-            if ($is_attach == true) {
+            if ($is_attach == true)
+            {
                 $data['send_time'] = $_SERVER['REQUEST_TIME'];
             }
             $data['status'] = $status;
             $data['prop_alias_info'] = $prop_alias_info;
             $ret = \app\admin\model\Mail::insertGetId($data);
-            if ($ret) {
-                if ($status == 1) {
+            if ($ret)
+            {
+                if ($status == 1)
+                {
                     common\test::mail($data['server_id'], $data['nick_name'], $data['title'], $data['content'], $data['prop_info']);
                 }
                 action_log('mail_person_add', 'mail', $ret, UID);
                 $this->success("个人邮件信息添加成功!", 'mail/index?type=person');
-            } else {
+            } 
+            else
+            {
                 $this->error("个人邮件信息添加失败!");
             }
 
@@ -144,7 +151,9 @@ class Mail extends Base
 
 //            common\test::mail($data['server_id'], $data['nick_name'], $data['title'], $data['content'], $data['prop_info']);
 //            $this->result($data, 1, '个人邮件发送成功,待服务器处理......');
-        } else {
+        } 
+        else 
+        {
             $server_list = ServerManage::getServerList();
             $server_id = trim(input('server_id'));
             // $prop_list = PropCsv::select();
@@ -245,26 +254,35 @@ class Mail extends Base
     public function review($id)
     {
         $info = \app\admin\model\Mail::find($id);
-        if ($info) {
+        if ($info)
+        {
             $data['id'] = $id;
             $data['status'] = 1;
             $data['send_time'] = time();
             $data['operator'] = USERNAME;
-            if (\app\admin\model\Mail::update($data)) {
+            if (\app\admin\model\Mail::update($data))
+            {
                 action_log('mail_review', "mail", $id, UID);
-                if ($info['mail_type'] == 1) {
-                    //个人邮件命令发送
+                //个人邮件命令发送
+                if ($info['mail_type'] == 1) 
+                {
                     common\test::mail($info['server_id'], $info['nick_name'], $info['title'], $info['content'], $info['prop_info']);
-                } elseif ($info['mail_type'] == 2) {
-                    //单服邮件命令发送
-//                    common\test::mail($info['server_id'], '', $info['title'], $info['content'], $info['prop_info']);
+                }
+                //单服邮件命令发送
+                elseif ($info['mail_type'] == 2) 
+                {
+                    //common\test::mail($info['server_id'], '', $info['title'], $info['content'], $info['prop_info']);
                     common\test::mail_plus($info['server_id'], $info['title'], $info['content'], $info['prop_info']);
-                } else {
-                    //全服邮件命令发送
+                } 
+                //全服邮件命令发送
+                else 
+                {
                     common\test::mail(-1, '', $info['title'], $info['content'], $info['prop_info']);
                 }
                 $this->success('邮件审核成功!');
-            } else {
+            } 
+            else
+            {
                 $this->error('邮件审核失败!');
             }
         }

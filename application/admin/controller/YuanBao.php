@@ -146,8 +146,11 @@ class YuanBao extends Base
             $totalValue = Db::connect('db_config_log')->query('select sum(value) as value from ' . $table_name . ' where ' . $where_str);
         }
         $total = count(Db::connect('db_config_log')->query($lists_sql));//统计数据总数
-        $lists_sql .= ' order by logtime desc limit ?,?';
-        $lists = Db::connect('db_config_log')->query($lists_sql, [($curr_page - 1) * config('LIST_ROWS'), config('LIST_ROWS')]);
+        //$lists_sql .= ' order by logtime desc limit ?,?';
+        //$lists = Db::connect('db_config_log')->query($lists_sql, [($curr_page - 1) * config('LIST_ROWS'), config('LIST_ROWS')]);
+        $lists_sql .= ' order by logtime desc';
+        $lists_sql .= ' limit '.(($curr_page - 1) * intval(config('LIST_ROWS'))).','.intval(config('LIST_ROWS'));
+        $lists = Db::connect('db_config_log')->query($lists_sql);
         $pagernator = Page::make($lists, config('LIST_ROWS'), $curr_page, $total, false, ['path' => Page::getCurrentPath(), 'query' => request()->param()]);
         $page = $pagernator->render();
 

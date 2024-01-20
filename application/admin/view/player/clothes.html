@@ -3,11 +3,11 @@
 <div class="layui-row layui-col-space15">
     <div class="layui-col-md12">
         <div class="layui-card">
-            <div class="layui-card-header">玩家管理</div>
+            <!--div class="layui-card-header">玩家管理</div-->
             <div class="layui-card-body">
                 <div class="layui-tab">
                     <ul class="layui-tab-title">
-                        <li><a href="{:url('index')}">玩家列表</a></li>
+                        <li><a href="{:url('index')}?server_id={$server_id}">玩家列表</a></li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=baseinfo">基本信息</a></li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=equip">装备</a></li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=package">背包物品</a></li>

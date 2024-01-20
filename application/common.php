@@ -75,16 +75,38 @@ function getParam($name, $default = '')
  * @return mixed
  * @throws \think\Exception
  */
-function dbConfig($server_id)
+/* function dbConfig($server_id)
 {
-    /** @var TYPE_NAME $db_config */
+    //@var TYPE_NAME $db_config
+    $db_config = Db::connect([
+     'type' => 'mysql',
+     'hostname' => '121.40.166.20',
+     'database' => 'cq_game' . $server_id,
+     'username' => 'root',
+     'password' => 'yinhe123',
+     ]);
+    return $db_config;
+} */
+function dbConfig($server_id,$info=array() )
+{
+    if(!$info)
+    {
+        $fields = 'db_ip_w,db_port_w,db_database_name,db_username_w,db_password_w';
+        $info = \app\admin\model\ServerList::table('server_list')->field($fields)->where('id','=',$server_id)->find();
+    }
+    if (!$info) 
+    {
+        $db_config = null;
+        return $db_config ;
+    }
     $db_config = Db::connect([
         'type' => 'mysql',
-        'hostname' => '121.40.166.20',
-        'database' => 'cq_game' . $server_id,
-        'username' => 'root',
-        'password' => 'yinhe123',
-    ]);
+        'hostname' =>$info['db_ip_w'],
+        'hostport' => $info['db_port_w'],
+        'database' => $info['db_database_name'],
+        'username' => $info['db_username_w'],
+        'password' => $info['db_password_w'],
+    ]); 
     return $db_config;
 }
 
@@ -94,15 +116,43 @@ function dbConfig($server_id)
  * @return mixed
  * @throws \think\Exception
  */
-function dbConfigByReadBase($server_id)
+/* function dbConfigByReadBase($server_id)
 {
-    /** @var TYPE_NAME $db_config */
+    //@var TYPE_NAME $db_config
     $db_config = Db::connect([
         'type' => 'mysql',
         'hostname' => '121.40.166.20',
         'database' => 'cq_game' . $server_id,
         'username' => 'root',
         'password' => 'yinhe123',
+        'charset' => 'utf8',
+        // 数据库表前缀
+        'prefix' => '',
+        'break_reconnection' => true,
+    ]);
+    return $db_config;
+}
+ */
+function dbConfigByReadBase($server_id,$info=array())
+{
+    if(!$info)
+    {
+        $fields = 'db_ip_r,db_port_r,db_database_name,db_username_r,db_password_r';
+        $info = \app\admin\model\ServerList::table('server_list')->field($fields)->where('id','=',$server_id)->find();
+    }
+    if (!$info)
+    {
+        $db_config = null;
+        return $db_config ;
+    }
+    //@var TYPE_NAME $db_config
+    $db_config = Db::connect([
+        'type' => 'mysql',
+        'hostname' =>$info['db_ip_r'],
+        'hostport' => $info['db_port_r'],
+        'database' => $info['db_database_name'],
+        'username' => $info['db_username_r'],
+        'password' => $info['db_password_r'],
         'charset' => 'utf8',
         // 数据库表前缀
         'prefix' => '',
@@ -117,9 +167,9 @@ function dbConfigByReadBase($server_id)
  * @return TYPE_NAME
  * @throws \think\Exception
  */
-function dbLogConfig($date)
+/* function dbLogConfig($date)
 {
-    /** @var TYPE_NAME $db_config */
+    //@var TYPE_NAME $db_config
     $db_config = Db::connect([
         'type' => 'mysql',
         'hostname' => '121.40.166.20',
@@ -128,7 +178,7 @@ function dbLogConfig($date)
         'password' => 'yinhe123',
     ]);
     return $db_config;
-}
+} */
 
 
 /**
@@ -194,14 +244,17 @@ function get_player_name($user_id, $server_id)
      * 特殊处理，获取真实服务器ID 兼容合服情况
      **/
     $info = \app\admin\model\ServerList::table('server_list')->find($server_id);
-    if ($info) {
+    if ($info)
+    {
         if (!isset($user_id) || $user_id == 0)
+        {
             return $player_name;
+        }
 
-        return dbConfig($info['real_server_id'])
-            ->table('player')
-            ->where('actor_id', '=', $user_id)
-            ->value('nickname');
+        return dbConfig($info['real_server_id'],$info)
+        ->table('player')
+        ->where('actor_id', '=', $user_id)
+        ->value('nickname');
     }
     return $player_name;
 }
@@ -232,7 +285,9 @@ function get_player_level($user_id, $server_id)
 {
     $player_info = "";
     if (!isset($user_id) || $user_id == 0)
+    {
         return $player_info;
+    }
 
     return dbConfigByReadBase($server_id)
         ->table('player')
@@ -1403,11 +1458,13 @@ function show_drop_database_button($id)
     $result = mysqli_query($conn, 'show databases;');
     $data = array();//用来存在数据库名
     mysqli_data_seek($result, 0);
-    while ($dbdata = mysqli_fetch_array($result)) {
+    while ($dbdata = mysqli_fetch_array($result))
+    {
         $data[] = $dbdata['Database'];
     }
     mysqli_data_seek($result, 0);
-    if (in_array($dbname, $data)) {
+    if (in_array($dbname, $data))
+    {
         return true;
     } else {
         return false;

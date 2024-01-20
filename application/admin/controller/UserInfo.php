@@ -17,14 +17,12 @@ use think\facade\View;
 
 class UserInfo extends Base
 {
-    public $table_prefix = "cq_game";
-
     /**
      * 游戏用戶列表
      */
     public function index()
     {
-        $where[] = ["1", '=', "1"];
+        $where = [];
         $username = trim(input('UserName'));
         $user_id = trim(input('UserID'));
         $phone = trim(input('Phone_UserName'));
@@ -52,8 +50,7 @@ class UserInfo extends Base
 
         $lists = UserInfoModel::where($where)
             ->field('UserID,Phone_UserName,UserName,Play_Level,gm,RegisterTime,register_ip,StartBanTime,BanFlag,BanReason,ip_limit,changel_uid')
-            ->order('UserID desc,RegisterTime desc')
-            ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
+            ->order('UserID desc,RegisterTime desc')->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
 
         $this->ifPageNoData($lists);
         $page = $lists->render();
@@ -88,9 +85,10 @@ class UserInfo extends Base
             $this->error("该游戏玩家信息不存在或已被封号!");
         }
 
-        if (Request::isPost()) {
+        if (Request::isPost()) 
+        {
             $data = $_POST;
-            clear_chat_log('db_chat_log',$this->table_prefix, $data['UserID']);
+            clear_chat_log('db_chat_log', $data['UserID']);
             test::webw_packet_ban_user($data['UserID'], 1, $data['BanReason']);
             return json(['code' => 1, 'msg' => '封停用户账号请求提交成功,待服务器处理......', 'data' => "norefresh"]);
         } else {
@@ -176,26 +174,30 @@ class UserInfo extends Base
      */
     public function relation_info($user_id)
     {
-        $server_list = ServerManage::getServerList();
         $lists = array();
+        //$server_list = ServerManage::getServerList('db_database_name');
+        $server_list = ServerManage::getServerList('id,db_ip_w,db_port_w,db_username_w,db_password_w,db_database_name');
         $server_list_count = count($server_list);
-        for ($i = 0; $i < $server_list_count; $i++) {
-
-            $server_id = $server_list[$i]['id'];
-
-            $serverInfo = ServerList::find($server_id);
-            if ($serverInfo) {
-                $table = $this->table_prefix . $serverInfo['real_server_id'];
-
-                $lists_sql = "SELECT s.id as server_id,u.UserID ,p.actor_id,u.ChannelID,u.BanFlag,p.nickname,p.create_server_id,COALESCE(sum(r.money),0) as money from cq_main.server_list s,cq_main.user_info u 
-inner JOIN {$table}.player p on u.UserID=p.account_id LEFT JOIN cq_main.recharge_data r on p.actor_id=r.user_id  where u.UserID={$user_id} and s.id={$server_id} GROUP BY p.actor_id";
+        for ($i = 0; $i < $server_list_count; $i++) 
+        {
+            //$server_id = $server_list[$i]['id'];
+            //$serverInfo = ServerList::find($server_id);
+            $serverInfo = $server_list[$i];
+            if ($serverInfo) 
+            {
+                $server_id = $serverInfo['id'];
+                $table =$serverInfo['db_database_name'];
+                $lists_sql = "SELECT s.id as server_id,u.UserID ,p.actor_id,u.ChannelID,u.BanFlag,p.nickname,p.create_server_id,COALESCE(sum(r.money),0) as money from fy_main.server_list s,cq_main.user_info u 
+inner JOIN {$table}.player p on u.UserID=p.account_id LEFT JOIN fy_main.recharge_data r on p.actor_id=r.user_id  where u.UserID={$user_id} and s.id={$server_id} GROUP BY p.actor_id";
 
                 $Model = new UserInfoModel();
                 $info = $Model->query($lists_sql);
 
                 $info_count = count($info);
-                if ($info_count > 0) {
-                    for ($j = 0; $j < $info_count; $j++) {
+                if ($info_count > 0) 
+                {
+                    for ($j = 0; $j < $info_count; $j++) 
+                    {
                         array_push($lists, $info[$j]);
                     }
                 }

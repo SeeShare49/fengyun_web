@@ -14,7 +14,8 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">服务器:</label>
                             <div class="layui-input-inline" style="width: 300px;">
-                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                <select name="server_id" ><!--xm-select="select5" xm-select-max="1" xm-select-search=""-->
+                                    <option value="">请选择服务器</option>
                                     {volist name="server_list" id="vo"}
                                     <option  value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
                                     {/volist}

@@ -33,16 +33,17 @@ class DbManage
      * @param string $database
      * @param string $charset
      */
-    public function __construct($host = 'localhost', $username = 'root', $password = 'root', $database = 'test', $charset = 'utf8mb4')
+    public function __construct($host = 'localhost', $username = 'root', $password = 'root', $database = 'test', $port = 3306, $charset = 'utf8mb4')
     {
         $this->host = $host;
         $this->username = $username;
         $this->password = $password;
+        $this->port = $port;
         $this->database = $database;
         $this->charset = $charset;
         set_time_limit(0);//无时间限制
         // 连接数据库
-        $this->db = mysqli_connect($this->host, $this->username, $this->password) or die('<p class="dbDebug"><span class="err">Mysql Connect Error : </span>' . mysqli_error($this->db) . '</p>');
+        $this->db = mysqli_connect($this->host, $this->username, $this->password, null, $this->port) or die('<p class="dbDebug"><span class="err">Mysql Connect Error : </span>' . mysqli_error($this->db) . '</p>');
         // 选择使用哪个数据库
         mysqli_select_db($this->db, $this->database) or die('<p class="dbDebug"><span class="err">Mysql Connect Error:</span>' . mysqli_error($this->db) . '</p>');
         // 数据库编码方式
@@ -124,7 +125,8 @@ class DbManage
 
                     } else {
                         $volume_id = $volume_id ? $volume_id : 1;
-                        exit ("导入分卷：<span style='color:#f00;'>" . $tmpfile . '</span>失败！可能是数据库结构已损坏！请尝试从分卷1开始导入');
+                        $this->msg .= "导入分卷：<span style='color:#f00;'>" . $tmpfile . '</span>失败！可能是数据库结构已损坏！请尝试从分卷1开始导入';
+                        exit ();
                     }
                 } else {
                     $this->msg .= "此分卷备份全部导入成功！<br />";
@@ -144,11 +146,11 @@ class DbManage
      */
     private function _import($sqlfile)
     {
-        //先执行存储过程文件
-        if (!$this->execute_produce_sql($this->db)) {
+        //先执行存储过程文件,暂不使用
+        /* if (!$this->execute_produce_sql($this->db)) {
             return false;
-        }
-
+        } */
+        
         // sql文件包含的sql语句数组
         $sqls = array();
         $f = fopen($sqlfile, "rb");

@@ -16,11 +16,10 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">请选择区服:</label>
                             <div class="layui-input-inline" style="width: 300px;">
-                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                                <select name="server_id" ><!--xm-select="select5" xm-select-max="1" xm-select-search=""-->
+                                    <option value="">请选择服务器</option>
                                     {volist name="server_list" id="vo"}
-                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
-                                        {$vo.servername}
-                                    </option>
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
                                     {/volist}
                                 </select>
                             </div>
@@ -48,13 +47,13 @@
                             </th>
                             <th style="min-width: 50px;">邮件ID</th>
                             <th style="min-width: 100px;">区服</th>
-                            <th style="width: 180px;">邮件标题</th>
-                            <th>邮件内容</th>
-                            <th style="max-width: 400px;">道具信息</th>
-                            <th style="width: 130px;">创建时间</th>
-                            <th style="width: 130px;">发送时间</th>
+                            <th style="min-width: 100px; max-width:150px;">邮件标题</th>
+                            <th style="min-width: 150px; max-width: 250px;">邮件内容</th>
+                            <th style="min-width: 150px; max-width: 350px;">道具信息</th>
+                            <th style="min-width: 90px;">创建时间</th>
+                            <th style="min-width: 90px;">发送时间</th>
                             <th style="width: 60px;">审核人</th>
-                            <th style="width: 90px;">操作</th>
+                            <th style="min-width: 90px;">操作</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -65,15 +64,15 @@
                             </td>
                             <td>{$vo.id}</td>
                             <td>{$vo.server_id}</td>
-                            <td>{$vo.title}</td>
-                            <td>
+                            <td style="min-width:100px;max-width:150px;word-wrap:break-word;">{$vo.title}</td>
+                            <td style="min-width:150px;max-width:250px;word-wrap:break-word;">
                                 {if strlen($vo.content)>200}
                                 {:mb_substr(strip_tags($vo.content),0,85,'utf-8')}...
                                 {else/}
                                 {$vo.content}
                                 {/if}
                             </td>
-                            <td>
+                            <td  style="min-width:150px;max-width:350px;word-wrap:break-word;">
                                 {notempty name="vo.prop_info"}
                                 {$vo.prop_info} <br><span style="color: blue;">【{$vo.prop_alias_info}】</span>
                                 {/notempty}

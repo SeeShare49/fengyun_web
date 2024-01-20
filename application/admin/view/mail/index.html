@@ -15,12 +15,11 @@
                     <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
                         <div class="layui-inline">
                             <label class="layui-form-label">请选择区服:</label>
-                            <div class="layui-input-inline" style="width: 300px;">
-                                <select name="server_id" xm-select="select5" xm-select-max="1" xm-select-search="">
+                            <div class="layui-input-inline" style="width: 180px;">
+                                  <select name="server_id" ><!--xm-select="select5" xm-select-max="1" xm-select-search=""-->
+                                    <option value="">请选择服务器</option>
                                     {volist name="server_list" id="vo"}
-                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -
-                                        {$vo.servername}
-                                    </option>
+                                    <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 -  {$vo.servername}</option>
                                     {/volist}
                                 </select>
                             </div>
@@ -28,22 +27,20 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">邮件标题:</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="title" placeholder="请输入邮件标题" value="{$title}"
-                                       class="layui-input">
+                                <input type="text" name="title" placeholder="请输入邮件标题" value="{$title}" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">角色ID:</label>
-                            <div class="layui-input-inline">
+                            <div class="layui-input-inline"  style="width: 120px;">
                                 <input type="text" name="actor_id" placeholder="请输入角色ID" value="{$actor_id}"
                                        onkeyup='this.value=this.value.replace(/\D/gi,"")' class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
                             <label class="layui-form-label">角色名称:</label>
-                            <div class="layui-input-inline">
-                                <input type="text" name="user_name" placeholder="请输入角色名称" value="{$user_name}"
-                                       class="layui-input">
+                            <div class="layui-input-inline"  style="width: 120px;">
+                                <input type="text" name="user_name" placeholder="请输入角色名称" value="{$user_name}" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -64,9 +61,9 @@
                             <th style="width: 30px;">区服</th>
                             <th>玩家ID</th>
                             <th style="min-width: 100px;">玩家昵称</th>
-                            <th style="width: 180px;">邮件标题</th>
-                            <th>邮件内容</th>
-                            <th style="max-width: 400px;">道具信息</th>
+                            <th style="min-width:100px;max-width:150px;">邮件标题</th>
+                            <th style="min-width:150px;max-width:250px;">邮件内容</th>
+                            <th style="min-width:150px;max-width:350px;">道具信息</th>
                             <th style="width: 130px;">创建时间</th>
                             <th style="width: 130px;">发送时间</th>
                             <th style="min-width: 60px;">审核人</th>
@@ -98,7 +95,7 @@
 <!--                                {/if}-->
                                 {:htmlspecialchars($vo.content)}
                             </td>
-                            <td>
+                            <td style="min-width:150px;max-width:350px;word-wrap:break-word;">
                                 {notempty name="vo.prop_info"}
                                 {$vo.prop_info} <br><span style="color: blue;">【{$vo.prop_alias_info}】</span>
                                 {/notempty}

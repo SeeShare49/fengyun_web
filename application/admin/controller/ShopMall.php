@@ -60,10 +60,12 @@ class ShopMall extends Base
             第四位标识货币数量
          **/
 
-        $filed = "logid,serverId,serverName,userId,playerName,moduleId,moduleName,value,actionName,remark,logtime,
-        SUM(SUBSTRING_INDEX( remark, ',', 1 ))  AS propNum,SUBSTRING_INDEX(SUBSTRING_INDEX(remark,',',2),',',-1) as shopType,
-        SUBSTRING_INDEX(SUBSTRING_INDEX(remark,',',3),',',-1) as currencyType,SUM(SUBSTRING_INDEX( remark, ',',- 1 )) AS currencyNum,
-        case when LENGTH(0+remark) = LENGTH(remark) then 1 else 0 end as is_numerical";
+        $filed = "logid,serverId,serverName,userId,playerName,moduleId,moduleName,value,actionName,remark,logtime";
+        $filed .= ",SUM(SUBSTRING_INDEX( remark, ',', 1 ))  AS propNum";
+        $filed .= ",SUBSTRING_INDEX(SUBSTRING_INDEX(remark,',',2),',',-1) as shopType";
+        $filed .= ",SUBSTRING_INDEX(SUBSTRING_INDEX(remark,',',3),',',-1) as currencyType";
+        $filed .= ",SUM(SUBSTRING_INDEX( remark, ',',- 1 )) AS currencyNum";
+        $filed .=  ",case when LENGTH(0+remark) = LENGTH(remark) then 1 else 0 end as is_numerical";
         $table_name = "Log" . date("Ymd"); //初始默认查询当日数据表
         $exists_table = Db::connect('db_config_log')->query('SHOW TABLES LIKE ' . "'" . $table_name . "'");
         //$exists_table = Db::connect('db_config_log_read')->query('SHOW TABLES LIKE ' . "'" . $table_name . "'");
@@ -142,10 +144,16 @@ class ShopMall extends Base
         $total = Db::connect('db_config_log')->execute($lists_sql);//统计数据总数
 
         //$total = count(Db::connect('db_config_log_read')->query($lists_sql));//统计数据总数
-        $lists_sql .= ' order by logtime desc limit ?,?';
-
+        //$lists_sql .= ' order by logtime desc limit ?,?';
+        //$lists_sql .= ' order by logtime desc limit :offset,:lenght';
+        $lists_sql .= ' order by logtime desc';
+        
         // $lists = Db::connect('db_config_log_read')->query($lists_sql, [($curr_page - 1) * config('LIST_ROWS'), config('LIST_ROWS')]);
-        $lists = Db::connect('db_config_log')->query($lists_sql, [($curr_page - 1) * config('LIST_ROWS'), config('LIST_ROWS')]);
+        //$lists = Db::connect('db_config_log')->query($lists_sql, [($curr_page - 1) * config('LIST_ROWS'), config('LIST_ROWS')]);
+        //$lists = Db::connect('db_config_log')->query($lists_sql, ['offset'=>(($curr_page - 1) * intval(config('LIST_ROWS'))), 'lenght'=>intval(config('LIST_ROWS'))]);
+        $lists_sql .= ' limit '.(($curr_page - 1) * intval(config('LIST_ROWS'))).','.intval(config('LIST_ROWS'));
+        $lists = Db::connect('db_config_log')->query($lists_sql);
+        
         $pagernator = Page::make($lists, config('LIST_ROWS'), $curr_page, $total, false, ['path' => Page::getCurrentPath(), 'query' => request()->param()]);
         $page = $pagernator->render();
 

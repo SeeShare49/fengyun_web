@@ -6,12 +6,12 @@
             <div class="layui-card-body">
                 <div class="layui-tab">
                     <ul class="layui-tab-title">
-                        <li><a href="{:url('index')}">玩家列表</a></li>
+                        <li><a href="{:url('index')}?server_id={$server_id}">玩家列表</a></li>
                         <li class="layui-this">基本信息</li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=equip">装备</a></li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=package">背包物品</a></li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=store">仓库</a></li>
-                        <li><a href="{:url('show')}?id={$actor_id}&type=clothes">时装</a></li>
+                        <!--li><a href="{:url('show')}?id={$actor_id}&type=clothes">时装</a></li  -->>
                         <li><a href="{:url('show')}?id={$actor_id}&type=gem">宝石</a></li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=skill">技能</a></li>
                         <li><a href="{:url('show')}?id={$actor_id}&type=economy"> 经济统计</a></li>

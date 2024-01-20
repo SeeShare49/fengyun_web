@@ -22,63 +22,84 @@ class Player extends Base
      */
     public function index()
     {
-//        if (GROUPID == GROUP_ID) {
-//            $s_ids = get_user_server_list(UID);
-//            $temp_server_ids = '';
-//            foreach ($s_ids as $key => $value) {
-//                $temp_server_ids .= $value['server_id'] . ',';
-//            }
-//            $ids = explode(',', rtrim($temp_server_ids, ","));
-//            $server_list = ServerManage::getServerListByIds($ids);
-//        } else {
-//            $server_list = ServerManage::getServerList();
-//        }
+        /* if (GROUPID == GROUP_ID) {
+           $s_ids = get_user_server_list(UID);
+           $temp_server_ids = '';
+           foreach ($s_ids as $key => $value) {
+               $temp_server_ids .= $value['server_id'] . ',';
+           }
+           $ids = explode(',', rtrim($temp_server_ids, ","));
+           $server_list = ServerManage::getServerListByIds($ids);
+        } else {
+           $server_list = ServerManage::getServerList();
+        } */
         $server_list = ServerManage::getServerList();
         $channel_list = ChannelManage::getChannelList();
 
         $nickname = trim(input('nickname'));
         $server_id = trim(input('server_id'));
         $channel_id = trim(input('channel_id'));
-
-//        if (empty($server_id) || $server_id == "0") {
-//            if (GROUPID == GROUP_ID) {
-//                $s_id = get_user_server_by_id(UID);
-//                $resInfo = ServerManage::getServerInfoByGuild($s_id);
-//                if ($resInfo) {
-//                    $server_id = $resInfo['id'];
-//                }
-//            } else {
-//                $resInfo = ServerManage::getServerInfo();
-//                if ($resInfo) {
-//                    $server_id = $resInfo['id'];
-//                }
-//            }
-//        }
-
-        if (empty($server_id)) {
-            $resInfo = ServerManage::getServerInfo();
-            if ($resInfo) {
-                $server_id = $resInfo['id'];
+        /* if (empty($server_id) || $server_id == "0") {
+           if (GROUPID == GROUP_ID) {
+               $s_id = get_user_server_by_id(UID);
+               $resInfo = ServerManage::getServerInfoByGuild($s_id);
+               if ($resInfo) {
+                   $server_id = $resInfo['id'];
+               }
+           } else {
+               $resInfo = ServerManage::getServerInfo();
+               if ($resInfo) {
+                   $server_id = $resInfo['id'];
+               }
+           }
+        } */
+        //找到游戏服务器设置信息
+        if (empty($server_id))
+        {
+            $server_id = Session::get("server_id");
+            //使用空数据
+            if(empty($server_id))
+            {
+                /*  $resInfo = ServerManage::getServerInfo();
+                 if ($resInfo)
+                 {
+                 $server_id = $resInfo['id'];
+                 }
+                 else
+                 {
+                 $this->error('未发现游戏服务器设置!');
+                 } */
+                $this->assign([
+                    'server_list' => $server_list,
+                    'channel_list' => $channel_list,
+                    'empty' => '<td class="empty" colspan="18">请选择游戏服务器</td>',
+                    'meta_title' => '玩家列表'
+                ]);
+                return $this->fetch();
             }
         }
 
-
-        if ($channel_id) {
+        if ($channel_id)
+        {
             $where[] = ['u.ChannelID', '=', $channel_id];
         }
         Session::set("server_id", $server_id);
-        $where[] = ['u.ChannelID', '<>', 1];
-        if ($nickname) {
+        $where = [];
+        //$where[] = ['u.ChannelID', '<>', 1];
+        if ($nickname) 
+        {
             $where[] = ['nickname', 'like', "%$nickname%"];
         }
 
         $actor_id = trim(input('actor_id'));
-        if (isset($actor_id) && !empty($actor_id)) {
+        if (isset($actor_id) && !empty($actor_id))
+        {
             $where[] = ['actor_id', '=', $actor_id];
         }
 
         $account_id = trim(input('account_id'));
-        if (isset($account_id) && !empty($account_id)) {
+        if (isset($account_id) && !empty($account_id))
+        {
             $where[] = ['account_id', '=', $account_id];
         }
 
@@ -90,36 +111,47 @@ class Player extends Base
             && (!empty($end_level) && $end_level > 0)
             && $end_level > $start_level) {
             $where[] = ['level', 'between', [$start_level, $end_level]];
-        } elseif ((!empty($start_level) && $start_level > 0) && (empty($end_level))) {
+        } elseif ((!empty($start_level) && $start_level > 0) && (empty($end_level)))
+        {
             $where[] = ['level', '>=', $start_level];
-        } elseif ((empty($start_level)) && (!empty($end_level) && $end_level > 0)) {
+        } elseif ((empty($start_level)) && (!empty($end_level) && $end_level > 0))
+        {
             $where[] = ['level', '<=', $end_level];
         }
 
         $is_online = trim(input('online'));
-        if ($is_online && $is_online != -1) {
-            if ($is_online == 100) {
+        if ($is_online && $is_online != -1) 
+        {
+            if ($is_online == 100) 
+            {
                 $where[] = ['online', '=', 0];
-            } else {
+            } 
+            else
+            {
                 $where[] = ['online', '=', $is_online];
             }
         }
 
         $off_line = trim(input('off_line'));
-        if ($off_line && $off_line > 0) {
+        if ($off_line && $off_line > 0)
+        {
             $diff_stamp = time() - $off_line * 3600;
             $where[] = ['last_logout_time', '<=', $diff_stamp];
         }
-
+        //判断数据是否存在
+        $db = dbConfig($server_id);
+        if(!$db)
+        {
+            $this->error('未找到游戏数据库！');
+        }
+        //获取数据
         $field = 'actor_id,account_id,nickname,level,job,gender,last_login_ip,last_logout_time,online,u.ChannelID,u.register_ip,forbid_chat,deleted,create_time';
-        $lists = dbConfig($server_id)
-            ->table('player')
-            ->field($field)
-            ->join('cq_main.user_info u', 'player.account_id = u.UserID')
-            ->where($where)
-            ->order('actor_id desc')
-            ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
-
+        $lists = $db->table('player')->field($field)
+                    ->join('fy_main.user_info u', 'player.account_id = u.UserID')->where($where)->order('actor_id desc')
+                    ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
+        
+        //返回显示
+        //print_r($db->getLastSql());
         $this->ifPageNoData($lists);
         $page = $lists->render();
         $this->assign([
@@ -136,7 +168,7 @@ class Player extends Base
             'off_line' => $off_line,
             'lists' => $lists,
             'page' => $page,
-            'empty' => '<td class="empty" colspan="17">暂无数据</td>',
+            'empty' => '<td class="empty" colspan="18">暂无数据</td>',
             'meta_title' => '玩家列表'
         ]);
         return $this->fetch();
@@ -148,76 +180,64 @@ class Player extends Base
     public function show()
     {
         $actor_id = getParam('id');
-        if (!$actor_id) $this->error('请点击用户名选定玩家！！！');
+        if (!$actor_id) $this->error('请点击用户名选定玩家！！！',null, '', 1);
 
         $where[] = ['actor_id', '=', $actor_id];
         $type = getParam('type');// $this->request->param("type");
         $info = null;
         $server_id = \think\facade\Session::get('server_id');
+        //判断数据是否存在
+        $db = dbConfigByReadBase($server_id);
+        if(!$db)
+        {
+            $this->error('未找到游戏数据库！');
+        }
+        //处理
         switch ($type) {
+            //基础
             case 'baseinfo':
-                $info = dbConfigByReadBase($server_id)
-                    ->table('player')
-                    ->find($actor_id);
+                $info = $db->table('player')->find($actor_id);
                 break;
-            case 'package'://背包
-                $info = dbConfigByReadBase($server_id)
-                    ->table('player_item')
-                    ->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
-                    ->where(['actor_id' => $actor_id, 'bag_index' => 0])
-                    ->group('type_id')
-                    ->order('position desc')
-                    ->select();
+            //背包
+            case 'package':
+                $info = $db->table('player_item')
+                            ->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
+                            ->where(['actor_id' => $actor_id, 'bag_index' => 0])
+                            ->group('type_id')->order('position desc')->select();
                 break;
-            case 'skill'://技能
-                $info = dbConfigByReadBase($server_id)
-                    ->field('actor_id,skill_id,idx,level,exp')
-                    ->table('player_skill')
-                    ->where(['actor_id' => $actor_id])
-                    ->order('skill_id desc')
-                    ->select();
+            //技能
+            case 'skill':
+                $info = $db->table('player_skill')->field('actor_id,skill_id,idx,level,exp')
+                            ->where(['actor_id' => $actor_id])->order('skill_id desc')->select();
                 break;
-            case 'equip'://装备
-                $info = dbConfigByReadBase($server_id)
-                    ->table('player_item')
-                    ->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
-                    ->where([['actor_id', '=', $actor_id], ['bag_index', 'in', [1, 2]]])
-                    ->group('type_id')
-                    ->order('position desc')
-                    ->select();
+            //装备
+            case 'equip':
+                $info =$db->table('player_item')
+                            ->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
+                            ->where([['actor_id', '=', $actor_id], ['bag_index', 'in', [1, 2]]])
+                            ->group('type_id')->order('position desc')->select();
                 break;
-            case 'store'://仓库
-                $info = dbConfigByReadBase($server_id)
-                    ->table('player_item')
-                    ->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
-                    ->where(['actor_id' => $actor_id, 'bag_index' => 3])
-                    ->group('type_id')
-                    ->order('position desc')
-                    ->select();
+            //仓库
+            case 'store':
+                $info = $db->table('player_item')->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
+                            ->where(['actor_id' => $actor_id, 'bag_index' => 3])
+                            ->group('type_id')->order('position desc')->select();
                 break;
-            case 'clothes'://时装
-                $info = dbConfigByReadBase($server_id)
-                    ->table('appearance')
-                    ->field('actor_id,appearance_id,limit_time')
-                    ->where([['actor_id', '=', $actor_id], ['appearance_id', 'in', [52, 53, 54, 56, 413, 1001, 1002, 1003, 1004]]])
-                    ->order('appearance_id asc')
-                    ->select();
+            //时装
+            /* case 'clothes':
+                $info = $db->table('appearance')->field('actor_id,appearance_id,limit_time')
+                            ->where([['actor_id', '=', $actor_id], ['appearance_id', 'in', [52, 53, 54, 56, 413, 1001, 1002, 1003, 1004]]])
+                            ->order('appearance_id asc')->select();
+                break; */
+            //宝石
+            case 'gem':
+                $info = $db->table('player_item')->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
+                            ->where([['actor_id', '=', $actor_id], ['bag_index', 'in', [7, 8]]])
+                            ->group('type_id')->order('position desc')->select();
                 break;
-            case 'gem'://宝石
-                $info = dbConfigByReadBase($server_id)
-                    ->table('player_item')
-                    ->field('ident_id,actor_id,type_id,bag_index,sum(number) as number')
-                    ->where([['actor_id', '=', $actor_id], ['bag_index', 'in', [7, 8]]])
-                    ->group('type_id')
-                    ->order('position desc')
-                    ->select();
-                break;
-            case 'economy'://经济
-                $info = dbConfigByReadBase($server_id)
-                    ->field('actor_id,nickname,yuanbao,gold,diamonds')
-                    ->table('player')
-                    ->where(['actor_id' => $actor_id])
-                    ->select();
+            //经济
+            case 'economy':
+                $info = $db->table('game_money')->field('money_type,money_value')->where(['actor_id' => $actor_id])->select();
                 break;
         }
         $this->assign([

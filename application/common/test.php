@@ -558,6 +558,7 @@ class test
      */
     static function combin_pack($ip, $port, $obj, $code)
     {
+        return;
         $first_data = pack("s*", $code);
         $first_len = 4;
         if (!empty($obj)) {
@@ -614,19 +615,26 @@ class test
     {
         $socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         Log::write("发送socket:" . $socket);
-        if ($socket < 0) {
+        if ($socket < 0) 
+        {
             Log::write("socket_create() failed: reason: " . socket_strerror($socket) . "\n");
         }
         $result = @socket_connect($socket, $ip, $port);
-        if ($result < 0) {
+        if ($result < 0)
+        {
             Log::write("socket_connect() failed.\nReason: ($result) " . socket_strerror($result) . "\n");
-        } else {
+        }
+        else 
+        {
             Log::write("ip:'$ip',port:'$port'连接成功!!!");
         }
 
-        if (!@socket_write($socket, $pack, strlen($pack))) {
+        if (!@socket_write($socket, $pack, strlen($pack))) 
+        {
             Log::Write("socket_write() failed: reason: " . @socket_strerror($socket) . "\n");
-        } else {
+        } 
+        else 
+        {
             Log::write("发送到服务器信息成功！\n发送的内容为:'$pack'");
         }
         sleep(1);

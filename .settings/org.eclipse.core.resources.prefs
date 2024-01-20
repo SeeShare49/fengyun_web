@@ -1,2 +1,11 @@
 eclipse.preferences.version=1
+encoding//application/admin/controller/Server.php=UTF-8
+encoding//application/admin/view=UTF-8
+encoding//application/admin/view/game_log_action/index.html=UTF-8
+encoding//application/admin/view/import_data=UTF-8
+encoding//application/admin/view/import_data/index.html=UTF-8
+encoding//application/admin/view/import_data/upload.html=UTF-8
+encoding//application/admin/view/server/create.html=UTF-8
+encoding//public/tips.html=UTF-8
 encoding/<project>=UTF-8
+encoding/application=UTF-8

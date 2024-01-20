@@ -23,7 +23,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">跨服列表：</label>
                         <div class="layui-input-block">
-                            <select name="kuafu_id" xm-select="select4" xm-select-search="" xm-select-max="1">
+                            <select name="kuafu_id" ><!--xm-select="select4" xm-select-search="" xm-select-max="1"-->
+                                <option value="0" >选择跨服列表</option>
                                 {volist name="cross_server_list" id="c_vo"}
                                 <option value="{$c_vo.id}" {$kuafu_id==$c_vo.id?'selected':''}>{$c_vo.servername}</option>
                                 {/volist}

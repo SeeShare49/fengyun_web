@@ -19,6 +19,7 @@ class GameLogAction extends Base
         if ($search) {
             $where[] = ['action_name|action_desc', 'like', "%$search%"];
         }
+        
         $lists = \app\admin\model\GameLogAction::where($where)
         //->order(['status'=>'desc','action_value'=>'asc'])
         ->orderRaw('status DESC,CAST(action_value AS UNSIGNED) ASC')
@@ -284,8 +285,8 @@ class GameLogAction extends Base
         }
         
         $resData = [
-            'code' => 1,
-            'msg' => ',数据导入成功,LOG_ACTION_TYPE类型总数'.count($log_action_type_arr).',LOG_MODULE类型总数'.count($log_module_arr).'请重新刷新查看！',
+            'code' => 0,
+            'msg' => '数据导入成功,LOG_ACTION_TYPE类型总数'.count($log_action_type_arr).',LOG_MODULE类型总数'.count($log_module_arr).'请重新刷新查看！',
             'data' => '',
             'url' => '/index',
             'wait' => 2

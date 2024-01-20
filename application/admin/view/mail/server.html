@@ -8,7 +8,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">区服ID：</label>
                         <div class="layui-input-block">
-                            <select name="server_id" xm-select="select5" xm-select-search="">
+                            <select name="server_id" ><!--xm-select="select5" xm-select-max="1" xm-select-search=""-->
+                                    <option value="">请选择服务器</option>
                                 {volist name="server_list" id="vo"}
                                 <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
                                 {/volist}

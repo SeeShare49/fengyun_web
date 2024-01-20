@@ -136,12 +136,15 @@
 <script src="__JS__/jquery.form.js"></script>
 <script>
     layui.use(['element', 'form', 'laydate'], function () {
-        var laydate = layui.laydate
-            , form = layui.form;
+        var laydate = layui.laydate, form = layui.form;
         //常规用法
         laydate.render({
-            elem: '#open_time'
-            , type: 'datetime'
+            elem: '#open_time', type: 'datetime',
+           	change: function(value, date, endDate)
+               {
+                   $('#open_time').val(value);
+                   $('.layui-laydate').remove();
+               } 
         });
     });
 </script>

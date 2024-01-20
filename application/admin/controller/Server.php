@@ -19,16 +19,19 @@ use think\facade\View;
 define('DB_HOST', config('admin.DB_HOST'));
 define('DB_USER', config('admin.DB_USER'));
 define('DB_PASS', config('admin.DB_PASS'));
+define('DB_PORT', config('admin.DB_PORT'));
+define('DB_GAME_SQL_FILE', config('admin.DB_GAME_SQL_FILE'));
 
 class Server extends Base
 {
     private $dbhost = DB_HOST; //数据库主机名
     private $dbuser = DB_USER; //数据库用户名
     private $dbpass = DB_PASS; //数据库密码
+    private $dbport = DB_PORT;//数据库端口
     private $database = null;
     private $charset = "utf8mb4";
-    private $sqlfile = "../public/databack/cq_game.sql";
-    protected $db_prefix = "cq_game";
+    private $sqlfile = DB_GAME_SQL_FILE;
+    protected $db_prefix = "fy_game";
 
     /**
      * 显示服务器资源列表
@@ -91,52 +94,63 @@ class Server extends Base
     public function create()
     {
         /* 开服 初始化 游戏数据库数据结构（cq_game?） */
-
-        if (request()->isPost()) {
-            $data = $_POST;
-            $serverValidate = new ServerValidate();
-            if (!$serverValidate->check($data)) {
-                $this->error($serverValidate->getError());
-            }
-
-            /** @var TYPE_NAME $checkwhereid */
-            $checkwhereid[] = ['id', '=', $data['id']];
-            $checkId = ServerList::where($checkwhereid)->find();
-            if ($checkId) {
-                $this->error('服务器ID已存在！');
-            }
-
-            $checkwhere[] = ['servername', '=', trim($data['servername'])];
-            $checkServerName = ServerList::where($checkwhere)->find();
-            if ($checkServerName) {
-                $this->error('服务器名称已存在！');
-            }
-            $data['open_time'] = strtotime($data['open_time']);
-            $data['real_server_id'] = $data['id'];//开服真实服务器id即当前服务器id
-            $data['db_database_name'] = $this->db_prefix . $data['id'];
-            $ret = ServerList::insert($data);
-
-            if ($ret) {
-                action_log('server_add', 'server_list', $data['id'], UID);
-
-                if ($this->create_database($data['db_database_name'])) {
-                    $db = new DbManage($data['db_ip_w'], $data['db_username_w'], $data['db_password_w'], $data['db_database_name'], $this->charset);
-                    $db->restore($this->sqlfile);
-                }
-                /** replace 全局标量数据表信息 **/
-                $this->replace_global_val($data['id']);
-                //创建（新开）服务器发送命令
-                test::refresh_server_info();
-                return $this->result($data, 1, '服务器添加成功');
-
-            } else {
-                $this->error('服务器添加失败!');
-            }
-        } else {
-            $this->assign([
-                'meta_title' => '新增服务器'
-            ]);
+        if (!request()->isPost()) 
+        {
+            $this->assign([ 'meta_title' => '新增服务器' ]);
             return $this->fetch();
+        }
+        //检查
+        $data = $_POST;
+        $serverValidate = new ServerValidate();
+        if (!$serverValidate->check($data))
+        {
+            $this->error($serverValidate->getError());
+        }
+        
+        /** @var TYPE_NAME $checkwhereid */
+        $checkwhereid[] = ['id', '=', $data['id']];
+        $checkId = ServerList::where($checkwhereid)->find();
+        if ($checkId)
+        {
+            $this->error('服务器ID已存在！');
+        }
+        
+        $checkwhere[] = ['servername', '=', trim($data['servername'])];
+        $checkServerName = ServerList::where($checkwhere)->find();
+        if ($checkServerName)
+        {
+            $this->error('服务器名称已存在！');
+        }
+        $data['open_time'] = strtotime($data['open_time']);
+        $data['real_server_id'] = $data['id'];//开服真实服务器id即当前服务器id
+        $data['db_database_name'] = $this->db_prefix . $data['id'];
+
+        //创建游戏服务器数据库
+        $error = '';
+        if (!$this->create_database($data['db_database_name'],$error))
+        {
+            $this->error('创建游戏服务器数据库失败！'.$error);
+        }
+        $db = new DbManage($data['db_ip_w'], $data['db_username_w'], $data['db_password_w'], $data['db_database_name'], $this->charset);
+        $db->restore($this->sqlfile);
+        //增加数据
+        $ret = ServerList::insert($data);
+        if ($ret)
+        {
+            action_log('server_add', 'server_list', $data['id'], UID);
+           // 判断是否创建游戏服务器数据库成功
+            /** replace 全局标量数据表信息 **/
+            if(!$this->replace_global_val($data['id']))
+            {
+                $this->error(' 导入游戏服务器数据库数据失败！');
+            }
+            //创建（新开）服务器发送命令
+            test::refresh_server_info();
+            return $this->result($data, 1, '服务器添加成功');
+        }
+        else
+        {
+            $this->error('服务器添加失败!');
         }
         return $this->fetch();
     }
@@ -167,7 +181,7 @@ class Server extends Base
             }
 
             $svrlist = $this->getSvrList($data['server_id'], $data['server_id_c']);
-            $db = new \app\common\DbManage($this->dbhost, $this->dbuser, $this->dbpass, $this->db_prefix . $data['server_id'], $this->charset);
+            $db = new \app\common\DbManage($this->dbhost, $this->dbuser, $this->dbpass, $this->db_prefix . $data['server_id'], $this->dbport, $this->charset);
             $tables = $db->getTables();
             if (count($svrlist) > 0) {
                 foreach ($svrlist as $svr) {
@@ -311,7 +325,7 @@ class Server extends Base
 
             $svrlist = $this->getSvrListByIds($combine_ids);
 
-            $db = new \app\common\DbManage($this->dbhost, $this->dbuser, $this->dbpass, $this->db_prefix . $data['server_id'], $this->charset);
+            $db = new \app\common\DbManage($this->dbhost, $this->dbuser, $this->dbpass, $this->db_prefix . $data['server_id'], $this->dbport, $this->charset);
             $tables = $db->getTables();
             if (count($svrlist) > 0) {
                 foreach ($svrlist as $svr) {
@@ -539,54 +553,50 @@ class Server extends Base
      */
     public function edit($id)
     {
-        $info = Db::connect("db_config_main")
-            ->table('server_list')
-            ->find($id);
+        $info = Db::connect("db_config_main")->table('server_list')->find($id);
 
-        if (!$info) {
+        if (!$info) 
+        {
             $this->error('服务器不存在或已删除！');
         }
 
-        if (request()->isPost()) {
-            $data = $_POST;
-            $serverValidate = new ServerValidate();
-            if (!$serverValidate->check($data)) {
-                $this->error($serverValidate->getError());
-            }
-            $checkwhere[] = ['servername', '=', $data['servername']];
-            $checkwhere[] = ['id', '<>', $data['id']];
-            $checkServerName = Db::connect("db_config_main")
-                ->table('server_list')
-                ->where($checkwhere)
-                ->find();
-            if ($checkServerName) {
-                $this->error('服务器名称已存在！');
-            }
-
-            $data['open_time'] = strtotime($data['open_time']);
-
-            $ret = Db::connect("db_config_main")
-                ->table('server_list')
-                ->where('id', '=', $id)
-                ->update($data);
-
-            if ($ret) {
-                action_log('server_edit', 'server_list', $id, UID);
-                //创建（新开服）服务器发送命令
-                test::refresh_server_info();
-                return json(['code' => 1, 'msg' => '服务器信息修改成功!']);
-//                $this->success('服务器信息修改成功!', 'server/index');
-            } else {
-                $this->error('服务器信息修改失败!');
-            }
-        } else {
+        if (!request()->isPost()) {
             $this->assign([
                 'id' => $id,
                 'info' => $info,
                 'meta_title' => '编辑服务器信息'
             ]);
             return $this->fetch();
+        } 
+        //修改
+        $data = $_POST;
+        $serverValidate = new ServerValidate();
+        if (!$serverValidate->check($data)) {
+            $this->error($serverValidate->getError());
         }
+        $checkwhere[] = ['servername', '=', $data['servername']];
+        $checkwhere[] = ['id', '<>', $data['id']];
+        $checkServerName = Db::connect("db_config_main")->table('server_list')->where($checkwhere)->find();
+        
+        if ($checkServerName)
+        {
+            $this->error('服务器名称已存在！');
+        }
+        
+        $data['open_time'] = strtotime($data['open_time']);
+       
+        $ret = Db::connect("db_config_main")->table('server_list')->where('id', '=', $id)->update($data);
+        
+        if ($ret === false) 
+        {
+            $this->error('服务器信息修改失败!');
+        }
+        
+        action_log('server_edit', 'server_list', $id, UID);
+        //创建（新开服）服务器发送命令
+        test::refresh_server_info();
+        return json(['code' => 1, 'msg' => '服务器信息修改成功!']);
+        //$this->success('服务器信息修改成功!', 'server/index');
     }
 
 
@@ -595,19 +605,26 @@ class Server extends Base
      * @param $dbname
      * @return bool
      */
-    public function create_database($dbname)
+    public function create_database($dbname,&$error)
     {
         $result = false;
         $con = mysqli_connect($this->dbhost, $this->dbuser, $this->dbpass);
 
-        if (!$con) {
+        if (!$con) 
+        {
             Log::write('Could not connect: ' . mysqli_error($con));
-            die('Could not connect: ' . mysqli_error($con));
+            $error = 'Could not connect: ' . mysqli_error($con);
+            //die('Could not connect: ' . mysqli_error($con));
         }
-        if (mysqli_query($con, "CREATE DATABASE " . $dbname . " CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")) {
+        if (mysqli_query($con, "CREATE DATABASE IF NOT EXISTS " . $dbname . " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin")) 
+        {
             $result = true;
-        } else {
-            echo "Error creating database: " . mysqli_error($con);
+        } 
+        else 
+        {
+            Log::write('Error creating database: ' . mysqli_error($con));
+            $error = 'Error creating database:  ' . mysqli_error($con);
+            //die("Error creating database: " . mysqli_error($con));
         }
         mysqli_close($con);
         return $result;
@@ -744,12 +761,11 @@ class Server extends Base
     public
     function server_shut_down($id)
     {
-        if (empty($id)) {
+        if (empty($id)) 
+        {
             $this->error('请选择关停的服务器!');
         }
-        $info = Db::connect("db_config_main")
-            ->table('server_list')
-            ->find($id);
+        $info = Db::connect("db_config_main")->table('server_list')->find($id);
         if (!$info) {
             $this->error('服务器不存在或已删除！');
         }
@@ -948,7 +964,7 @@ class Server extends Base
 
             $ret = ServerList::whereOr([$map1, $map2])->update(['status' => $data['status']]);
 
-            if ($ret) {
+            if ($ret !== false) {
                 action_log('server_status_edit', 'server', $ret, UID);
                 $resData = [
                     'data' => $data,
@@ -1231,23 +1247,23 @@ class Server extends Base
     public
     function updateServerName()
     {
-        if (request()->isPost()) {
-            $data['id'] = input('id');
-            $data['servername'] = input('servername');
-
-            $res = ServerList::update($data);
-            if ($res) {
-                //添加行为记录
-                action_log("server_edit_name", "server", $data['id'], UID);
-                //发送命令到服务器请求刷新服务器列表信息
-                test::refresh_server_info();
-                $this->success('服务器名称修改成功！');
-            } else {
-                $this->error('服务器名称修改失败！');
-            }
-        } else {
+        if (!request()->isPost())
+        {
             $this->error('非法请求！');
+        } 
+        $data['id'] = input('id');
+        $data['servername'] = input('servername');
+        
+        $res = ServerList::update($data);
+        if (!$res)
+        {
+            $this->error('服务器名称修改失败！');
         }
+        //添加行为记录
+        action_log("server_edit_name", "server", $data['id'], UID);
+        //发送命令到服务器请求刷新服务器列表信息
+        test::refresh_server_info();
+        $this->success('服务器名称修改成功！');
     }
 
 
@@ -1654,12 +1670,21 @@ class Server extends Base
     public
     function replace_global_val($server_id)
     {
+        $db = dbConfig($server_id);
+        if(!$db)
+        {
+            return false;
+        }
         $table_name = 'global_val';
         $data['id'] = 3;
         $data['val'] = 20000;
-        if (!dbConfig($server_id)->table($table_name)->insert($data)) {
+        $res = $db->table($table_name)->insert($data);
+        if (!$res)
+        {
             Log::write('全局变量表【' . $this->db_prefix . $server_id . $table_name . ' 】数据插入失败!');
+            return false;
         }
+        return true;
     }
 
     /**
@@ -1730,7 +1755,7 @@ class Server extends Base
     public
     function back_database($dbname)
     {
-        $db = new \app\common\DbManage($this->dbhost, $this->dbuser, $this->dbpass, $dbname, $this->charset);
+        $db = new \app\common\DbManage($this->dbhost, $this->dbuser, $this->dbpass, $dbname, $this->dbport, $this->charset);
         $back_database = $db->backup("", "", 200000);
         Log::write("back data base " . $dbname . "备份完成！！！");
     }

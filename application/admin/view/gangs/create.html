@@ -8,7 +8,8 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">服务器ID：</label>
                         <div class="layui-input-block">
-                            <select name="server_id" xm-select="select4" xm-select-max="1" xm-select-search="">
+                            <select name="server_id"><!--xm-select="select4" xm-select-max="1" xm-select-search=""-->
+                                <option value="">请选择服务器</option>
                                 {volist name="server_list" id="vo"}
                                 <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.servername}</option>
                                 {/volist}

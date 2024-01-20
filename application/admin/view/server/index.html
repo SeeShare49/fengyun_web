@@ -21,8 +21,7 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">服务器名称:</label>
                             <div class="layui-input-inline">
-                                <input type="text" name="servername" placeholder="请输入服务器名称" value="{$servername}"
-                                       class="layui-input">
+                                <input type="text" name="servername" placeholder="请输入服务器名称" value="{$servername}" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
@@ -36,25 +35,26 @@
                     <table class="layui-table" id="dataTable" lay-filter="dataTable">
                         <thead>
                         <tr>
-                            <th class=" layui-table-col-special" width="18px">
+                            <th class=" layui-table-col-special"  style="min-width: 10px;">
                                 <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
                             </th>
-                            <th>ID</th>
-                            <th>区服</th>
-                            <th style="width: 100px;">状态</th>
-                            <th>开服时间</th>
-                            <th>合服时间</th>
+                            <th style="min-width: 30px;">ID</th>
+                            <th style="min-width: 100px;">区服</th>
+                            <th style="min-width: 70px;">状态</th>
+                            <th  style="min-width: 80px;">开服时间</th>
+                            <th  style="min-width: 80px;">合服时间</th>
                             <th>数据库名</th>
                             <!--                            <th>读库IP</th>-->
                             <!--                            <th>读库端口</th>-->
                             <!--                            <th>读库账号</th>-->
                             <!--                            <th>读库密码</th>-->
                             <th>写库IP</th>
-                            <th>写库端口</th>
-                            <th>写库账号</th>
-                            <th>写库密码</th>
-                            <th>真实区服</th>
-                            <th>合服次数</th>
+                            <!-- th>写库端口</th-->
+                            <!--  th>写库账号</th-->
+                            <!--  th>写库密码</th-->
+                            <th  style="min-width: 60px;">真实区服</th>
+                            <th  style="min-width: 60px;">合服次数</th>
+                            <th  style="min-width: 30px;">使用</th>
                             <th width="200px;">跨服ID</th>
                             <th width="180px;">操作</th>
                         </tr>
@@ -106,12 +106,13 @@
                             <!--<td>{$vo.db_username_r}</td>-->
                             <!--<td>{$vo.db_password_r}</td>-->
                             <td>{$vo.db_ip_w}</td>
-                            <td>{$vo.db_port_w}</td>
-                            <td>{$vo.db_username_w}</td>
-                            <td>{$vo.db_password_w}</td>
+                            <!--td>{$vo.db_port_w}</td-->
+                            <!--td>{$vo.db_username_w}</td-->
+                            <!--td>{$vo.db_password_w}</td-->
                             <!--<td>{:get_area_server_name($vo.real_server_id)}</td>-->
                             <td>{$vo.real_server_id}</td>
                             <td>{$vo.combine_count}</td>
+                            <td>{if $vo.use_status==1}启用{else}弃用{/if}</td>
                             <td>
                                 <select id="kuafu_id" name="kuafu_id" lay-filter="kuafu_id">
                                     <option value="0">请选择跨服服务器</option>
@@ -121,13 +122,10 @@
                                 </select>
                             </td>
                             <td>
-                                <a href="{:url('edit?id='.$vo['id'])}"
-                                   class="layui-btn layui-btn-xs layui-btn-normal" title="编辑服务器">编辑</a>
-                                <a href="{:url('server_shut_down?id='.$vo['id'])}"
-                                   class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">关服</a>
+                                <a href="{:url('edit?id='.$vo['id'])}" class="layui-btn layui-btn-xs layui-btn-normal"  title="编辑服务器">编辑</a>
+                                <a href="{:url('server_shut_down?id='.$vo['id'])}" class="layui-btn layui-btn-danger layui-btn-xs confirm ajax-post">关服</a>
                                 {if $vo.kuafu_id!=0}
-                                <a href="{:url('cancel_cross_server?id='.$vo['id'])}"
-                                   class="layui-btn layui-btn-warm layui-btn-xs confirm ajax-post">取消跨服</a>
+                                <a href="{:url('cancel_cross_server?id='.$vo['id'])}" class="layui-btn layui-btn-warm layui-btn-xs confirm ajax-post">取消跨服</a>
                                 {/if}
                             </td>
                         </tr>

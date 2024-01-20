@@ -6,7 +6,7 @@
             <div class="layui-card-header">游戏用戶列表</div>
             <div class="layui-card-body">
                 <div class="layui-tab">
-                    <div class="layui-row zz-row-operate" style="margin-top: 20px;">
+                    <div class="layui-row zz-row-operate" style="margin-top: 0px;">
                         <div class="zz-operate-btn-group">
                             <a class="layui-btn" title="渠道迁移" href="{:url('channel_transfer')}">渠道迁移</a>
                             <a class="layui-btn open-win" title="账号绑定" href="{:url('bind_account')}">账号绑定</a>
@@ -18,8 +18,8 @@
                             <a class="layui-btn layui-btn-danger zz-btn-delete-all"
                                href="{:url('batch_unseal')}">批量解封</a>
                         </div>
-                        <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right"  style="margin-top: 20px ">
-                            <div class="layui-form-item">
+                        <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right"  style="margin-top: 10px ;">
+                            <div class="layui-form-item" style="margin-bottom: 5px;">
                                 <div class="layui-inline">
                                     <label class="layui-form-label">设备码:</label>
                                     <div class="layui-input-inline">
@@ -58,26 +58,26 @@
                     </div>
 
 
-                    <div class="layui-form">
+                    <div class="layui-form"   style="margin-top: -10px; ">
                         <table class="layui-table">
                             <thead>
                             <tr>
-                                <th class=" layui-table-col-special" width="18px">
+                                <th class=" layui-table-col-special" width="16px">
                                     <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">
                                 </th>
-                                <th>用户ID</th>
-                                <th>手机号码</th>
-                                <th>设备码</th>
-                                <th>真实姓名</th>
-                                <th>新/老用户</th>
-                                <th>GM号设置</th>
-                                <th>注册时间</th>
-                                <th>注册IP</th>
-                                <th>最后登录IP</th>
-                                <th>限制IP</th>
-                                <th>封号时间</th>
-                                <th style="width: 300px;">封号原因</th>
-                                <th style="width: 120px;">操作</th>
+                                <th style="min-width: 45px;">用户ID</th>
+                                <th style="min-width: 0px;">手机号码</th>
+                                <th style="min-width: 0px;">设备码</th>
+                                <th style="min-width: 60px;">真实姓名</th>
+                                <th style="min-width: 60px;">新/老用户</th>
+                                <th style="min-width: 65px;">GM号设置</th>
+                                <th style="min-width: 75px;">注册时间</th>
+                                <th style="min-width: 70px;">注册IP</th>
+                                <th style="min-width: 70px;">最后登录IP</th>
+                                <th style="min-width: 125px;">限制IP</th>
+                                <th style="min-width: 75px;">封号时间</th>
+                                <th style="min-width: 100px;">封号原因</th>
+                                <th style="min-width: 110px;">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -116,9 +116,7 @@
                                     <form action="{:url('ip_limit')}" method="post" class="layui-form zz-form-datalist"
                                           lay-filter="zz-form-{$vo.UserID}">
                                         <input type="hidden" value="{$vo.UserID}" name="UserID">
-                                        <input type="text" name="ip_limit" data-source="{$vo.ip_limit}"
-                                               lay-verify="required"
-                                               autocomplete="off" value="{$vo.ip_limit}" class="layui-input">
+                                        <input type="text" name="ip_limit" data-source="{$vo.ip_limit}"  lay-verify="required" autocomplete="off" value="{$vo.ip_limit}" class="layui-input" style="height:32px;">
                                     </form>
                                 </td>
                                 <td>

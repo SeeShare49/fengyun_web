@@ -1,22 +1,22 @@
 {extend name="public/base" /}
 {block name="body"}
+<style>
+.layui-table td,.layui-table th {
+    padding: 9px 3px;
+}
+</style>
 <div class="layui-row layui-col-space15">
     <div class="layui-col-md12">
         <div class="layui-card">
             <div class="layui-card-header">玩家管理</div>
             <div class="layui-card-body">
                 <div class="layui-tab">
-                    <ul class="layui-tab-title">
+                    <!--ul class="layui-tab-title">
                         <li class="layui-this">玩家列表</li>
-                        <li><a href="{:url('show?type=baseinfo')}">基本信息</a></li>
-                        <li><a href="{:url('show?type=equip')}">装备</a></li>
-                        <li><a href="{:url('show?type=skill')}">技能</a></li>
-                        <li><a href="{:url('show?type=package')}"> 背包物品</a></li>
-                        <li><a href="{:url('show?type=economy')}"> 经济统计</a></li>
-                    </ul>
-                    <div class="layui-row zz-row-operate" style="margin-top: 20px;">
+                    </ul--->
+                    <div class="layui-row zz-row-operate" style="margin-top: 0px; ;">
                         <form action="{:url('')}" class="layui-form zz-form-search zz-form zz-form-right">
-                            <div class="layui-form-item">
+                            <div class="layui-form-item"  style="margin-bottom: 0px;">
                                 <div class="layui-inline">
                                     <label class="layui-form-label">用户昵称:</label>
                                     <div class="layui-input-inline">
@@ -55,7 +55,7 @@
                                     <label class="layui-form-label">离线时长:</label>
                                     <div class="layui-input-inline">
                                         <select name="off_line">
-                                            <option value="-1" {$off_line==-1?'selected':''}>离线时长</option>
+                                            <option value="-1" {$off_line==-1?'selected':''}>选择离线时长</option>
                                             <option value="12" {$off_line==12?'selected':''}>离线12小时</option>
                                             <option value="24" {$off_line==24?'selected':''}>离线24小时</option>
                                             <option value="36" {$off_line==24?'selected':''}>离线36小时</option>
@@ -64,17 +64,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="layui-form-item">
+                            <div class="layui-form-item"  style="margin: 0px;">
 
                                 <div class="layui-inline">
                                     <label class="layui-form-label">服务器:</label>
                                     <div class="layui-input-inline">
-                                        <select name="server_id" xm-select="select5" xm-select-max="1"
-                                                xm-select-search="">
+                                        <select name="server_id" ><!--  xm-select="select5" xm-select-max="1"  xm-select-search=""-->
+                                        <option value="" >选择服务器</option>
                                             {volist name="server_list" id="vo"}
-                                            <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区
-                                                - {$vo.servername}
-                                            </option>
+                                            <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
                                             {/volist}
                                         </select>
                                     </div>
@@ -82,12 +80,10 @@
                                 <div class="layui-inline">
                                     <label class="layui-form-label">来源渠道:</label>
                                     <div class="layui-input-inline">
-                                        <select name="channel_id" xm-select="select4" xm-select-max="1"
-                                                xm-select-search="">
+                                        <select name="channel_id"  ><!--  xm-select="select4" xm-select-max="1"  xm-select-search=""-->
+                                            <option value="0" >选择来源渠道</option>
                                             {volist name="channel_list" id="vo"}
-                                            <option value="{$vo.id}" {$channel_id==$vo.id?'selected':''}>
-                                                {$vo.channel_name}
-                                            </option>
+                                            <option value="{$vo.id}" {$channel_id==$vo.id?'selected':''}>{$vo.channel_name}</option>
                                             {/volist}
                                         </select>
                                     </div>
@@ -125,23 +121,23 @@
                                 <!--                                    <input type="checkbox" lay-filter="zz-checkbox-table" lay-skin="primary">-->
                                 <!--                                </th>-->
                                 <th>角色ID</th>
-                                <th>角色名</th>
-                                <th>账户ID</th>
-                                <th>等级</th>
-                                <th>贵族等级</th>
-                                <th>职业</th>
-                                <th>性别</th>
-                                <th>账号注册时间</th>
-                                <th>角色注册时间</th>
-                                <th>注册IP</th>
-                                <th>最后登录IP</th>
+                                <th style="min-width:90px">角色名</th>
+                                <th style="min-width:45px">账户ID</th>
+                                <th style="min-width:35px">等级</th>
+                                <!-- th>贵族等级</th-->
+                                <th style="min-width:35px">职业</th>
+                                <th style="min-width:30px">性别</th>
+                                <th style="min-width:75px">账号注册时间</th>
+                                <th style="min-width:75px">角色注册时间</th>
+                                <th style="min-width:40px">注册IP</th>
+                                <th style="min-width:40px">最后IP</th>
                                 <th>来源渠道</th>
-                                <th>付费金额</th>
+                                <th style="min-width:35px">付费金额</th>
                                 <th>离线时间</th>
-                                <th>已离线时长</th>
-                                <th>是否在线</th>
-                                <th>角色状态</th>
-                                <th width="90px;">禁言设置</th>
+                                <th style="min-width:50px">已离线时长</th>
+                                <th style="min-width:35px">是否在线</th>
+                                <th style="min-width:35px">角色状态</th>
+                                <th style="min-width:65px">禁言设置</th>
                                 <th width="180px;">操作</th>
                             </tr>
                             </thead>
@@ -153,13 +149,7 @@
                                 </td>
                                 <td>{$vo.account_id}</td>
                                 <td>{$vo.level} 级</td>
-                                <td>
-                                    {if get_special_level($vo.actor_id,$server_id)!=null}
-                                    <span style="color: goldenrod">{:get_special_level($vo.actor_id,$server_id)} 级</span>
-                                    {else/}
-                                    0 级
-                                    {/if}
-                                </td>
+                                <!--td></td-->
                                 <td>{if $vo.job==100}战士{elseif $vo.job==101}法师{else/}道士{/if}</td>
                                 <td>{if $vo.gender==200}男{elseif $vo.gender==201}女{else/}未知{/if}</td>
                                 <td>{:get_user_register_time($vo.account_id)}</td>
@@ -167,9 +157,7 @@
                                 <td>{$vo.register_ip}</td>
                                 <td>{$vo.last_login_ip}</td>
                                 <td>{:get_channel_name($vo.ChannelID)}</td>
-                                <td><span
-                                        style="color:lightseagreen">{:get_total_recharge_by_user_id($vo.actor_id)} 元</span>
-                                </td>
+                                <td><span style="color:lightseagreen">{:get_total_recharge_by_user_id($vo.actor_id)} 元</span></td>
                                 <td>
                                     {notempty name="vo.last_logout_time" }
                                     {:date('Y-m-d H:i:s',$vo.last_logout_time)}

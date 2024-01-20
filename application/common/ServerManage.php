@@ -28,12 +28,12 @@ class ServerManage extends Controller
     /***
      * 服务器列表(未被合服且启用状态的服务器)
      */
-    public static function getServerList()
+    public static function getServerList($fields='id,area_id,servername')
     {
         return (new ServerList())
             ->table('server_list')
             ->where([['use_status', '=', '1'], ['open_time', '<=', time()]])
-            ->field('id,area_id,servername')
+            ->field($fields)
             ->select();
     }
 

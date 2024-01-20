@@ -346,43 +346,67 @@ function check_exists_table($connect_str, $table_name)
  * @throws \think\db\exception\BindParamException
  * @throws \think\exception\PDOException
  */
-function clear_chat_log($connect_str,$table_prefix, $user_id)
+function clear_chat_log($connect_str, $user_id)
 {
-    if (isset($user_id)) {
-        $server_list = ServerManage::getServerList();
-        $server_list_count = count($server_list);
-        for ($i = 0; $i < $server_list_count; $i++) {
-            $server_id = $server_list[$i]['id'];
-            $serverInfo = ServerList::find($server_id);
-            if ($serverInfo) {
-                $table = $table_prefix . $serverInfo['real_server_id'];
-
-                $lists_sql = "select actor_id from {$table}.player where account_id={$user_id}";
-
-                $Model = new UserInfoModel();
-                $ids = '';
-                $info = $Model->query($lists_sql);
-                $info_count = count($info);
-                if ($info_count > 0) {
-                    for ($j = 0; $j < $info_count; $j++) {
-                        $ids .= $info[$j]['actor_id'] . ',';
-                    }
-                    $ids = trim($ids, ',');
-                    $curr_date = date("Ymd");
-
-                    //清理15日内的被封号的用户聊天消息
-                    for ($i = 1; $i <= 15; $i++) {
-                        $table_name ='chat_log' . date("Ymd", strtotime("-$i day", strtotime($curr_date)));
-                        //容错，判断消息数据表是否存在 TODO：
-                        if(check_exists_table($connect_str,$table_name) && isset($ids)){
-                            $del_log_sql = "delete from {$table_name} where actor_id in ({$ids})";
-                            Log::write("删除聊天记录执行sql:" . $del_log_sql);
-                            $ret = Db::connect('db_chat_log')->execute($del_log_sql);
-                            if ($ret) {
-                                Log::write("封号用户UserID:【{$user_id}】聊天记录删除成功!");
-                            }
-                        }
-                    }
+    if (!isset($user_id)) 
+    {
+        return;
+    }
+    //获取日志表前缀
+    $config = Db::getConfig('db_chat_log');
+    $chatLogPrefix = (isset($config['prefix']) ? $config['prefix'] : '');
+    if(!$chatLogPrefix)
+    {
+        return;
+    }
+    //获取服务器列表
+    $server_list = ServerManage::getServerList('db_ip_w,db_port_w,db_username_w,db_password_w,db_database_name');
+    $server_list_count = count($server_list);
+    for ($i = 0; $i < $server_list_count; $i++)
+    {
+        //找到服务器设置信息
+        //$server_id = $server_list[$i]['id'];
+        //$serverInfo = ServerList::find($server_id);
+        $serverInfo =$server_list[$i];
+        if (!$serverInfo)
+        {
+            continue;
+        }
+        //找到玩家表数据
+        $ids = '';
+        //$Model = new UserInfoModel();
+        $table = $serverInfo['db_database_name'];
+        $lists_sql = "select actor_id from {$table}.player where account_id={$user_id}";
+        $Model = new \app\common\DbManage($serverInfo['db_ip_w'], $serverInfo['db_username_w'], $serverInfo['db_password_w'], $table, $serverInfo['db_port_w']);
+        $info = $Model->getColumns($lists_sql);
+        if (!$info)
+        {
+            continue;
+        }
+        foreach ($info as $actorid)
+        {
+            if(!$actorid)
+            {
+                continue;
+            }
+            $ids .= $actorid . ',';
+        }
+        $ids = trim($ids, ',');
+        $curr_date = date("Ymd");
+        
+        //清理15日内的被封号的用户聊天消息
+        for ($i = 1; $i <= 15; $i++) 
+        {
+            $table_name =$chatLogPrefix . date("Ymd", strtotime("-$i day", strtotime($curr_date)));
+            //容错，判断消息数据表是否存在 TODO：
+            if(check_exists_table($connect_str,$table_name) && isset($ids))
+            {
+                $del_log_sql = "delete from {$table_name} where actor_id in ({$ids})";
+                Log::write("删除聊天记录执行sql:" . $del_log_sql);
+                $ret = Db::connect('db_chat_log')->execute($del_log_sql);
+                if ($ret) 
+                {
+                    Log::write("封号用户UserID:【{$user_id}】聊天记录删除成功!");
                 }
             }
         }

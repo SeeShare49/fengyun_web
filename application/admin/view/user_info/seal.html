@@ -47,10 +47,14 @@
 <script>
     layui.use('laydate', function () {
         var laydate = layui.laydate;
-
         //常规用法
         laydate.render({
-            elem: '#StartBanTime', type: 'datetime'
+            elem: '#StartBanTime', type: 'datetime',
+            change: function(value, date, endDate)
+            {
+                $('#StartBanTime').val(value);
+                $('.layui-laydate').remove();
+            }  
         });
     });
 </script>
