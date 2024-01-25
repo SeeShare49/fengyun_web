@@ -60,31 +60,41 @@ class Notice extends Base
      */
     public function create()
     {
-        if (request()->isPost()) {
+        if (request()->isPost()) 
+        {
             $data = $_POST;
             $noticeValidate = new NoticeValidate();
-            if (!$noticeValidate->check($data)) {
+            if (!$noticeValidate->check($data))
+            {
                 $this->error($noticeValidate->getError());
             }
             $data['send_start_time'] = strtotime($data['send_start_time']);
             $data['send_end_time'] = strtotime($data['send_end_time']);
 
             $re = NoticeModel::insertGetId($data);
-            if ($re) {
+            if ($re)
+            {
                 //添加行为记录
                 action_log("notice_add", "notice", $re, UID);
                 //发送方式为即时发送（send_type=2）发送命令到服务器
-                if (isset($data['send_type']) && $data['send_type'] == 2) {
+                if (isset($data['send_type']) && $data['send_type'] == 2)
+                {
                     //即时公告发送服务器
                     test::webw_packet_notice($data['server_id'], $data['notice_content']);
-                } else {
+                } 
+                else
+                {
                     $this->auto_send_notice($re);
                 }
                 $this->success('公告信息添加成功!', 'notice/index');
-            } else {
+            } 
+            else 
+            {
                 $this->error("公告信息添加失败!");
             }
-        } else {
+        } 
+        else
+        {
             //初始化服务器列表
             $server_list = ServerManage::getServerList();
             $this->assign([
@@ -117,12 +127,14 @@ class Notice extends Base
         $info = \app\admin\model\Notice::where($where)->find();
 
         $send_data = array();
-        if ($info) {
+        if ($info)
+        {
             $server_id = $info['server_id'];
             Log::write("info is not null....");
             Log::write("info server_id:" . $server_id);
             $server_ids = explode(',', rtrim($server_id, ","));
-            for ($j = 0; $j < count($server_ids); $j++) {
+            for ($j = 0; $j < count($server_ids); $j++) 
+            {
                 $data['server_id'] = $server_ids[$j];
                 $data['notice_id'] = $info['id'];
                 $data['notice'] = $info['notice_content'];
@@ -134,15 +146,20 @@ class Notice extends Base
 
             Db::connect('db_config_main')->table('auto_notice')->where('notice_id', '=', $id)->delete();
             $result = Db::connect('db_config_main')->table('auto_notice')->insertAll($send_data);
-            if ($result) {
+            if ($result)
+            {
                 $ids = str_replace(',', '|', $server_id);
                 Log::write("定时公告发送至服务器成功！！！,ids:" . $ids);
                 test::webw_packet_game_notice($ids);
                 Log::write("!!!!定时公告发送至服务器成功！！！");
-            } else {
+            } 
+            else
+            {
                 Log::write("定时公告发送至服务器失败！！！");
             }
-        } else {
+        } 
+        else 
+        {
             Log::write("notice info is null!!!!!!!!!");
         }
     }
@@ -157,8 +174,10 @@ class Notice extends Base
         ignore_user_abort(true);    //设定关闭浏览器也执行程序
         set_time_limit(0);        // 设定响应时间不限制，默认为30秒
         ini_set('memory_limit', '512M');
-        while (true) {
-            if (connection_status() != CONNECTION_NORMAL) {
+        while (true) 
+        {
+            if (connection_status() != CONNECTION_NORMAL) 
+            {
                 break;
             }
 
@@ -173,14 +192,17 @@ class Notice extends Base
 
             $notice_count = count($notice_list);
             $sleep_sec = 300;
-            if ($notice_count > 0) {
-                for ($i = 0; $i < $notice_count; $i++) {
+            if ($notice_count > 0) 
+            {
+                for ($i = 0; $i < $notice_count; $i++) 
+                {
                     Log::write('notice 定时公告存在,待发送......');
                     $start_time = $notice_list[$i]['send_start_time'];
                     $end_time = $notice_list[$i]['send_end_time'];
                     $cur_time = time();
 
-                    if (intval($cur_time - $start_time) > 0 && intval($end_time - $cur_time) >= 0) {
+                    if (intval($cur_time - $start_time) > 0 && intval($end_time - $cur_time) >= 0)
+                    {
                         Log::write('定时公告满足当前时间条件,待发送......,定时公告发送时间:' . date('H:i:s', time()));
                         test::webw_packet_notice($notice_list[$i]['server_id'], $notice_list[$i]['notice_content']);
                         Log::write('定时公告发送成功!!!定时公告发送成功时间:' . date('H:i:s', time()));
@@ -189,7 +211,9 @@ class Notice extends Base
                     }
                 }
                 sleep($sleep_sec);
-            } else {
+            } 
+            else
+            {
                 Log::write("当前时间:【" . date('Y-m-d H:i:s', time()) . '】暂无公告');
             }
         }
@@ -210,18 +234,22 @@ class Notice extends Base
             ->limit(1)
             ->order('send_start_time asc')
             ->find();
-        if ($notice) {
+        if ($notice)
+        {
             Log::write('linux crontab notice 定时公告存在,待发送......');
             $start_time = $notice['send_start_time'];
             $end_time = $notice['send_end_time'];
             $cur_time = time();
 
-            if (intval($cur_time - $start_time) > 0 && intval($end_time - $cur_time) >= 0) {
+            if (intval($cur_time - $start_time) > 0 && intval($end_time - $cur_time) >= 0)
+            {
                 Log::write('linux crontab 定时公告满足当前时间条件,待发送......,定时公告发送时间:' . date('H:i:s', time()));
                 test::webw_packet_notice($notice['server_id'], $notice['notice_content']);
                 Log::write('linux crontab 定时公告发送成功!!!定时公告发送成功时间:' . date('H:i:s', time()));
             }
-        } else {
+        }
+        else 
+        {
             Log::write("linux crontab 当前时间:【" . date('Y-m-d H:i:s', time()) . '】暂无公告');
         }
     }
@@ -239,34 +267,45 @@ class Notice extends Base
     public function edit($id)
     {
         $info = NoticeModel::find($id);
-        if (!$info) {
+        if (!$info) 
+        {
             $this->error("公告信息不存在或已删除!");
         }
 
-        if (request()->isPost()) {
+        if (request()->isPost()) 
+        {
             $data = $_POST;
             $noticeValidate = new NoticeValidate();
-            if (!$noticeValidate->check($data)) {
+            if (!$noticeValidate->check($data))
+            {
                 $this->error($noticeValidate->getError());
             }
 
             $data['send_start_time'] = strtotime($data['send_start_time']);
             $data['send_end_time'] = strtotime($data['send_end_time']);
-
+            
             $re = NoticeModel::update($data);
-            if ($re) {
+            if ($re)
+            {
                 action_log("notice_edit", "notice", $re, UID);
-                if (isset($info['send_type']) && $info['send_type'] == 2) {
+                if (isset($info['send_type']) && $info['send_type'] == 2) 
+                {
                     //即时公告发送服务器
                     test::webw_packet_notice($info['server_id'], $info['notice_content']);
-                } else {
+                } 
+                else 
+                {
                     $this->auto_send_notice($id);
                 }
                 $this->success('公告信息编辑成功!', 'notice/index');
-            } else {
+            } 
+            else
+            {
                 $this->error("公告信息编辑失败!");
             }
-        } else {
+        } 
+        else
+        {
             $server_list = ServerManage::getServerList();
             $this->assign([
                 'server_list' => $server_list,
@@ -285,18 +324,22 @@ class Notice extends Base
     public function del()
     {
         $ids = input('ids/a');
-        if (empty($ids)) {
+        if (empty($ids))
+        {
             $this->error('请选择要操作的数据!');
         }
         $where[] = ['id', 'in', $ids];
         $res = NoticeModel::where($where)->delete();
-        if ($res) {
+        if ($res)
+        {
             //添加行为记录
             action_log("notice_del", "notice", $ids, UID);
             Db::connect('db_config_main')->table('auto_notice')->where('notice_id', 'in', $ids)->delete();
             test::webw_packet_game_notice(1);
             $this->success('删除成功');
-        } else {
+        } 
+        else
+        {
             $this->error('删除失败！');
         }
     }
@@ -306,21 +349,27 @@ class Notice extends Base
      */
     public function set_notice_status()
     {
-        if (request()->isPost()) {
+        if (request()->isPost())
+        {
             $data['id'] = input('id');
             $data['status'] = input('val');
             if ($data['status'] == 1) $notice_status = "notice_status_show";
             if ($data['status'] == 0) $notice_status = "notice_status_hide";
 
             $res = NoticeModel::update($data);
-            if ($res) {
+            if ($res)
+            {
                 //添加行为记录
                 action_log($notice_status, "notice", $data['id'], UID);
                 $this->success('公告状态修改成功！');
-            } else {
+            } 
+            else 
+            {
                 $this->error('公告状态修改失败！');
             }
-        } else {
+        } 
+        else
+        {
             $this->error('非法请求！');
         }
     }

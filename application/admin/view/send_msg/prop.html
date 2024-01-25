@@ -28,7 +28,7 @@
                     <div class="layui-form-item">
                         <label class="layui-form-label">道具ID：</label>
                         <div class="layui-input-block">
-                            <select name="item_id" lay-verify="required"  xm-select="select4" xm-select-max="1" xm-select-search="">
+                            <select name="item_id" lay-verify="required"  ><!--  xm-select="select4" xm-select-max="1" xm-select-search=""-->
                                 <option value="0">请选择道具ID</option>
                                 {volist name="__PROP__" id="vo"}
                                 <option value="{$vo.type_id}" {$item_id==$vo.type_id?'selected':''}>{$vo.type_id}-{$vo.type_name}</option>

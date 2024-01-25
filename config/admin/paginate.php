@@ -8,6 +8,6 @@
 return [
     'type' => 'page\Page',
     'var_page' => 'page',
-    'list_rows' => 30,
+    'list_rows' => 10,
 ];
 

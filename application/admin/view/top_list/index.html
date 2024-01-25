@@ -3,7 +3,7 @@
 <div class="layui-row layui-col-space15">
     <div class="layui-col-md12">
         <div class="layui-card">
-            <div class="layui-card-header">战力排行</div>
+            <div class="layui-card-header">等级排行</div>
             <div class="layui-card-body">
                 <div class="layui-row zz-row-operate">
                     <div class="zz-operate-btn-group">
@@ -13,7 +13,8 @@
                         <div class="layui-inline">
                             <label class="layui-form-label">区服查询:</label>
                             <div class="layui-input-block" style="width: 300px;">
-                                <select name="server_id" xm-select="select4" xm-select-search="" xm-select-max="1">
+                                <select name="server_id" ><!-- xm-select="select4" xm-select-search="" xm-select-max="1"-->
+                                <option value="">请选择区服</option>
                                     {volist name="server_list" id="vo"}
                                     <option value="{$vo.id}" {$server_id==$vo.id?'selected':''}>{$vo.area_id} 区 - {$vo.servername}</option>
                                     {/volist}
@@ -32,7 +33,7 @@
                             <div class="layui-input-inline">
                                 <input type="text" class="layui-input" name="user_count" value="{$user_count}"
                                        onkeyup="this.value=this.value.replace(/\D/gi,'')" placeholder="请填写排名数量"
-                                       oninput="if(value>200)value=200">
+                                       oninput="if(value>100)value=100">
                             </div>
                         </div>
 
@@ -54,7 +55,7 @@
                             <th>角色名</th>
                             <th>职业</th>
                             <th>性别</th>
-                            <th>战力值</th>
+                            <th>等级</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -77,7 +78,7 @@
                                 {case 201}<span style="color: green">女</span>{/case}
                                 {/switch}
                             </td>
-                            <td><span style="color: red;font-weight: bold;">{$vo.fighting_point}</span></td>
+                            <td><span style="color: red;font-weight: bold;">{$vo.lv}</span></td>
                         </tr>
                         {/volist}
                         </tbody>

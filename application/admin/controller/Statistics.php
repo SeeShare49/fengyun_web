@@ -344,10 +344,13 @@ class Statistics extends Base
         $server_list = ServerManage::getServerList();
         $this->assign('server_list', $server_list);
         $date = trim(input('date'));
-        if ($date) {
+        if ($date) 
+        {
             $start = $date . " " . "00:00:00";
             $end = $date . " " . "23:59:59";
-        } else {
+        }
+        else 
+        {
             $start = date("Y-m-d") . " " . "00:00:00";
             $end = date("Y-m-d") . " " . "23:59:59";
             $date = date('Y-m-d');
@@ -357,7 +360,8 @@ class Statistics extends Base
         //$time_slot = date('d', strtotime($date));
         $time_slot = trim(input('time_slot'));
 
-        if (empty($time_slot) || $time_slot == -1) {
+        if (empty($time_slot) || $time_slot == -1) 
+        {
             $time_slot = date('d', time());//时间段未选择，默认当前时间小时
         }
 
@@ -365,20 +369,21 @@ class Statistics extends Base
 
         $table_name = !empty($date) ? "Log" . date('Ymd', strtotime($date)) : "Log" . date("Ymd");
         $exists_table = Db::connect('db_config_log_read')->query('SHOW TABLES LIKE ' . "'" . $table_name . "'");
-        if (!$exists_table) {
+        if (!$exists_table) 
+        {
             $this->error("数据表【{$table_name}】不存在！！！！");
         }
-        $where[] = [
-            ['moduleId', '=', 2],
-        ];
+        $where[] = [ ['moduleId', '=', 2],];
 
         $server_id = trim(input('server_id'));
         $server_ids = '';
-        if (!empty($server_id)) {
+        if (!empty($server_id)) 
+        {
             $server_ids = explode(',', $server_id);
         }
 
-        if ($server_id) {
+        if ($server_id) 
+        {
             $where[] = ['serverId', 'in', $server_ids];
         }
 
@@ -400,19 +405,21 @@ class Statistics extends Base
 
         //初始化一周日期
         $dateArr = [];
-        for ($i = 7; $i > 0; $i--) {
+        for ($i = 7; $i > 0; $i--) 
+        {
             array_push($dateArr, date('m-d', strtotime("-$i day")));
         }
         $this->assign('dateArr', $dateArr);
         //统计最近一周在线用户
         $online7List = [];
 
-        for ($j = 7; $j > 0; $j--) {
+        for ($j = 7; $j > 0; $j--) 
+        {
             $default_date = date('Y-m-d H:i:s', strtotime("-$j day"));
             $table_name_7day = 'Log' . date('Ymd', strtotime("-$j day"));
-
             $exists_table = Db::connect('db_config_log')->query('SHOW TABLES LIKE ' . "'" . $table_name_7day . "'");
-            if ($exists_table) {
+            if ($exists_table)
+            {
                 $onlineInfo = Db::connect('db_config_log')
                     ->table($table_name_7day)
                     ->field('MAX(value) as value,logtime')
@@ -420,7 +427,9 @@ class Statistics extends Base
                     ->limit(1)
                     ->select();
                 array_push($online7List, $onlineInfo);
-            } else {
+            } 
+            else
+            {
                 array_push($online7List, '');
             }
         }
@@ -435,10 +444,13 @@ class Statistics extends Base
     public function reguser()
     {
         $date = trim(input('date'));
-        if ($date) {
+        if ($date)
+        {
             $start = $date . " " . "00:00:00";
             $end = $date . " " . "23:59:59";
-        } else {
+        }
+        else
+        {
             $start = date("Y-m-d") . " " . "00:00:00";
             $end = date("Y-m-d") . " " . "23:59:59";
             $date = date('Y-m-d');
@@ -449,7 +461,8 @@ class Statistics extends Base
         $endToday = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
         $server_id = trim(input('server_id'));
         $this->assign('server_id', $server_id);
-        if ($server_id) {
+        if ($server_id) 
+        {
             $where[] = ['serverId', '=', $server_id];
         }
         $lists = \app\admin\model\UserInfo::where('RegisterTime', 'between', [$start, $end])

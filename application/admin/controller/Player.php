@@ -385,12 +385,15 @@ class Player extends Base
      */
     public function del($server_id, $actor_id, $guid)
     {
-        if ($server_id && $actor_id && $guid) {
+        if ($server_id && $actor_id && $guid) 
+        {
             $info = dbConfigByReadBase($server_id)->table('player')->where('actor_id', '=', $actor_id)->find();
-            if ($info) {
+            if ($info) 
+            {
                 $checkInfo = dbConfigByReadBase($server_id)->table('player_item')->where([['ident_id', '=', $guid], ['actor_id', '=', $actor_id]])->find();
                 $itemInfo = dbConfig($server_id)->table('player_item')->where('ident_id', '=', $guid)->delete();
-                if ($itemInfo) {
+                if ($itemInfo) 
+                {
 
                     $deduct['server_id'] = $server_id;
                     $deduct['user_id'] = $info['account_id'];
@@ -405,10 +408,14 @@ class Player extends Base
                     $data['BanReason'] = "";
                     test::webw_packet_ban_user($info['account_id'], 0, "");
                     $this->success("跟踪ID:【" . $guid . "】道具数据信息删除成功,待服务器处理......");
-                } else {
+                } 
+                else
+                {
                     $this->error("跟踪ID:【" . $guid . "】道具数据信息删除失败!!!");
                 }
-            } else {
+            } 
+            else
+            {
                 $this->error("服务器ID:【" . $server_id . "】不存在角色ID:【" . $actor_id . "】玩家信息!!!");
             }
         }

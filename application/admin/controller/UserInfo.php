@@ -393,43 +393,59 @@ inner JOIN {$table}.player p on u.UserID=p.account_id LEFT JOIN fy_main.recharge
      */
     public function role_transfer()
     {
-        if (Request::isPost()) {
+        if (Request::isPost()) 
+        {
             $data = $_POST;
             $origin_user_id = $data['origin_user_id']; //用户ID
             $transfer_user_id = $data['transfer_actor_id']; //角色ID
             $transfer_server_id = $data['server_id'];
 
             $origin_user_info = UserInfoModel::where('UserID', '=', $origin_user_id)->find();
-            if (!$origin_user_info) {
+            if (!$origin_user_info)
+            {
                 $this->error('原ID【' . $origin_user_id . '】账号不存在或已删除！');
-            } else {
+            }
+            else
+            {
                 $server_id = get_real_server_id($transfer_server_id);
                 $transfer_user_info = dbConfigByReadBase($server_id)->table('player')->field('account_id,actor_id')->where('actor_id', '=', $transfer_user_id)->find();
 
-                if (!$transfer_user_info) {
+                if (!$transfer_user_info) 
+                {
                     $this->error('角色ID【' . $transfer_user_id . '】不存在或已删除！');
-                } else {
+                }
+                else
+                {
                     $temp_user_id = $transfer_user_info['account_id'];
-                    if ($transfer_user_info['account_id'] == $origin_user_id) {
+                    if ($transfer_user_info['account_id'] == $origin_user_id) 
+                    {
                         $this->error('角色ID【' . $transfer_user_id . '】已归属用户ID【' . $origin_user_id . '】,请勿重复转移!');
-                    } else {
+                    } 
+                    else 
+                    {
                         /** 转移角色前先将原游戏用户踢出游戏 **/
                         test::webw_packet_kick_off_player(strval($transfer_user_info['account_id']), $transfer_server_id);
 
                         $transfer_info['account_id'] = $origin_user_id;
                         $ret = dbConfig($server_id)->table('player')->where('actor_id', '=', $transfer_user_id)->update($transfer_info);
-                        if ($ret) {
+                        if ($ret)
+                        {
                             $this->update_server_actor_number($origin_user_id, $transfer_server_id, $temp_user_id);
                             $remark = '原服务器ID【' . $transfer_server_id . '】,角色ID【' . $transfer_user_id . '】转移到账号ID【' . $origin_user_id . '】.';
                             action_log("user_role_transfer", "user_info", 0, UID, $remark);
-                            $this->success('角色转移成功!', 'user_info/index');
-                        } else {
+                            //$this->success('角色转移成功!', 'user_info/index');
+                            $this->success('角色转移成功!');
+                        } 
+                        else
+                        {
                             $this->error('角色转移失败!');
                         }
                     }
                 }
             }
-        } else {
+        } 
+        else 
+        {
             $server_list = ServerManage::getServerList();
             View::assign([
                 'server_id' => trim(input('server_id')),

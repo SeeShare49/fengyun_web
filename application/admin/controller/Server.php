@@ -40,8 +40,8 @@ class Server extends Base
     {
         $servername = trim(input('servername'));
         $kuafu_list = CrossServerManage::getCrossServerList();
-        $where[] = ['use_status', '=', 1];
-
+        //$where[] = ['use_status', '=', 1];
+        $where = [];
         if ($servername) {
             $where[] = ['servername', 'like', "%$servername%"];
         }
@@ -145,7 +145,9 @@ class Server extends Base
                 $this->error(' 导入游戏服务器数据库数据失败！');
             }
             //创建（新开）服务器发送命令
-            test::refresh_server_info();
+            //test::refresh_server_info();
+            //服务器列表
+            //test::web_packet_server_list($data['id'], trim($data['servername']));
             return $this->result($data, 1, '服务器添加成功');
         }
         else
@@ -766,8 +768,18 @@ class Server extends Base
             $this->error('请选择关停的服务器!');
         }
         $info = Db::connect("db_config_main")->table('server_list')->find($id);
-        if (!$info) {
+        if (!$info)
+        {
             $this->error('服务器不存在或已删除！');
+        }
+        $ret = Db::connect("db_config_main")->table('server_list')->where('id', $id)->update(['use_status' => 0]);
+        if ($ret !== false)
+        {
+            action_log('server shut down', 'server', $ret, UID);
+        } 
+        else 
+        {
+            $this->error('服务器修改半闭状态失败！');
         }
         test::webw_packet_shut_down_server($id);
         $this->result($id, 1, '关停服务器请求发送成功,待服务器处理......');
@@ -810,7 +822,8 @@ class Server extends Base
     public
     function authentication()
     {
-        if (Request::isPost()) {
+        if (Request::isPost())
+        {
             $value = 0;
             if (isset($_POST['value']) && !empty($_POST['value'])) {
                 $value = $_POST['value'];
@@ -818,12 +831,17 @@ class Server extends Base
             Db::connect('db_config_main')->table('server_config')->where('id', 3)->update(['value' => $value]);
             test::change_server_config();
             $this->success('是否实名设置成功！');
-        } else {
+        } 
+        else
+        {
             $is_open = 0;
             $info = Db::connect('db_config_main')->table('server_config')->where('id', '=', 3)->find();
-            if ($info) {
+            if ($info) 
+            {
                 $is_open = $info['value'];
-            } else {
+            }
+            else 
+            {
                 $data['id'] = 3;
                 $data['value'] = 0;
                 Db::connect('db_config_main')->table('server_config')->insert($data);
@@ -1234,7 +1252,8 @@ class Server extends Base
             ->whereOr([$map1, $map2])    // update sgy 2021-06-04 11:20
             ->update($serverData);
 
-        if (!$ser) {
+        if (!$ser)
+        {
             Log::write("服务器状态修改失败!");
             return false;
         }
@@ -1262,7 +1281,11 @@ class Server extends Base
         //添加行为记录
         action_log("server_edit_name", "server", $data['id'], UID);
         //发送命令到服务器请求刷新服务器列表信息
-        test::refresh_server_info();
+        //test::refresh_server_info();
+        //修改服务器名称
+        test::modify_server_name($data['id'] , $data['servername']);
+        //服务器列表
+        //test::web_packet_server_list($data['id'],trim($data['servername']));
         $this->success('服务器名称修改成功！');
     }
 

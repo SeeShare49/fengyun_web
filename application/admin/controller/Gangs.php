@@ -69,14 +69,17 @@ class Gangs extends Base
     public function create()
     {
         $server_list = ServerManage::getServerList();
-        if (Request::isPost()) {
+        if (Request::isPost()) 
+        {
             $data = $_POST;
             $server_id = $data['server_id'];
             $gangs_count = $data['gangs_count'];
             action_log('gangs_create', 'gangs', '', UID);
             test::webw_packet_create_system_sect($server_id, $gangs_count);
             $this->success('创建帮派信息提交成功,等待服务器处理......');
-        } else {
+        } 
+        else
+        {
             View::assign([
                 'server_id' => '',
                 'server_list' => $server_list,
@@ -95,13 +98,16 @@ class Gangs extends Base
         $sect_name = Request::param('name');
         $server_id = Request::param('server_id');
         $server_list = ServerManage::getServerList();
-        if (Request::isPost()) {
+        if (Request::isPost()) 
+        {
             $data = $_POST;
             test::webw_packet_change_sect_notice($data['server_id'], $data['sect_id'], $data['notice_desc']);
             action_log('gangs_edit', 'gangs', $sect_id, UID);
             $this->success('帮派公告信息提交成功,等待服务器处理......');
-        } else {
-//            $info = dbConfigByReadBase($server_id)->table('sect')
+        } 
+        else 
+        {
+            // $info = dbConfigByReadBase($server_id)->table('sect')
             View::assign([
                 'server_id' => $server_id,
                 'sect_id' => $sect_id,
@@ -127,15 +133,19 @@ class Gangs extends Base
             ['title', '<>', 100]
         ];
         $member_list = dbConfigByReadBase($server_id)->table('sect_member')->field('actor_id')->where($where)->select();
-        if (Request::isPost()) {
+        if (Request::isPost())
+        {
             $data = $_POST;
-            if (!isset($data['actor_id']) || $data['actor_id'] == "0") {
+            if (!isset($data['actor_id']) || $data['actor_id'] == "0") 
+            {
                 $this->error('请选择成员');
             }
             test::webw_packet_change_sect_master($data['server_id'], $data['sect_id'], $data['actor_id']);
             action_log('gangs_president_transfer', 'gangs', $sect_id, UID);
             $this->success('帮派会长转移信息提交成功,等待服务器处理...', 'index');
-        } else {
+        }
+        else 
+        {
             View::assign([
                 'server_id' => $server_id,
                 'sect_id' => $sect_id,

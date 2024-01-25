@@ -115,7 +115,7 @@
                             <td>{if $vo.use_status==1}启用{else}弃用{/if}</td>
                             <td>
                                 <select id="kuafu_id" name="kuafu_id" lay-filter="kuafu_id">
-                                    <option value="0">请选择跨服服务器</option>
+                                    <option value="">请选择跨服服务器</option>
                                     {volist name="kuafu_list" id="k_vo"}
                                     <option value="{$k_vo.id}" {$vo.kuafu_id==$k_vo.id?'selected':''}>{$k_vo.servername}</option>
                                     {/volist}

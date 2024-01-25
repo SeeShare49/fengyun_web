@@ -21,9 +21,9 @@ return [
 //    ],
 
     'paginate' => [
-        'type' => 'bootstrap',
+        'type' => 'page\Page',
         'var_page' => 'page',
-        'list_rows' => 15,
+        'list_rows' => 10,
     ],
 
     /* 图片上传相关配置 */
@@ -59,8 +59,12 @@ return [
         'auto_start' => true,
     ],
 
-    //连接服务端IP
-    'SOCKET_SERVER_IP' => '121.40.166.20',
+    //连接发送邮件服务端IP
+    //'SOCKET_SERVER_IP' => '121.40.166.20',
+    //'SOCKET_SERVER_IP' => '192.168.110.249',
+    'SOCKET_SERVER_IP' => '192.168.110.234',
+    //连接发送邮件服务端IP
+    'SOCKET_SERVER_PORT' => 9088,
 
     'NEW_SOCKET_SERVER_IP' => '121.40.166.20',
 
@@ -68,12 +72,14 @@ return [
     'DB_HOST' => '121.40.166.20',
     'DB_USER' => 'root',
     'DB_PASS' => 'yinhe123',
-
+    'DB_PORT' => 3306,
 
     //阿里云预热
     'ACCESS_KEY_ID' => 'LTAI5tF4pfLcTYW2jmBWv8HY',
     'ACCESS_KEY_SECRET' => '77L9xlIh1Fjikb08v2kyfBUsJvsDMt',
 
+    
+    'DB_GAME_SQL_FILE' => '../public/databack/fy_game.sql',
 
     //用户判断管理用户归属的组I
     //

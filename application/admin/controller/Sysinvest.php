@@ -23,18 +23,20 @@ class Sysinvest extends Base
     {
         $server_list = ServerManage::getServerList();
         $player_name = trim(input('player_name'));
-        $where[] = ['1', '=', 1];
-        if ($player_name) {
+        $where = [];
+        if ($player_name) 
+        {
             $where[] = ['player_name', 'like', "%$player_name%"];
         }
 
         $server_id = trim(input('server_id'));
-        if ($server_id) {
+        if ($server_id)
+        {
             $where[] = ['server_id', '=', $server_id];
         }
-
         $add_date = trim(input('add_date'));
-        if ($add_date) {
+        if ($add_date)
+        {
             $start = strtotime($add_date . " " . "00:00:00");
             $end = strtotime($add_date . " " . "23:59:59");
             $where[] = ['create_time', 'between', [$start, $end]];
@@ -46,18 +48,16 @@ class Sysinvest extends Base
         $total_gold = 0;//总系统充值金币
         $total_silver = 0; //总系统充值银票
         $rechargeInfo = \app\admin\model\SysInvest::field('sum(ingot) as total_ingot,sum(gold) as total_gold,sum(silver) as total_silver')
-            ->where($where)
-            ->find();
-        if ($rechargeInfo) {
+                                ->where($where)->find();
+        if ($rechargeInfo) 
+        {
             $total_ingot = $rechargeInfo['total_ingot'];
             $total_gold = $rechargeInfo['total_gold'];
             $total_silver = $rechargeInfo['total_silver'];
         }
 
 
-        $lists = \app\admin\model\SysInvest::where($where)
-            ->order('id desc')
-            ->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
+        $lists = \app\admin\model\SysInvest::where($where)->order('id desc')->paginate(config('LIST_ROWS'), false, ['query' => request()->param()]);
         $this->ifPageNoData($lists);
         $page = $lists->render();
 

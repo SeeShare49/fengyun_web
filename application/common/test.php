@@ -37,6 +37,7 @@ use function MongoDB\BSON\toJSON;
 define("TEMP", "../extend/protobuf/");
 
 define("SOCKET_IP", config('admin.SOCKET_SERVER_IP'));
+define("SOCKET_PORT", config('admin.SOCKET_SERVER_PORT'));
 require_once TEMP . "library/DrSlump/Protobuf.php";
 
 \DrSlump\Protobuf::autoload();
@@ -47,6 +48,8 @@ require_once TEMP . "tests/protos/mail_plus.php";
 require_once TEMP . "tests/protos/web_ban_user.php";
 require_once TEMP . "tests/protos/web_add_money.php";
 require_once TEMP . "tests/protos/web_add_item.php";
+require_once TEMP . "tests/protos/modify_server_name.php";
+require_once TEMP . "tests/protos/server_list.php";
 require_once TEMP . "tests/protos/Game.php";
 require_once TEMP . "tests/protos/shut_down_server.php";
 require_once TEMP . 'tests/protos/webw_packet_notice.php';
@@ -66,7 +69,7 @@ require_once TEMP . 'tests/protos/webw_packet_purchase.php';
 class test
 {
     const IP = SOCKET_IP;
-    const PORT = '19107';
+    const PORT = SOCKET_PORT;
 
 
     /**
@@ -177,7 +180,8 @@ class test
         $obj->setUserId($user_id);
         $obj->setBan($is_ban);
         $obj->setReason($reason);
-        $code = 803;
+        //$code = 803;
+        $code = 701;
         self::combin_pack(self::IP, self::PORT, $obj, $code);
     }
 
@@ -189,7 +193,7 @@ class test
      * @param $name         玩家昵称
      * @param $title        邮件标题
      * @param $content      邮件内容
-     * @param $prop_info    道具ID:道具数量
+     * @param $prop_info    道具ID:道具数量 或数组
      */
     //static function mail($server_id, $name, $title, $content, $item_id, $item_count)
     static function mail($server_id, $name, $title, $content, $prop_info)
@@ -199,7 +203,8 @@ class test
         $obj->setPlayerName($name);
         $obj->setTitle($title);
         $obj->setContent($content);
-        $obj->setPropInfo($prop_info);
+        //$obj->setPropInfo($prop_info);
+        $obj->setPropInfoList($prop_info);
         $code = 804;
         self::combin_pack(self::IP, self::PORT, $obj, $code);
     }
@@ -218,7 +223,8 @@ class test
         $obj->setGameId($server_id);
         $obj->setTitle($title);
         $obj->setContent($content);
-        $obj->setPropInfo($prop_info);
+        //$obj->setPropInfo($prop_info);
+        $obj->setPropInfoList($prop_info);
         $code = 815;
         self::combin_pack(self::IP, self::PORT, $obj, $code);
     }
@@ -289,10 +295,11 @@ class test
     static function web_packet_server_list($server_id, $server_name)
     {
         $obj = new \tests\server_list();
-        $serverInfo = new \tests\server_list\server_info();
+        /* $serverInfo = new \tests\server_list\server_info_node();
         $serverInfo->setGameId($server_id);
         $serverInfo->setServerName($server_name);
-        $obj->setServerInfo($serverInfo);
+        $obj->setServerInfo($serverInfo); */
+        $obj->setServerInfoList(array($server_id=>$server_name));
         $code = 807;
         self::combin_pack(self::IP, self::PORT, $obj, $code);
     }
@@ -555,24 +562,39 @@ class test
      * @param $port 端口号
      * @param $obj  数据对象
      * @param $code 命令码
+     * @param $sendType 发送类型 1 (长度 协议 内容[protobuf]) 0 默认 json( array( 'op_code'=>编号, 't_data'=>base64(serialize(protobuf('内容'))) ) )
      */
-    static function combin_pack($ip, $port, $obj, $code)
+    static function combin_pack($ip, $port, $obj, $code, $sendType = 0)
     {
-        return;
-        $first_data = pack("s*", $code);
-        $first_len = 4;
-        if (!empty($obj)) {
-            $second_data = $obj->serialize();//序列化
-            $second_len = strlen($second_data);
-            $totallen = $first_len + $second_len;
-            $totallen_data = pack("s*", $totallen);
-            $second_pack = $second_data;//长度 协议 内容（protobuf）
-            $pack = $totallen_data . $first_data . $second_pack;
-        } else {
-            $totallen = $first_len;
-            $totallen_data = pack("s*", $totallen);
-            $pack = $totallen_data . $first_data;
+        //以前旧的使用方法 长度 协议 内容[protobuf]
+        if($sendType == 1)
+        {
+            $first_data = pack("s*", $code);
+            $first_len = 4;
+            if (!empty($obj))
+            {
+                $second_data = $obj->serialize();//序列化
+                $second_len = strlen($second_data);
+                $totallen = $first_len + $second_len;
+                $totallen_data = pack("s*", $totallen);
+                $second_pack = $second_data;//长度 协议 内容（protobuf）
+                var_dump( $totallen_data . $first_data . $second_pack);
+                $pack = $totallen_data . $first_data . $second_pack;
+            }
+            else
+            {
+                $totallen = $first_len;
+                $totallen_data = pack("s*", $totallen);
+                $pack = $totallen_data . $first_data;
+            }
         }
+        //json( array( 'op_code'=>编号, 't_data'=>base64(serialize(protobuf('内容'))) ) )
+        else
+        {
+            $second_data =  base64_encode(!empty($obj) ? $obj->serialize() : '');
+            $pack = json_encode(array('op_code'=>$code,'t_data'=>$second_data));
+        }
+        //print_r($obj);
         self::send_msg($ip, $port, $pack);
     }
 
@@ -583,27 +605,65 @@ class test
      * @param $obj
      * @param $code
      */
-    static function combine_pack($ip, $port, $obj, $code)
+    static function combine_pack($ip, $port, $obj, $code, $sendType = 0)
     {
-        $first_data = pack("s*", $code);
-        $first_len = 4;
-        count(array($obj));
-        if (is_array($obj)) {
-            \think\facade\Log::write("当前obj为数组");
-        } else {
-            \think\facade\Log::write("非数组");
+        //以前旧的使用方法 长度 协议 内容[protobuf]
+        if($sendType == 1)
+        {
+            $first_data = pack("s*", $code);
+            $first_len = 4;
+            count(array($obj));
+            if (is_array($obj)) {
+                \think\facade\Log::write("当前obj为数组");
+            } else {
+                \think\facade\Log::write("非数组");
+            }
+            $second_data = $obj->serialize();//序列化
+            // $second_data=  serialize($obj);
+            $second_len = strlen($second_data);
+            $totallen = $first_len + $second_len;
+            $totallen_data = pack("s*", $totallen);
+            $second_pack = $second_data;//长度 协议 内容（protobuf）
+            $pack = $totallen_data . $first_data . $second_pack;
         }
-        $second_data = $obj->serialize();//序列化
-        // $second_data=  serialize($obj);
-        $second_len = strlen($second_data);
-        $totallen = $first_len + $second_len;
-        $totallen_data = pack("s*", $totallen);
-        $second_pack = $second_data;//长度 协议 内容（protobuf）
-        $pack = $totallen_data . $first_data . $second_pack;
+        //json( array( 'op_code'=>编号, 't_data'=>base64(serialize(protobuf('内容'))) ) )
+        else
+        {
+            $second_data =  base64_encode(!empty($obj) ? $obj->serialize() : '');
+            $pack = json_encode(array('op_code'=>$code,'t_data'=>$second_data));
+        }
+        print_r($obj);
         self::send_receive_msg($ip, $port, $pack);
+        //self::send_msg($ip, $port, $pack);
     }
 
-
+    /**
+     * 组装消息头信息模板
+     * @param string $ip ip
+     * @param int $port 端口
+     * @param string $content 发送的文本内容
+     * @param string $method 发送模式 发送模式
+     * @param string $sendPath 发送路径
+     * @param string $content_type 发送的内容类型
+     * @return string
+     **/
+    static function GetHeaders($ip, $port, $content='',$method='POST', $sendPath='/',$content_type='application/json')
+    {
+        $header = '';
+        $header .= "{$method} {$sendPath} HTTP/1.1\r\n";
+        //$header .= "Date: ".gmdate('D, d M Y H:i:s T')."\r\n";
+        $header .= "User-Agent: Manage-Agent\r\n";
+        $header .= "Content-Type: {$content_type}\r\n";
+        $header .= "Accept: */*\r\n";
+        $header .= "Host: {$ip}:{$port}\r\n";
+        $header .= "Accept-Encoding: gzip, deflate, br\r\n";
+        $header .= "Connection: keep-alive\r\n";
+        $header .= "Content-Length: ".strlen($content)."\r\n\r\n";//必须2个\r\n表示头部信息结束
+        $header .= $content;
+        return $header;
+    }
+    
+    
     /**
      * 发送消息
      *
@@ -611,11 +671,19 @@ class test
      * @param $port 端口号
      * @param $pack 数据包
      */
-    static function send_msg($ip, $port, $pack)
+    static function send_msg($ip, $port, $pack, $isAddHttpHead = true)
     {
+        //增加http头
+        if($isAddHttpHead)
+        {
+            $pack =self::GetHeaders($ip, $port, $pack);
+        }
+        echo $pack;
+        exit; 
+        //发送消息
         $socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         Log::write("发送socket:" . $socket);
-        if ($socket < 0) 
+        if ($socket < 0)
         {
             Log::write("socket_create() failed: reason: " . socket_strerror($socket) . "\n");
         }
@@ -624,11 +692,11 @@ class test
         {
             Log::write("socket_connect() failed.\nReason: ($result) " . socket_strerror($result) . "\n");
         }
-        else 
+        else
         {
             Log::write("ip:'$ip',port:'$port'连接成功!!!");
         }
-
+        //发送
         if (!@socket_write($socket, $pack, strlen($pack))) 
         {
             Log::Write("socket_write() failed: reason: " . @socket_strerror($socket) . "\n");
@@ -638,7 +706,7 @@ class test
             Log::write("发送到服务器信息成功！\n发送的内容为:'$pack'");
         }
         sleep(1);
-
+        //echo "end";
         // 从客户端获取得的数据
         //        while ($out = socket_read($socket, 8192)) {
         //            Log::write("接收socket:" . $socket);
@@ -661,26 +729,41 @@ class test
      */
     static function send_receive_msg($ip, $port, $pack)
     {
+        //增加http头
+        if($isAddHttpHead)
+        {
+            $pack =self::GetHeaders($ip, $port, $pack);
+        }
+        /* echo $pack;
+        exit; */
         $socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         Log::write("发送socket:" . $socket);
-        if ($socket < 0) {
+        if ($socket < 0) 
+        {
             Log::write("socket_create() failed: reason: " . socket_strerror($socket) . "\n");
         }
         $result = @socket_connect($socket, $ip, $port);
-        if ($result < 0) {
+        if ($result < 0)
+        {
             Log::write("socket_connect() failed.\nReason: ($result) " . socket_strerror($result) . "\n");
-        } else {
+        } 
+        else 
+        {
             Log::write("ip:'$ip',port:'$port'连接成功!!!");
         }
 
-        if (!@socket_write($socket, $pack, strlen($pack))) {
+        if (!@socket_write($socket, $pack, strlen($pack)))
+        {
             Log::Write("socket_write() failed: reason: " . @socket_strerror($socket) . "\n");
-        } else {
+        }
+        else
+        {
             Log::write("发送到服务器信息成功！\n发送的内容为:'$pack'");
         }
         sleep(1);
         // 从客户端获取得的数据
-        while ($out = socket_read($socket, 8192)) {
+        while ($out = socket_read($socket, 8192)) 
+        {
             Log::write("out length:" . strlen($out));
             Log::write("socket 返回结果：" . $out);
             echo $out;

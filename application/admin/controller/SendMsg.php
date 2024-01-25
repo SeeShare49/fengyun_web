@@ -29,7 +29,8 @@ class SendMsg extends Base
         $server_list = ServerManage::getServerList();
         $player_name = trim(input('player_name'));
         $where[] = ['1', '=', 1];
-        if ($player_name) {
+        if ($player_name)
+        {
             $where[] = ['player_name', 'like', "%$player_name%"];
         }
 
@@ -67,29 +68,32 @@ class SendMsg extends Base
      */
     public function prop()
     {
-        if (Request::isPost()) {
+        if (Request::isPost()) 
+        {
             $data = $_POST;
-            if ($data['server_id'] == "0") {
+            if ($data['server_id'] == "0")
+            {
                 $this->error("请选择服务器");
             }
 
-            $info = dbConfig($data['server_id'])
-                ->table('player')
-                ->where('nickname', '=', trim($data['player_name']))
-                ->find();
+            $info = dbConfig($data['server_id'])->table('player')->where('nickname', '=', trim($data['player_name']))->find();
 
-            if (!$info) {
+            if (!$info)
+            {
                 $this->error("昵称:【{$data['player_name']}】玩家不存在,请核实用户昵称!");
             }
 
             $propValidate = new AddPropValidate();
-            if (!$propValidate->check($data)) {
+            if (!$propValidate->check($data)) 
+            {
                 $this->error($propValidate->getError());
             }
             sys_prop_record($data['server_id'], $data['player_name'], $data['item_id'], $data['item_count']);
             common\test::webw_packet_add_item($data['server_id'], $data['player_name'], $data['item_id'], $data['item_count'], $data['item_bind']);
             return json(['code' => 1, 'msg' => '添加道具请求提交成功,待服务器处理......', 'data' => "norefresh"]);
-        } else {
+        } 
+        else
+        {
             $server_list = ServerManage::getServerList();
             // $prop_list = PropCsv::select();
             $server_id = trim(input('server_id'));

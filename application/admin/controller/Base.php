@@ -18,12 +18,14 @@ class Base extends Controller
     {
         //验证用户凭证
         $uid = session('uid');
-        if (!$uid) {
-            $this->error('请登录!', '/admin.php/login');
+        if (!$uid)
+        {
+            $this->error('请登录!', '/admin.php/login','',1);
         }
 
         $admin = db('users')->field('id,username,status,group_id')->find($uid);
-        if (!$admin) {
+        if (!$admin) 
+        {
             $this->logout();
             //$this->error('错误:当前用户不存在或已删除!', 'login/index');
         }

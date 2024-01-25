@@ -46,7 +46,8 @@ class Rank extends Base
         $is_guild = false;
         $ids = '';
         $temp_server_ids = '';
-        if (GROUPID == GROUP_ID) {
+        if (GROUPID == GROUP_ID) 
+        {
             $is_guild = true;
             $s_ids = get_user_server_list(UID);
             $temp_server_ids = '';
@@ -58,17 +59,23 @@ class Rank extends Base
 
 //            $belong_channel = UserChannel::where('uid', '=', UID)->value('channel_ids');
 //            $channel_list = \app\admin\model\Channel::where(['id', 'in', $belong_channel])->select();
-        } else {
+        }
+        else 
+        {
             $server_list = ServerManage::getServerList();
         }
         $channel_list = \app\admin\model\Channel::select();
 
         $server_id = trim(input('server_id'));
         $server_ids = '';
-        if (!empty($server_id) && $server_id != -1) {
-            if ($is_guild) {
+        if (!empty($server_id) && $server_id != -1) 
+        {
+            if ($is_guild)
+            {
                 $server_ids = $ids;
-            } else {
+            }
+            else
+            {
                 $server_ids = explode(',', $server_id);
             }
         }
@@ -80,9 +87,11 @@ class Rank extends Base
         $where_str = " r.server_id = s.id  and add_time BETWEEN '" . $start_time . "' AND '" . $end_time . "' ";
 
         // 混服组特殊处理 START
-        if (GROUPID == MIX_GROUP_ID) {
+        if (GROUPID == MIX_GROUP_ID) 
+        {
             $channel_ids = UserChannel::where('uid', '=', UID)->value('channel_ids');
-            if (empty($channel_ids)) {
+            if (empty($channel_ids))
+            {
                 $this->error('该管理员用户未配置渠道,请联系管理员!');
             }
             $where[] = ['r.channel_id', 'in', $channel_ids];
@@ -91,21 +100,22 @@ class Rank extends Base
         // 混服组特殊处理 END
 
         $search = false;
-        if ((!empty($start_server_id) && $start_server_id > 0)
-            && (!empty($end_server_id) && $end_server_id > 0)
-            && $end_server_id > $start_server_id) {
+        if ((!empty($start_server_id) && $start_server_id > 0) && (!empty($end_server_id) && $end_server_id > 0)  && $end_server_id > $start_server_id) 
+        {
             $where[] = ['s.id', 'between', [$start_server_id, $end_server_id]];
             $search = true;
             $where_str .= " and s.id between " . $start_server_id . " and " . $end_server_id . " ";
         }
 
         //search==false 排除选择了服务器区间条件
-        if ($search == false && !empty($server_ids)) {
+        if ($search == false && !empty($server_ids))
+        {
             $where[] = ['s.id', 'in', $server_ids];
             $where_str .= " and s.id in (" . $server_id . ") ";
         }
 
-        if (empty($server_ids) && $is_guild == true) {
+        if (empty($server_ids) && $is_guild == true)
+        {
             $where[] = ['s.id', 'in', rtrim($temp_server_ids, ",")];
             $where_str .= " and s.id in (" . rtrim($temp_server_ids, ",") . ") ";
         }
@@ -132,7 +142,8 @@ group by r.user_id order by total_money  desc limit " . $user_count . " ) as t";
         $info = $Model->query($sql_str);
         $total_money = 0;
         $recharge_count = 0;
-        if (count($info) > 0) {
+        if (count($info) > 0)
+        {
             $total_money = $info[0]['total_money'];
             $recharge_count = $info[0]['recharge_count'];
         }

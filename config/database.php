@@ -10,11 +10,11 @@
 // +----------------------------------------------------------------------
 
 return [
-    'db_config_game' => [
+    /* 'db_config_game' => [
         // 数据库类型
         'type' => 'mysql',
         // 服务器地址
-        'hostname' => '121.40.166.20',
+       'hostname' => '121.40.166.20',
         // 数据库名
         'database' => 'cq_game',
         // 用户名
@@ -35,14 +35,15 @@ return [
         // 数据库表前缀
         'prefix' => '',
         'break_reconnection' => true,
-    ],
-    'db_config_main' => [
+    ], */
+    //服务器用户主表
+     'db_config_main' => [
         // 数据库类型
         'type' => 'mysql',
         // 服务器地址
         'hostname' => '121.40.166.20',
         // 数据库名
-        'database' => 'cq_main',
+        'database' => 'fy_main',
         // 用户名
         'username' => 'root',
         // 密码
@@ -61,14 +62,42 @@ return [
         // 数据库表前缀
         'prefix' => '',
         'break_reconnection' => true,
-    ],
-    'db_config_main_read' => [
+    ], 
+    //服务器用户主表(读)
+   'db_config_main_read' => [
         // 数据库类型
         'type' => 'mysql',
         // 服务器地址
         'hostname' => '121.40.166.20',
         // 数据库名
-        'database' => 'cq_main',
+        'database' => 'fy_main',
+        // 用户名
+        'username' => 'root',
+        // 密码
+        'password' => 'yinhe123',
+        // 端口
+        'hostport' => '3306',
+        // 连接dsn
+        'dsn' => '',
+        // 数据库连接参数
+        'params' => [
+            \PDO::ATTR_PERSISTENT => true,
+            //\PDO::ATTR_CASE         => \PDO::CASE_LOWER,
+        ],
+        // 数据库编码默认采用utf8
+        'charset' => 'utf8',
+        // 数据库表前缀
+        'prefix' => '',
+        'break_reconnection' => true,
+    ], 
+    //日志数据库
+   'db_config_log' => [
+        // 数据库类型
+        'type' => 'mysql',
+        // 服务器地址
+        'hostname' => '121.40.166.20',
+        // 数据库名
+        'database' => 'fy_log',
         // 用户名
         'username' => 'root',
         // 密码
@@ -87,40 +116,15 @@ return [
         // 数据库表前缀
         'prefix' => '',
         'break_reconnection' => true,
-    ],
-    'db_config_log' => [
-        // 数据库类型
-        'type' => 'mysql',
-        // 服务器地址
-        'hostname' => '121.40.166.20',
-        // 数据库名
-        'database' => 'cq_log',
-        // 用户名
-        'username' => 'root',
-        // 密码
-        'password' => 'yinhe123',
-        // 端口
-        'hostport' => '3306',
-        // 连接dsn
-        'dsn' => '',
-        // 数据库连接参数
-        'params' => [
-            \PDO::ATTR_PERSISTENT => true,
-//            \PDO::ATTR_CASE         => \PDO::CASE_LOWER,
-        ],
-        // 数据库编码默认采用utf8
-        'charset' => 'utf8',
-        // 数据库表前缀
-        'prefix' => '',
-        'break_reconnection' => true,
-    ],
+    ], 
+    //日志读取数据
     'db_config_log_read' => [
         // 数据库类型
         'type' => 'mysql',
         // 服务器地址
         'hostname' => '121.40.166.20',
         // 数据库名
-        'database' => 'cq_log',
+        'database' => 'fy_log',
         // 用户名
         'username' => 'root',
         // 密码
@@ -139,7 +143,7 @@ return [
         // 数据库表前缀
         'prefix' => '',
         'break_reconnection' => true,
-    ],
+    ], 
 
     //聊天消息数据库连接消息
     'db_chat_log' => [
@@ -148,7 +152,7 @@ return [
         // 服务器地址
         'hostname' => '121.40.166.20',
         // 数据库名
-        'database' => 'cq_chat_log',
+        'database' => 'fy_chat_log',
         // 用户名
         'username' => 'root',
         // 密码
@@ -164,13 +168,13 @@ return [
         ],
         // 数据库编码默认采用utf8
         'charset' => 'utf8',
-        // 数据库表前缀
-        'prefix' => '',
+        // 数据库表日期前前缀 注: chat_log20210414
+        'prefix' => 'chat_log',
         'break_reconnection' => true,
     ],
 
     //新渠道（渠道ID等于或大于100）数据库连接消息
-    'db_new_game_data' => [
+    /* 'db_new_game_data' => [
         // 数据库类型
         'type' => 'mysql',
         // 服务器地址
@@ -195,19 +199,49 @@ return [
         // 数据库表前缀
         'prefix' => 'yw_',
         'break_reconnection' => true,
+    ], */
+    //推广链接数据库连接消息
+    'db_config_promotion' => [
+        // 数据库类型
+        'type' => 'mysql',
+        // 服务器地址
+        'hostname' => 'localhost',
+        // 数据库名
+        'database' => 'fy_promotion',
+        // 用户名
+        'username' => 'root',
+        // 密码
+        'password' => '123456',
+        // 端口
+        'hostport' => '3306',
+        // 连接dsn
+        'dsn' => '',
+        // 数据库连接参数
+        'params' => [
+            \PDO::ATTR_PERSISTENT => true,
+            //            \PDO::ATTR_CASE         => \PDO::CASE_LOWER,
+        ],
+        // 数据库编码默认采用utf8
+        'charset' => 'utf8',
+        // 数据库表前缀
+        'prefix' => '',
+        'break_reconnection' => true,
     ],
     // 数据库类型
     'type' => 'mysql',
     // 服务器地址
-    'hostname' => '121.40.166.20',
+    //'hostname' => '121.40.166.20',
+    'hostname' => 'localhost',
     // 数据库名
-    'database' => 'game_data',
+    'database' => 'fy_data',
     // 用户名
     'username' => 'root',
     // 密码
-    'password' => 'yinhe123',
+    //'password' => 'yinhe123',
+    'password' => '123456',
     // 端口
-    'hostport' => '3306',
+   //'hostport' => '3306',
+    'hostport' => '8806',
     // 连接dsn
     'dsn' => '',
     // 数据库连接参数

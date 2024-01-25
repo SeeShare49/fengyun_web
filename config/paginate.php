@@ -8,5 +8,5 @@
 return [
     'type' => 'page\Page',
     'var_page' => 'page',
-    'list_rows' => 10,
+    'list_rows' => 15 ,
 ];
