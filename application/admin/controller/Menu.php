@@ -119,25 +119,32 @@ class Menu extends Base
     public function del()
     {
         $ids = input('ids/a');
+        if (empty($ids))
+        {
+            $this->error('请选择要操作的数据!');
+        }
+        
         //判断要删除的数据，是否有子菜单。
-        foreach ($ids as $item) {
+        foreach ($ids as $item) 
+        {
             $child = MenuModel::where('pid', $item)->find();
-            if ($child) {
+            if ($child)
+            {
                 $this->error('检测到要删除菜单下，存在子菜单。请删除子菜单后，再执行删除命令!');
                 return;
             }
         }
 
-        if (empty($ids)) {
-            $this->error('请选择要操作的数据!');
-        }
-
-        if (MenuModel::delete($ids)) {
+        //if (MenuModel::delete($ids))
+        if (MenuModel::where('id', 'in', $ids)->delete())
+        {
             session('ADMIN_MENU_LIST', null);
             //添加行为记录
             action_log("menu_del", "menu", $ids, UID);
             $this->success('删除成功');
-        } else {
+        }
+        else
+        {
             $this->error('删除失败！');
         }
     }

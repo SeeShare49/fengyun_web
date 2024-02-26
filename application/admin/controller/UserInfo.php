@@ -32,19 +32,23 @@ class UserInfo extends Base
             $where[] = ['UserName', 'like', "%$username%"];
         }
 
-        if ($user_id) {
+        if ($user_id)
+        {
             $where[] = ['UserID', '=', $user_id];
         }
 
-        if ($phone) {
+        if ($phone) 
+        {
             $where[] = ['Phone_UserName', '=', $phone];
         }
 
-        if ($gm && $gm != -1) {
+        if ($gm && $gm != -1)
+        {
             $where[] = ['gm', '=', $gm];
         }
 
-        if ($flag && $flag != -1) {
+        if ($flag && $flag != -1)
+        {
             $where[] = ['BanFlag', '=', $flag];
         }
 
@@ -81,17 +85,22 @@ class UserInfo extends Base
     public function seal($id)
     {
         $info = UserInfoModel::where('BanFlag', 0)->find($id);
-        if (!$info) {
+        if (!$info)
+        {
             $this->error("该游戏玩家信息不存在或已被封号!");
         }
 
         if (Request::isPost()) 
         {
             $data = $_POST;
-            clear_chat_log('db_chat_log', $data['UserID']);
-            test::webw_packet_ban_user($data['UserID'], 1, $data['BanReason']);
+            //clear_chat_log('db_chat_log', $data['UserID']);
+            //test::webw_packet_ban_user($data['UserID'], 1, $data['BanReason']);
+            clear_chat_log('db_chat_log', $id);
+            test::webw_packet_ban_user($id, 1, $data['BanReason']);
             return json(['code' => 1, 'msg' => '封停用户账号请求提交成功,待服务器处理......', 'data' => "norefresh"]);
-        } else {
+        }
+        else
+        {
             $this->assign([
                 'id' => $id,
                 'info' => $info,

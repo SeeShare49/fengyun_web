@@ -167,7 +167,7 @@ class test
     }
 
     /**
-     * code:803
+     * code:701  以前803
      * 用户封停
      *
      * @param $user_id  玩家ID
@@ -566,6 +566,7 @@ class test
      */
     static function combin_pack($ip, $port, $obj, $code, $sendType = 0)
     {
+        print_r($obj);
         //以前旧的使用方法 长度 协议 内容[protobuf]
         if($sendType == 1)
         {
@@ -594,7 +595,6 @@ class test
             $second_data =  base64_encode(!empty($obj) ? $obj->serialize() : '');
             $pack = json_encode(array('op_code'=>$code,'t_data'=>$second_data));
         }
-        //print_r($obj);
         self::send_msg($ip, $port, $pack);
     }
 
@@ -632,7 +632,7 @@ class test
             $second_data =  base64_encode(!empty($obj) ? $obj->serialize() : '');
             $pack = json_encode(array('op_code'=>$code,'t_data'=>$second_data));
         }
-        print_r($obj);
+        //print_r($obj);
         self::send_receive_msg($ip, $port, $pack);
         //self::send_msg($ip, $port, $pack);
     }
@@ -678,8 +678,8 @@ class test
         {
             $pack =self::GetHeaders($ip, $port, $pack);
         }
-        echo $pack;
-        exit; 
+        //echo $pack;
+        //exit;
         //发送消息
         $socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         Log::write("发送socket:" . $socket);
@@ -734,8 +734,8 @@ class test
         {
             $pack =self::GetHeaders($ip, $port, $pack);
         }
-        /* echo $pack;
-        exit; */
+        //echo $pack;
+        //exit;
         $socket = @socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         Log::write("发送socket:" . $socket);
         if ($socket < 0) 

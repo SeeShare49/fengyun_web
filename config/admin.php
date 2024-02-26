@@ -78,7 +78,7 @@ return [
     'ACCESS_KEY_ID' => 'LTAI5tF4pfLcTYW2jmBWv8HY',
     'ACCESS_KEY_SECRET' => '77L9xlIh1Fjikb08v2kyfBUsJvsDMt',
 
-    
+    //游戏数据库sql
     'DB_GAME_SQL_FILE' => '../public/databack/fy_game.sql',
 
     //用户判断管理用户归属的组I
