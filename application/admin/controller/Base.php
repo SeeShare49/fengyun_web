@@ -78,7 +78,8 @@ class Base extends Controller
         $this->assign('__MENU__', $adminMenuList);
 
         /* 读取数据中的道具配置 */
-        $prop_list = PropCsv::select();
+        //$prop_list = PropCsv::select();
+        $prop_list = db('','db_table_config')->table('ItemDef')->field('Id AS type_id,Name AS type_name')->select();
         $this->assign('__PROP__', $prop_list);
 
         /* 读取数据库中的配置 */

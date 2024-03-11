@@ -172,6 +172,34 @@ return [
         'prefix' => 'chat_log',
         'break_reconnection' => true,
     ],
+    
+    //游戏配置数据库连接消息
+    'db_table_config' => [
+        // 数据库类型
+        'type' => 'mysql',
+        // 服务器地址
+        'hostname' => '121.40.166.20',
+        // 数据库名
+        'database' => 'table_config',
+        // 用户名
+        'username' => 'root',
+        // 密码
+        'password' => 'yinhe123',
+        // 端口
+        'hostport' => '3306',
+        // 连接dsn
+        'dsn' => '',
+        // 数据库连接参数
+        'params' => [
+            \PDO::ATTR_PERSISTENT => true,
+            //            \PDO::ATTR_CASE         => \PDO::CASE_LOWER,
+        ],
+        // 数据库编码默认采用utf8
+        'charset' => 'utf8',
+        // 数据库表日期前前缀 注: chat_log20210414
+        'prefix' => '',
+        'break_reconnection' => true,
+    ],
 
     //新渠道（渠道ID等于或大于100）数据库连接消息
     /* 'db_new_game_data' => [

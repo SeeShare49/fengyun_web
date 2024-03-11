@@ -80,7 +80,8 @@ class ServerMail extends Base
                     $attach_info = explode('|', $attach_arr[$i]);
                     if (count($attach_info) > 1) 
                     {
-                        $itemName = PropCsv::where('type_id', '=', $attach_info[0])->value('type_name');
+                        $itemName = db('','db_table_config')->table('ItemDef')->where('Id', '=', $attach_info[0])->value('Name');
+                        //$itemName = PropCsv::where('type_id', '=', $attach_info[0])->value('type_name');
                         if(!$itemName)
                         {
                             $this->error("道具:【{$attach_arr[$i]}】不存在!");

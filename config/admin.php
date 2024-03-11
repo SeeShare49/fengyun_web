@@ -65,6 +65,7 @@ return [
     'SOCKET_SERVER_IP' => '192.168.110.234',
     //连接发送邮件服务端IP
     'SOCKET_SERVER_PORT' => 9088,
+   // 'SOCKET_SERVER_PORT' => 9090,
 
     'NEW_SOCKET_SERVER_IP' => '121.40.166.20',
 
