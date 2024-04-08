@@ -229,7 +229,7 @@ return [
         'break_reconnection' => true,
     ], */
     //推广链接数据库连接消息
-    'db_config_ ' => [
+    'db_config_promotion' => [
         // 数据库类型
         'type' => 'mysql',
         // 服务器地址

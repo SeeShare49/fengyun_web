@@ -32,14 +32,18 @@ class Index
     public function index($server_id, $user_id, $recharge_id, $type, $old_server_id)
     {
         $switch = SwitchSet::where('id', '=', 1)->value('recharge_switch');
-        if ($switch) {
-            if (isset($user_id) && isset($recharge_id) && isset($type)) {
+        if ($switch) 
+        {
+            if (isset($user_id) && isset($recharge_id) && isset($type))
+            {
                 $info = $this->get_recharge_by_csv($recharge_id, $type);
-                if (empty($info)) {
+                if (empty($info)) 
+                {
                     return json(['code' => -1, 'msg' => '未匹配到对应的充值信息']);
                 }
                 $money = isset($info['money']) ? $info['money'] : 0;
                 $amount = $info['amount'];
+                $relation_id = $info['relation_id'];
 
                 View::assign([
                     'server_id' => $server_id,
@@ -47,10 +51,13 @@ class Index
                     'recharge_id' => $recharge_id,
                     'amount' => $amount,
                     'money' => $money,
+                    'relation_id' => $relation_id,
                     'type' => $type,
                     'real_server_id' => $old_server_id
                 ]);
-            } else {
+            }
+            else 
+            {
                 return json(['code' => -1, 'msg' => '参数错误']);
             }
             return View::fetch();
@@ -66,15 +73,19 @@ class Index
      */
     public function get_recharge_by_csv($recharge_id, $type)
     {
-        $file_name = '../public/csv/recharge.csv';
+        /* $file_name = '../public/csv/recharge.csv';
         $file_open = fopen($file_name, 'r');
         // $data = fgetcsv($file_open, 100, ',');
         $count = 1;
         $item = array();
-        while (!feof($file_open) && $data = fgetcsv($file_open)) {
-            if (!empty($data) && $count >= 1) {
-                for ($i = 0; $i < count($data); $i++) {
-                    if ($data[0] == $recharge_id && $data[1] == $type) {
+        while (!feof($file_open) && $data = fgetcsv($file_open))
+        {
+            if (!empty($data) && $count >= 1) 
+            {
+                for ($i = 0; $i < count($data); $i++) 
+                {
+                    if ($data[0] == $recharge_id && $data[1] == $type)
+                    {
                         $item['recharge_id'] = $data[0];
                         $item['type'] = $data[1];
                         $item['icon'] = $data[2];
@@ -86,7 +97,9 @@ class Index
             }
             $count++;
         }
-        fclose($file_open);
+        fclose($file_open); */
+        $where = [ ['Id', '=', $recharge_id], ['Type', '=', $type] ];
+        $item = db('','db_table_config')->table('Recharge')->where($where)->field('RMB AS money,Gold AS amount,CorrespondenceForm AS relation_id')->find();
         return $item;
     }
 

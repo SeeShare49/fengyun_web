@@ -27,14 +27,18 @@
                         <a>{$user_id}</a>
                     </p>
                     <div class="tr_rechheadcion">
+                    	{if $type == 1}
                         <img src="../static/pay/images/coin.png" alt=""/>
                         <span>充值元宝数量：<span>{$amount}</span></span>
+                        {else}
+                        <span>充值对应ID：<span>{$relation_id}</span></span>
+                        {/if}
                     </div>
                 </div>
                 <div class="tr_rechcho am-form-group">
                     <span>充值方式：</span>
                     <label class="am-radio">
-                        <input type="radio" name="radio1" value="1" data-am-ucheck required
+                        <input type="radio" name="radio1" value="1" data-am-ucheck
                                data-validation-message="请选择一种充值方式">
                         <img src="../static/pay/images/wechatpay.png">
                     </label>
@@ -44,9 +48,9 @@
                         <img src="../static/pay/images/zfbpay.png">
                     </label>
                     <label class="am-radio" style="margin-right:30px;">
-                        <input type="radio" name="radio1" value="3" data-am-ucheck
+                        <input type="radio" name="radio1" value="3" data-am-ucheck required checked
                                data-validation-message="请选择一种充值方式">
-                        <img src="../static/pay/images/zfbpay.png">
+                        <img src="../static/pay/images/test.png">
                     </label>
                 </div>
                 <div class="tr_rechnum">

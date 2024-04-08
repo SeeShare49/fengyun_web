@@ -10,7 +10,7 @@ namespace think;
 
 //define('__ROOT__', './');
 
-//define('BIND_MODULE','admin');
+//define('BIND_MODULE','admin');.
 
 // 加载基础文件
 require __DIR__ . '/../thinkphp/base.php';

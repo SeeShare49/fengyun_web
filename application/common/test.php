@@ -138,7 +138,7 @@ class test
     }
 
     /**
-     * code:802
+     * code:825    从前是802
      * 充值
      *
      * @param $server_id       服务器ID
@@ -149,7 +149,7 @@ class test
         $obj = new \tests\Recharge();
         $obj->setGameId($server_id);
         $obj->setRechargeId($recharge_id);
-        $code = 802;
+        $code = 825;
         self::combin_pack(self::IP, self::PORT, $obj, $code);
     }
 
